@@ -5,6 +5,13 @@ A mobile-first webapp prototype for Spanish speakers to absorb English phrases w
 **Surface:** a full-screen swipeable feed of editorial micro-content about topics you'd read anyway.
 **Hidden engine:** phrase repetition, casual checkpoints, and a local spaced-repetition memory.
 
+## Live demo
+
+**https://dotsledger.github.io/English/** — auto-deployed on every push to `master` via
+[.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml). The app has no server
+routes, so it ships as a fully static export (`next build` with `output: "export"`, gated behind
+the `GITHUB_PAGES=true` env var in `next.config.ts` so local dev is unaffected).
+
 ## Run locally
 
 ```bash
