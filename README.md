@@ -42,8 +42,8 @@ npm run build
 ## Architecture
 
 - `lib/types.ts` — discriminated-union scene types, phrase and memory types (levels are B2/C1/C2)
-- `lib/data/` — mock phrases (159), a pool of 170 topic tiles across 14 categories, 350 content
-  scenes, 28 checkpoints, feed builder
+- `lib/data/` — mock phrases (309), a pool of 320 topic tiles across 20 categories, 650 content
+  scenes, 48 checkpoints, feed builder
 - `lib/pickTopics.ts` — pure random-sample utility used by the "refresh" button and by filtering
 - `lib/phraseMemory.ts` — pure localStorage memory engine (seen counts, recall scheduling, corruption-safe parsing)
 - `lib/usePhraseMemory.ts` — React hook over the engine
