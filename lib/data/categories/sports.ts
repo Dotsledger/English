@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["cracks under pressure", "cracked under pressure", "cracking under pressure"],
+      examples: ["Even champions can crack under pressure.", "The keeper cracked under pressure in the shootout."],
     },
   {
       id: "speak-too-soon",
@@ -20,6 +21,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["spoke too soon", "speaking too soon"],
+      examples: ["Two-nil up, but do not speak too soon.", "He spoke too soon and they equalised."],
     },
   {
       id: "down-to-the-wire",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       example: "TV needs the illusion of chaos down to the wire.",
       level: "B2",
       tags: ["opinion", "risk"],
+      examples: ["The title race went down to the wire.", "It was down to the wire on the final lap."],
     },
   {
       id: "call-the-shots",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["calls the shots", "called the shots", "calling the shots"],
+      examples: ["New coaches want to call the shots immediately.", "The veteran called the shots all game."],
     },
   {
       id: "downward-spiral",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       example: "Player exits and collapsing revenue turn one bad year into a downward spiral.",
       level: "B2",
       tags: ["risk", "money"],
+      examples: ["One injury sent his season into a downward spiral.", "The club is in a downward spiral after relegation."],
     },
   {
       id: "punch-above-your-weight",
@@ -58,6 +63,7 @@ export const phrases: Phrase[] = [
         "punches above its weight",
         "punched above their weight",
       ],
+      examples: ["A tiny budget, yet they punch above your weight.", "The underdogs love to punch above your weight."],
     },
   {
       id: "rest-on-your-laurels",
@@ -67,6 +73,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["resting on your laurels", "rested on their laurels", "rests on their laurels"],
+      examples: ["One title, and some players rest on your laurels.", "The champions rested on their laurels and slipped."],
     },
   {
       id: "wheels-come-off",
@@ -76,6 +83,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk"],
       variants: ["the wheels came off", "the wheels fell off"],
+      examples: ["In the last ten minutes, the wheels come off.", "The wheels came off after the red card."],
     },
   {
       id: "on-a-roll",
@@ -84,6 +92,7 @@ export const phrases: Phrase[] = [
       example: "Being on a roll might be partly real after all.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["They are on a roll after five straight wins.", "She is on a roll this season."],
     },
   {
       id: "fall-by-the-wayside",
@@ -93,6 +102,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "opinion"],
       variants: ["falls by the wayside", "fell by the wayside", "falling by the wayside"],
+      examples: ["Promising talents often fall by the wayside.", "His fitness fell by the wayside during the break."],
     },
   {
       id: "poisoned-chalice",
@@ -101,6 +111,7 @@ export const phrases: Phrase[] = [
       example: "The role is a poisoned chalice dressed as an opportunity.",
       level: "C2",
       tags: ["risk", "opinion"],
+      examples: ["Managing that club is a poisoned chalice.", "The captaincy proved a poisoned chalice."],
     },
   {
       id: "pyrrhic-victory",
@@ -109,6 +120,7 @@ export const phrases: Phrase[] = [
       example: "The trophy turned into a Pyrrhic victory nobody wanted to admit.",
       level: "C2",
       tags: ["opinion", "risk"],
+      examples: ["Winning with three injuries was a Pyrrhic victory.", "It felt like a Pyrrhic victory after the suspensions."],
     },
   {
       id: "the-acid-test",
@@ -118,6 +130,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["an acid test"],
+      examples: ["Away at the champions is the acid test.", "Promotion is an acid test of the squad's depth."],
     },
   {
       id: "damn-with-faint-praise",
@@ -131,6 +144,7 @@ export const phrases: Phrase[] = [
         "damned with faint praise",
         "damning with faint praise",
       ],
+      examples: ["Calling him solid is to damn with faint praise.", "Pundits love to damn with faint praise."],
     },
   {
       id: "bridge-too-far",
@@ -139,6 +153,7 @@ export const phrases: Phrase[] = [
       example: "Fan identity turned out to be a bridge too far to sell.",
       level: "C2",
       tags: ["opinion", "risk"],
+      examples: ["The treble was a bridge too far.", "Chasing four trophies proved a bridge too far."],
     },
 ];
 
