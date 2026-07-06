@@ -19,6 +19,7 @@ import { contentScenes as entertainmentScenes, checkpointScenes as entertainment
 import { contentScenes as gamingScenes, checkpointScenes as gamingCheckpoints } from "@/lib/data/categories/gaming";
 import { contentScenes as fashionAndBeautyScenes, checkpointScenes as fashionAndBeautyCheckpoints } from "@/lib/data/categories/fashion-and-beauty";
 import { contentScenes as historyAndTrueCrimeScenes, checkpointScenes as historyAndTrueCrimeCheckpoints } from "@/lib/data/categories/history-and-true-crime";
+import { contentScenes as meetingsAndLeadershipScenes, checkpointScenes as meetingsAndLeadershipCheckpoints } from "@/lib/data/categories/meetings-and-leadership";
 
 export const contentScenes: ContentScene[] = [
   ...carsAndMobilityScenes,
@@ -41,6 +42,7 @@ export const contentScenes: ContentScene[] = [
   ...gamingScenes,
   ...fashionAndBeautyScenes,
   ...historyAndTrueCrimeScenes,
+  ...meetingsAndLeadershipScenes,
 ];
 
 export const checkpointScenes: CheckpointScene[] = [
@@ -64,6 +66,7 @@ export const checkpointScenes: CheckpointScene[] = [
   ...gamingCheckpoints,
   ...fashionAndBeautyCheckpoints,
   ...historyAndTrueCrimeCheckpoints,
+  ...meetingsAndLeadershipCheckpoints,
 ];
 
 const checkpointByTopic = new Map(checkpointScenes.map((c) => [c.topicId, c]));

@@ -19,6 +19,7 @@ import { topics as entertainment } from "@/lib/data/categories/entertainment";
 import { topics as gaming } from "@/lib/data/categories/gaming";
 import { topics as fashionAndBeauty } from "@/lib/data/categories/fashion-and-beauty";
 import { topics as historyAndTrueCrime } from "@/lib/data/categories/history-and-true-crime";
+import { topics as meetingsAndLeadership } from "@/lib/data/categories/meetings-and-leadership";
 
 export const topics: TopicTile[] = [
   ...carsAndMobility,
@@ -41,6 +42,7 @@ export const topics: TopicTile[] = [
   ...gaming,
   ...fashionAndBeauty,
   ...historyAndTrueCrime,
+  ...meetingsAndLeadership,
 ];
 
 export const topicById = new Map(topics.map((t) => [t.id, t]));

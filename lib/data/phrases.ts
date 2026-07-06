@@ -19,6 +19,7 @@ import { phrases as entertainment } from "@/lib/data/categories/entertainment";
 import { phrases as gaming } from "@/lib/data/categories/gaming";
 import { phrases as fashionAndBeauty } from "@/lib/data/categories/fashion-and-beauty";
 import { phrases as historyAndTrueCrime } from "@/lib/data/categories/history-and-true-crime";
+import { phrases as meetingsAndLeadership } from "@/lib/data/categories/meetings-and-leadership";
 
 export const phrases: Phrase[] = [
   ...carsAndMobility,
@@ -41,6 +42,7 @@ export const phrases: Phrase[] = [
   ...gaming,
   ...fashionAndBeauty,
   ...historyAndTrueCrime,
+  ...meetingsAndLeadership,
 ];
 
 export const phraseById = new Map(phrases.map((p) => [p.id, p]));
