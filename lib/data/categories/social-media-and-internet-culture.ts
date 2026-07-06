@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "The infinite scroll was designed to send you down the rabbit hole.",
       level: "B2",
       tags: ["risk", "opinion"],
+      examples: ["One autoplay video and you are down the rabbit hole.", "She went down the rabbit hole of conspiracy clips."],
     },
   {
       id: "pay-the-piper",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "risk"],
       variants: ["pays the piper", "paid the piper", "paying the piper"],
+      examples: ["Buy followers now and you pay the piper later.", "The brand paid the piper when the fakery leaked."],
     },
   {
       id: "blow-up-overnight",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["blows up overnight", "blew up overnight", "blowing up overnight"],
+      examples: ["A random clip can blow up overnight.", "Her account blew up overnight after one video."],
     },
   {
       id: "all-show-no-substance",
@@ -36,6 +39,7 @@ export const phrases: Phrase[] = [
       example: "Half a million followers and forty likes is all show and no substance.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["That viral gadget is all show and no substance.", "The influencer is all show and no substance."],
     },
   {
       id: "jump-on-the-bandwagon",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["jumps on the bandwagon", "jumped on the bandwagon", "jumping on the bandwagon"],
+      examples: ["Brands jump on the bandwagon of every trend.", "He jumped on the bandwagon the moment it trended."],
     },
   {
       id: "stir-the-pot",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "opinion"],
       variants: ["stirs the pot", "stirred the pot", "stirring the pot"],
+      examples: ["Some accounts exist only to stir the pot.", "The reply guy stirred the pot for engagement."],
     },
   {
       id: "prey-on-the-vulnerable",
@@ -63,6 +69,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk"],
       variants: ["preys on the vulnerable", "preyed on the vulnerable", "preying on the vulnerable"],
+      examples: ["Scam ads prey on the vulnerable.", "The fake course preyed on the vulnerable and desperate."],
     },
   {
       id: "flash-in-the-pan",
@@ -71,6 +78,7 @@ export const phrases: Phrase[] = [
       example: "Trending Monday, forgotten Friday — cancel culture is a flash in the pan.",
       level: "C1",
       tags: ["opinion", "risk"],
+      examples: ["That dance craze was a flash in the pan.", "Most viral fame is a flash in the pan."],
     },
   {
       id: "front-for",
@@ -79,6 +87,7 @@ export const phrases: Phrase[] = [
       example: "The \"grassroots movement\" turned out to be a front for a PR budget.",
       level: "C1",
       tags: ["risk"],
+      examples: ["The charity stream was a front for a scam.", "The account turned out to be a front for a bot farm."],
     },
   {
       id: "pull-the-rug-from-under",
@@ -92,6 +101,7 @@ export const phrases: Phrase[] = [
         "pulled the rug from under",
         "pulling the rug from under",
       ],
+      examples: ["Algorithms can pull the rug from under a creator overnight.", "One tweak to the feed can pull the rug from under you."],
     },
   {
       id: "wolf-in-sheeps-clothing",
@@ -100,6 +110,7 @@ export const phrases: Phrase[] = [
       example: "A bot account dressed as a real person is a wolf in sheep's clothing.",
       level: "C2",
       tags: ["risk"],
+      examples: ["That friendly DM was a wolf in sheep's clothing.", "The wellness guru was a wolf in sheep's clothing."],
     },
   {
       id: "drop-in-the-ocean",
@@ -108,6 +119,7 @@ export const phrases: Phrase[] = [
       example: "Eight thousand reviewers for two billion posts is a drop in the ocean.",
       level: "C2",
       tags: ["risk"],
+      examples: ["One takedown is a drop in the ocean of fakes.", "The fine was a drop in the ocean for the platform."],
     },
   {
       id: "trade-on-your-name",
@@ -117,6 +129,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["trades on your name", "traded on your name", "trading on your name"],
+      examples: ["Once famous, you can trade on your name for years.", "There is a limit to trading on your name."],
     },
   {
       id: "distorted-picture",
@@ -125,6 +138,7 @@ export const phrases: Phrase[] = [
       example: "The feed shows what retains you, not you — a distorted picture of reality.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["Highlight reels paint a distorted picture of life.", "The feed gives a distorted picture of the world."],
     },
   {
       id: "preserve-of-the-rich",
@@ -133,6 +147,7 @@ export const phrases: Phrase[] = [
       example: "Logging off has quietly become the preserve of the rich.",
       level: "C2",
       tags: ["money", "opinion"],
+      examples: ["Verified badges became the preserve of the rich.", "Ad-free feeds are now the preserve of the rich."],
     },
 ];
 
