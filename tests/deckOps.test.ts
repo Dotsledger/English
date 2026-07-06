@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
+  appendSentence,
   markSeen,
   recordCheckpointResult,
+  recordMasteryResult,
   recordPeek,
   recordReviewResult,
   saveToDeck,
@@ -78,5 +80,41 @@ describe("deck operations", () => {
     let after = recordReviewResult(deck, "p", { correct: true, produced: true }, NOW);
     after = recordReviewResult(after, "p", { correct: true, produced: true }, NOW);
     expect(after.p.stage).toBe("mastered");
+  });
+});
+
+describe("recordMasteryResult", () => {
+  const box5 = () => ({ p: makeDeckEntry({ phraseId: "p", inDeck: true, box: 5, stage: "produced" }) });
+
+  it("'me salió' masters the phrase and reschedules at the longest interval", () => {
+    const after = recordMasteryResult(box5(), "p", "me_salio", NOW);
+    expect(after.p.stage).toBe("mastered");
+    expect(after.p.box).toBe(5);
+    expect(after.p.nextReviewAt).toBe(NOW + 35 * DAY);
+    expect(after.p.producedAt).toBe(NOW);
+  });
+
+  it("'regular' keeps the box and comes back in 3 days", () => {
+    const after = recordMasteryResult(box5(), "p", "regular", NOW);
+    expect(after.p.box).toBe(5);
+    expect(after.p.stage).toBe("produced");
+    expect(after.p.nextReviewAt).toBe(NOW + 3 * DAY);
+  });
+
+  it("'no me salió' drops one box without regressing the stage", () => {
+    const after = recordMasteryResult(box5(), "p", "no_me_salio", NOW);
+    expect(after.p.box).toBe(4);
+    expect(after.p.stage).toBe("produced");
+    expect(after.p.nextReviewAt).toBe(NOW + 16 * DAY);
+  });
+});
+
+describe("appendSentence", () => {
+  it("appends to the phrase's corpus and ignores blanks", () => {
+    let store = appendSentence({}, "p", "  My own sentence.  ", NOW);
+    expect(store.p).toEqual([{ text: "My own sentence.", createdAt: NOW }]);
+    store = appendSentence(store, "p", "Another one", NOW + 1);
+    expect(store.p).toHaveLength(2);
+    expect(appendSentence(store, "p", "   ", NOW + 2)).toBe(store);
   });
 });

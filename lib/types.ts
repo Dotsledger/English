@@ -11,6 +11,9 @@ export type Phrase = {
   tags: string[];
   /** Accepted natural variants that count as the phrase appearing in scene text. */
   variants?: string[];
+  /** Alternative example sentences (same phrase, different scenario). Reviews
+   * and cloze rotate among [example, ...examples]. Optional/backward-compatible. */
+  examples?: string[];
 };
 
 export type TopicTile = {
@@ -201,6 +204,10 @@ export type TriageStore = {
   /** How many frozen items were thawed on lastThawDate. */
   thawedToday: number;
 };
+
+/** The user's own sentences per phrase (mastery gate) — their personal corpus. */
+export type UserSentence = { text: string; createdAt: number };
+export type SentenceStore = Record<string, UserSentence[]>;
 
 /** A phrase the user typed in from real life ("+" quick capture). */
 export type CapturedPhrase = {

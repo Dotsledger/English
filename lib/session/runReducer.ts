@@ -33,7 +33,8 @@ export function initSessionRun(plan: SessionPlan): SessionRunState {
 function isGated(state: SessionRunState): boolean {
   const card = state.plan.cards[state.index];
   if (!card) return false;
-  const needsAnswer = card.kind === "checkpoint" || card.kind === "review";
+  const needsAnswer =
+    card.kind === "checkpoint" || card.kind === "review" || card.kind === "mastery";
   return needsAnswer && state.answers[state.index] === undefined;
 }
 

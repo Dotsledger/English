@@ -7,6 +7,7 @@ import type {
   DeckStore,
   MissionStore,
   PhraseStage,
+  SentenceStore,
   TriageStore,
 } from "@/lib/types";
 
@@ -141,6 +142,21 @@ export function parseTriage(raw: string | null): TriageStore {
     return { lastThawDate: "", thawedToday: 0 };
   }
   return { lastThawDate: parsed.lastThawDate, thawedToday: parsed.thawedToday };
+}
+
+export function parseSentences(raw: string | null): SentenceStore {
+  const parsed = safeParse(raw);
+  if (!parsed) return {};
+  const store: SentenceStore = {};
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!Array.isArray(value)) continue;
+    const list = value.filter(
+      (s): s is { text: string; createdAt: number } =>
+        isRecord(s) && typeof s.text === "string" && typeof s.createdAt === "number"
+    );
+    if (list.length > 0) store[key] = list;
+  }
+  return store;
 }
 
 export type MetaDoc = { schemaVersion: number; migratedFromV1At?: number };

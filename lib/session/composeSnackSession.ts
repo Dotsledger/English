@@ -3,7 +3,7 @@ import type { SessionCard, SessionPlan } from "@/lib/session/types";
 import type { ComposerContent } from "@/lib/session/composeCategorySession";
 import { pickRandomTopics } from "@/lib/pickTopics";
 import { dueEntries, upcomingEntries } from "@/lib/session/leitner";
-import { buildReviewExercise } from "@/lib/session/exercisePicker";
+import { reviewCardFor } from "@/lib/session/exercisePicker";
 import { interleaveCheckpoints } from "@/lib/session/checkpoints";
 import { markAudioFirst } from "@/lib/session/audioFirst";
 
@@ -40,10 +40,8 @@ export function composeSnackSession(opts: {
     rng,
   };
 
-  const toReviewCard = (entry: (typeof due)[number]): SessionCard | null => {
-    const exercise = buildReviewExercise(entry, exerciseDeps);
-    return exercise ? { kind: "review", exercise, box: entry.box, stage: entry.stage } : null;
-  };
+  const toReviewCard = (entry: (typeof due)[number]): SessionCard | null =>
+    reviewCardFor(entry, exerciseDeps);
 
   const due = dueEntries(deck, now);
   const dueTarget = Math.round(target * DUE_SHARE);

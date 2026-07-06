@@ -8,6 +8,8 @@ export type SessionCard =
   | { kind: "checkpoint"; exercise: McqExercise; authoredSceneId?: string }
   /** Leitner review drawn from the deck (Daily Snack). */
   | { kind: "review"; exercise: Exercise; box: Box; stage: PhraseStage }
+  /** Box-5 free-production gate with self-assessment (the path to MASTERED). */
+  | { kind: "mastery"; phraseId: string }
   | { kind: "end" };
 
 export type SessionPlan = {

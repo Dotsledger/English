@@ -4,15 +4,24 @@ import Link from "next/link";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { SessionPlan } from "@/lib/session/types";
 import { phraseById } from "@/lib/data/phrases";
-import { useActivity, useCompletedTopics, useDeck, useTriage } from "@/components/AppStateProvider";
+import {
+  useActivity,
+  useCompletedTopics,
+  useDeck,
+  useSentences,
+  useTriage,
+} from "@/components/AppStateProvider";
 import { reconcileTriage } from "@/lib/session/triage";
 import {
+  appendSentence,
   markSeen,
   recordCheckpointResult,
+  recordMasteryResult,
   recordPeek,
   recordReviewResult,
   saveToDeck,
   suppressPhrase,
+  type MasteryVerdict,
 } from "@/lib/deckOps";
 import { localIsoDate } from "@/lib/dates";
 import {
@@ -29,6 +38,7 @@ import { SessionEnd } from "@/components/SessionEnd";
 import { McqCard } from "@/components/exercises/McqCard";
 import { TypedAnswerCard } from "@/components/exercises/TypedAnswerCard";
 import { SpokenAnswerCard } from "@/components/exercises/SpokenAnswerCard";
+import { MasteryCard } from "@/components/exercises/MasteryCard";
 
 const SWIPE_THRESHOLD = 48;
 
@@ -46,6 +56,7 @@ export function SessionPlayer({
   const activity = useActivity();
   const completedTopics = useCompletedTopics();
   const triage = useTriage();
+  const sentences = useSentences();
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const seenSceneIds = useRef<Set<string>>(new Set());
   const closedOut = useRef(false);
@@ -162,6 +173,21 @@ export function SessionPlayer({
     deck.update((prev) => recordReviewResult(prev, phraseId, { correct, produced }, Date.now()));
   };
 
+  const gradeMastery = (phraseId: string, verdict: MasteryVerdict, sentence: string) => {
+    dispatch({
+      type: "answer",
+      cardIndex: state.index,
+      phraseId,
+      correct: verdict !== "no_me_salio",
+      produced: true,
+    });
+    const now = Date.now();
+    deck.update((prev) => recordMasteryResult(prev, phraseId, verdict, now));
+    if (sentence.trim().length > 0) {
+      sentences.update((prev) => appendSentence(prev, phraseId, sentence, now));
+    }
+  };
+
   const interactionsFor = (phraseId: string) => ({
     stage: deck.value[phraseId]?.stage ?? ("new" as const),
     saved: deck.value[phraseId]?.inDeck === true,
@@ -246,6 +272,16 @@ export function SessionPlayer({
                 }
               />
             )}
+          </div>
+        ) : card.kind === "mastery" ? (
+          <div key={`mastery-${state.index}`} className="scene-enter h-full">
+            <MasteryCard
+              phrase={phraseById.get(card.phraseId) ?? null}
+              pastSentences={sentences.value[card.phraseId] ?? []}
+              speechAvailable={useSpoken}
+              alreadyAnswered={answered}
+              onGrade={(verdict, sentence) => gradeMastery(card.phraseId, verdict, sentence)}
+            />
           </div>
         ) : null}
       </div>

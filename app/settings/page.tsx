@@ -2,17 +2,21 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { useCaptures, useDeck } from "@/components/AppStateProvider";
+import { useCaptures, useDeck, useSentences } from "@/components/AppStateProvider";
 import { exportAll, importAll } from "@/lib/storage/exportImport";
 import { getBackend } from "@/lib/storage/backend";
 import { ALL_KEYS } from "@/lib/storage/keys";
 import { localIsoDate } from "@/lib/dates";
+import { phraseById } from "@/lib/data/phrases";
 
 export default function SettingsPage() {
   const deck = useDeck();
   const captures = useCaptures();
+  const sentences = useSentences();
   const fileInput = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string | null>(null);
+
+  const sentenceEntries = Object.entries(sentences.value).filter(([, list]) => list.length > 0);
 
   const phraseCount = Object.keys(deck.value).length;
   const captureCount = Object.keys(captures.value).length;
@@ -100,6 +104,28 @@ export default function SettingsPage() {
         />
         {message && <p className="px-1 text-sm text-amber-300">{message}</p>}
       </section>
+
+      {sentenceEntries.length > 0 && (
+        <section className="flex flex-col gap-2" data-testid="my-sentences">
+          <h2 className="px-1 text-sm font-semibold text-white/70">Tus frases</h2>
+          <div className="flex flex-col gap-2">
+            {sentenceEntries.map(([phraseId, list]) => (
+              <div key={phraseId} className="rounded-2xl bg-white/[0.05] px-4 py-3">
+                <p className="text-sm font-medium text-white">
+                  {phraseById.get(phraseId)?.text ?? phraseId}
+                </p>
+                <ul className="mt-1 flex flex-col gap-1">
+                  {list.map((s, i) => (
+                    <li key={i} className="text-sm text-white/55">
+                      “{s.text}”
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mt-auto">
         <button

@@ -6,6 +6,7 @@ import {
   KEY_DECK,
   KEY_META,
   KEY_MISSION,
+  KEY_SENTENCES,
   KEY_TOPICS,
 } from "@/lib/storage/keys";
 import {
@@ -14,8 +15,11 @@ import {
   parseDeck,
   parseMeta,
   parseMission,
+  parseSentences,
   parseTopics,
 } from "@/lib/storage/docs";
+
+const EXPORTED_KEYS = [KEY_DECK, KEY_TOPICS, KEY_CAPTURES, KEY_ACTIVITY, KEY_MISSION, KEY_SENTENCES];
 
 export type ExportBundle = {
   app: "sticky-english";
@@ -28,7 +32,7 @@ export async function exportAll(now: number = Date.now()): Promise<ExportBundle>
   await flushWrites();
   const backend = await getBackend();
   const data: Record<string, unknown> = {};
-  for (const key of [KEY_DECK, KEY_TOPICS, KEY_CAPTURES, KEY_ACTIVITY, KEY_MISSION]) {
+  for (const key of EXPORTED_KEYS) {
     const raw = await backend.get(key);
     if (raw !== null) {
       try {
@@ -82,13 +86,15 @@ export async function importAll(
         const mission = parseMission(raw);
         return mission ? JSON.stringify(mission) : null;
       }
+      case KEY_SENTENCES:
+        return JSON.stringify(parseSentences(raw));
       default:
         return null;
     }
   };
 
   const backend = await getBackend();
-  for (const key of [KEY_DECK, KEY_TOPICS, KEY_CAPTURES, KEY_ACTIVITY, KEY_MISSION]) {
+  for (const key of EXPORTED_KEYS) {
     const validated = reserialize(key);
     if (validated !== null) await backend.set(key, validated);
   }

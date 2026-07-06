@@ -1,5 +1,9 @@
-import type { DeckEntry, DeckStore } from "@/lib/types";
+import type { Box, DeckEntry, DeckStore, SentenceStore } from "@/lib/types";
 import { applyReviewResult, intervalForBox } from "@/lib/session/leitner";
+
+const DAY = 24 * 60 * 60 * 1000;
+
+export type MasteryVerdict = "me_salio" | "regular" | "no_me_salio";
 
 /** Pure deck operations — every UI interaction maps to exactly one of these. */
 
@@ -133,4 +137,46 @@ export function recordReviewResult(
 ): DeckStore {
   const entry = entryOf(deck, phraseId);
   return { ...deck, [phraseId]: applyReviewResult(entry, result, now) };
+}
+
+/**
+ * The mastery-gate self-assessment (Feature 3). "Me salió" → MASTERED and
+ * rescheduled at the longest interval; "Regular" → stays put, back in 3
+ * days; "No me salió" → down one box. Stages never regress on a wrong
+ * self-grade — only the box drops.
+ */
+export function recordMasteryResult(
+  deck: DeckStore,
+  phraseId: string,
+  verdict: MasteryVerdict,
+  now: number
+): DeckStore {
+  const entry = { ...entryOf(deck, phraseId), lastAttemptAt: now };
+  if (verdict === "me_salio") {
+    entry.stage = "mastered";
+    entry.box = 5;
+    entry.correctCount += 1;
+    entry.producedAt = entry.producedAt ?? now;
+    entry.nextReviewAt = now + intervalForBox(5);
+  } else if (verdict === "regular") {
+    entry.nextReviewAt = now + 3 * DAY;
+  } else {
+    entry.wrongCount += 1;
+    entry.box = Math.max(entry.box - 1, 1) as Box;
+    entry.nextReviewAt = now + intervalForBox(entry.box);
+  }
+  return { ...deck, [phraseId]: entry };
+}
+
+/** Appends the user's own sentence to their personal corpus for a phrase. */
+export function appendSentence(
+  store: SentenceStore,
+  phraseId: string,
+  text: string,
+  now: number
+): SentenceStore {
+  const trimmed = text.trim();
+  if (trimmed.length === 0) return store;
+  const list = store[phraseId] ?? [];
+  return { ...store, [phraseId]: [...list, { text: trimmed, createdAt: now }] };
 }

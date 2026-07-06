@@ -14,6 +14,7 @@ import type {
   CaptureStore,
   DeckStore,
   MissionStore,
+  SentenceStore,
   TriageStore,
 } from "@/lib/types";
 import { getBackend } from "@/lib/storage/backend";
@@ -24,6 +25,7 @@ import {
   KEY_CAPTURES,
   KEY_DECK,
   KEY_MISSION,
+  KEY_SENTENCES,
   KEY_TOPICS,
   KEY_TRIAGE,
 } from "@/lib/storage/keys";
@@ -32,6 +34,7 @@ import {
   parseCaptures,
   parseDeck,
   parseMission,
+  parseSentences,
   parseTopics,
   parseTriage,
 } from "@/lib/storage/docs";
@@ -113,6 +116,7 @@ type AppState = {
   activity: Doc<ActivityStore>;
   mission: Doc<MissionStore | null>;
   triage: Doc<TriageStore>;
+  sentences: Doc<SentenceStore>;
 };
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -124,6 +128,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const activity = usePersistedDoc(KEY_ACTIVITY, parseActivity);
   const mission = usePersistedDoc(KEY_MISSION, parseMission);
   const triage = usePersistedDoc(KEY_TRIAGE, parseTriage);
+  const sentences = usePersistedDoc(KEY_SENTENCES, parseSentences);
 
   useEffect(() => {
     installFlushListeners();
@@ -131,7 +136,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   return (
     <AppStateContext.Provider
-      value={{ deck, completedTopics, captures, activity, mission, triage }}
+      value={{ deck, completedTopics, captures, activity, mission, triage, sentences }}
     >
       {children}
     </AppStateContext.Provider>
@@ -166,4 +171,8 @@ export function useMission(): Doc<MissionStore | null> {
 
 export function useTriage(): Doc<TriageStore> {
   return useAppState().triage;
+}
+
+export function useSentences(): Doc<SentenceStore> {
+  return useAppState().sentences;
 }

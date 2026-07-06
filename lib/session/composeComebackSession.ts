@@ -1,7 +1,7 @@
 import type { CaptureStore, DeckStore } from "@/lib/types";
 import type { SessionCard, SessionPlan } from "@/lib/session/types";
 import type { ComposerContent } from "@/lib/session/composeCategorySession";
-import { buildReviewExercise } from "@/lib/session/exercisePicker";
+import { reviewCardFor } from "@/lib/session/exercisePicker";
 import { valuableDue, COMEBACK_SIZE } from "@/lib/session/triage";
 
 /**
@@ -30,8 +30,8 @@ export function composeComebackSession(opts: {
 
   const cards: SessionCard[] = [];
   for (const entry of valuableDue(opts.deck, opts.now, size)) {
-    const exercise = buildReviewExercise(entry, exerciseDeps);
-    if (exercise) cards.push({ kind: "review", exercise, box: entry.box, stage: entry.stage });
+    const card = reviewCardFor(entry, exerciseDeps);
+    if (card) cards.push(card);
   }
 
   cards.push({ kind: "end" });
