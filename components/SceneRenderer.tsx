@@ -1,6 +1,6 @@
-import type { ContentScene, PhraseStatus } from "@/lib/types";
+import type { ContentScene } from "@/lib/types";
 import { getPhrase } from "@/lib/data/phrases";
-import { PhraseBadge } from "@/components/PhraseBadge";
+import { PhraseBadge, type BadgeStage } from "@/components/PhraseBadge";
 import { HeroImageScene } from "@/components/scenes/HeroImageScene";
 import { EditorialPosterScene } from "@/components/scenes/EditorialPosterScene";
 import { ChatScene } from "@/components/scenes/ChatScene";
@@ -48,10 +48,18 @@ export function sceneBackgroundClass(scene: ContentScene): string {
 
 export function SceneRenderer({
   scene,
-  phraseStatus,
+  stage,
+  saved,
+  onPeek,
+  onSave,
+  onSuppress,
 }: {
   scene: ContentScene;
-  phraseStatus: PhraseStatus;
+  stage: BadgeStage;
+  saved: boolean;
+  onPeek?: (ms: number) => void;
+  onSave?: () => void;
+  onSuppress?: () => void;
 }) {
   const phrase = getPhrase(scene.phraseId);
   const isHero = scene.sceneType === "hero_image";
@@ -79,7 +87,14 @@ export function SceneRenderer({
         {sceneBody(scene)}
 
         <div className="mt-6">
-          <PhraseBadge phrase={phrase} status={phraseStatus} />
+          <PhraseBadge
+            phrase={phrase}
+            stage={stage}
+            saved={saved}
+            onPeek={onPeek}
+            onSave={onSave}
+            onSuppress={onSuppress}
+          />
         </div>
       </div>
     </div>

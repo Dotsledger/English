@@ -5,17 +5,25 @@ import type { SessionPlan, SessionStats } from "@/lib/session/types";
  * results, saves, seen-marks) commit to the deck immediately per card, so
  * a mid-session reload loses position, never learning data.
  */
+export type SessionAnswer = {
+  phraseId: string;
+  correct: boolean;
+  produced: boolean;
+  /** Which MCQ option was tapped — lets back-navigation restore the card. */
+  selectedIndex?: number;
+};
+
 export type SessionRunState = {
   plan: SessionPlan;
   index: number;
-  answers: Record<number, { phraseId: string; correct: boolean; produced: boolean }>;
+  answers: Record<number, SessionAnswer>;
   savedPhraseIds: string[];
 };
 
 export type SessionAction =
   | { type: "advance" }
   | { type: "back" }
-  | { type: "answer"; cardIndex: number; phraseId: string; correct: boolean; produced: boolean }
+  | ({ type: "answer"; cardIndex: number } & SessionAnswer)
   | { type: "save"; phraseId: string };
 
 export function initSessionRun(plan: SessionPlan): SessionRunState {
@@ -50,6 +58,7 @@ export function sessionReducer(state: SessionRunState, action: SessionAction): S
             phraseId: action.phraseId,
             correct: action.correct,
             produced: action.produced,
+            selectedIndex: action.selectedIndex,
           },
         },
       };

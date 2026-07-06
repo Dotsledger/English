@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { topicById, topics } from "@/lib/data/topics";
-import { buildFeed } from "@/lib/data/scenes";
-import { Feed } from "@/components/Feed";
+import { SessionLoader } from "@/components/SessionLoader";
 
 export function generateStaticParams() {
   return topics.map((t) => ({ topicId: t.id }));
@@ -16,6 +15,10 @@ export default async function FeedPage({
   const topic = topicById.get(topicId);
   if (!topic) notFound();
 
-  const scenes = buildFeed(topicId);
-  return <Feed topic={topic} scenes={scenes} />;
+  return (
+    <SessionLoader
+      mode={{ kind: "category", seedTopicId: topic.id }}
+      title={`${topic.category} · ${topic.title}`}
+    />
+  );
 }
