@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "mistake"],
       variants: ["swallows it whole", "swallowed it whole", "swallowing it whole"],
+      examples: ["Do not read one headline and swallow it whole.", "Shoppers swallowed it whole when the label said natural."],
     },
   {
       id: "by-any-other-name",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       example: "Dextrose, maltose, fruit concentrate — sugar by any other name.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Cane juice is sugar by any other name.", "It is just fried food by any other name."],
     },
   {
       id: "live-up-to-the-hype",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["lives up to the hype", "lived up to the hype", "living up to the hype"],
+      examples: ["Most superfoods rarely live up to the hype.", "The trendy snack never lived up to the hype."],
     },
   {
       id: "lead-you-by-the-nose",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["leads you by the nose", "led you by the nose", "leading you by the nose"],
+      examples: ["Menu design can lead you by the nose to the pricey dish.", "Clever placement led you by the nose down the aisle."],
     },
   {
       id: "soften-you-up",
@@ -46,6 +50,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk"],
       variants: ["softens you up", "softened you up", "softening you up"],
+      examples: ["Free samples soften you up for the upsell.", "The warm bakery smell softened you up on arrival."],
     },
   {
       id: "he-who-pays-the-piper",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       example: "Sponsored science tends to lean the way he who pays the piper prefers.",
       level: "C1",
       tags: ["risk", "money"],
+      examples: ["In sponsored studies, he who pays the piper calls the tune.", "Remember: he who pays the piper shapes the findings."],
     },
   {
       id: "not-add-up",
@@ -63,6 +69,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "mistake"],
       variants: ["doesn't add up", "didn't add up", "not adding up"],
+      examples: ["The calorie maths does not add up.", "Their zero-sugar claim doesn't add up."],
     },
   {
       id: "stack-the-deck-against",
@@ -76,6 +83,7 @@ export const phrases: Phrase[] = [
         "stacked the deck against",
         "stacking the deck against",
       ],
+      examples: ["Huge portion sizes stack the deck against willpower.", "Marketing rules stack the deck against honest labels."],
     },
   {
       id: "back-to-square-one",
@@ -84,6 +92,7 @@ export const phrases: Phrase[] = [
       example: "The rebound after every diet sends you back to square one.",
       level: "C1",
       tags: ["opinion", "mistake"],
+      examples: ["Diet failed, and it is back to square one.", "One bad week and you are back to square one."],
     },
   {
       id: "take-with-a-pinch-of-salt",
@@ -97,6 +106,7 @@ export const phrases: Phrase[] = [
         "took with a pinch of salt",
         "taking with a pinch of salt",
       ],
+      examples: ["Learn to take with a pinch of salt any viral claim.", "Best to take with a pinch of salt what influencers push."],
     },
   {
       id: "compare-apples-and-oranges",
@@ -110,6 +120,7 @@ export const phrases: Phrase[] = [
         "compared apples and oranges",
         "comparing apples and oranges",
       ],
+      examples: ["Comparing raw and cooked weights is to compare apples and oranges.", "You cannot compare apples and oranges like that."],
     },
   {
       id: "muddy-the-waters",
@@ -119,6 +130,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["muddies the waters", "muddied the waters", "muddying the waters"],
+      examples: ["Industry-funded studies muddy the waters.", "The vague label muddied the waters further."],
     },
   {
       id: "stacked-game",
@@ -127,6 +139,7 @@ export const phrases: Phrase[] = [
       example: "Fresh produce follows purchasing power — a stacked game from the start.",
       level: "C2",
       tags: ["risk", "opinion"],
+      examples: ["Dieting in a junk-food world is a stacked game.", "It is a stacked game against home cooking."],
     },
   {
       id: "make-or-break",
@@ -135,6 +148,7 @@ export const phrases: Phrase[] = [
       example: "One review from that critic could make or break the restaurant.",
       level: "C2",
       tags: ["opinion", "risk"],
+      examples: ["Breakfast can make or break the whole diet.", "The first week is make or break."],
     },
   {
       id: "acquired-taste",
@@ -143,6 +157,7 @@ export const phrases: Phrase[] = [
       example: "Lobster used to be prison food — now it's an acquired taste at a premium.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["Black coffee is an acquired taste.", "Fermented foods are an acquired taste."],
     },
 ];
 
