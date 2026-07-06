@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "Sorting your recycling feels like putting it out of harm's way.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Moving the data centre out of harm's way ignored the emissions.", "They shipped the waste out of harm's way, quietly abroad."],
     },
   {
       id: "miss-the-point",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "mistake"],
       variants: ["misses the point", "missed the point", "missing the point"],
+      examples: ["Paper straws alone miss the point.", "The advert completely missed the point of the crisis."],
     },
   {
       id: "pass-the-buck",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "risk"],
       variants: ["passes the buck", "passed the buck", "passing the buck"],
+      examples: ["Governments pass the buck to the next summit.", "Each industry passed the buck on the cleanup."],
     },
   {
       id: "sound-too-good",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "risk"],
       variants: ["sounds too good", "sounded too good", "sounding too good"],
+      examples: ["Carbon offsets sound too good to be real.", "The pledge sounded too good to mean much."],
     },
   {
       id: "the-new-normal",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       example: "Wildfire season quietly became the new normal.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Wildfire summers are the new normal now.", "Flooding twice a decade became the new normal."],
     },
   {
       id: "cook-the-books",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "money"],
       variants: ["cooks the books", "cooked the books", "cooking the books"],
+      examples: ["Some firms cook the books on their carbon figures.", "The report clearly cooked the books on emissions."],
     },
   {
       id: "pay-lip-service-to",
@@ -63,6 +69,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["pays lip service to", "paid lip service to", "paying lip service to"],
+      examples: ["Many brands pay lip service to sustainability.", "The policy paid lip service to green targets."],
     },
   {
       id: "shift-the-blame",
@@ -72,6 +79,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["shifts the blame", "shifted the blame", "shifting the blame"],
+      examples: ["Big emitters shift the blame onto consumers.", "The ad shifted the blame to ordinary shoppers."],
     },
   {
       id: "rob-peter-to-pay-paul",
@@ -80,6 +88,7 @@ export const phrases: Phrase[] = [
       example: "Cutting exhaust fumes by strip-mining cobalt is one way to rob Peter to pay Paul.",
       level: "C1",
       tags: ["risk"],
+      examples: ["Cutting fumes by strip-mining cobalt is to rob Peter to pay Paul.", "Subsidies that just rob Peter to pay Paul solve nothing."],
     },
   {
       id: "against-all-expectations",
@@ -88,6 +97,7 @@ export const phrases: Phrase[] = [
       example: "Solar got cheap against all expectations from the forecasters.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["Against all expectations, emissions dipped that year.", "The species recovered against all expectations."],
     },
   {
       id: "drag-their-feet",
@@ -97,6 +107,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["drags their feet", "dragged their feet", "dragging their feet"],
+      examples: ["Ministers drag their feet on the deadline.", "Insurers dragged their feet on flood claims."],
     },
   {
       id: "bear-the-brunt",
@@ -106,6 +117,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["bears the brunt", "bore the brunt", "bearing the brunt"],
+      examples: ["Poorer regions bear the brunt of the heat.", "Coastal towns bore the brunt of the storm."],
     },
   {
       id: "settle-old-scores",
@@ -115,6 +127,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["settles old scores", "settled old scores", "settling old scores"],
+      examples: ["Climate talks can settle old scores between nations.", "The summit settled old scores instead of the crisis."],
     },
   {
       id: "kick-into-the-long-grass",
@@ -128,6 +141,7 @@ export const phrases: Phrase[] = [
         "kicked into the long grass",
         "kicking into the long grass",
       ],
+      examples: ["It is easy to kick into the long grass a costly reform.", "They kick into the long grass every hard target."],
     },
   {
       id: "canary-in-the-coal-mine",
@@ -136,6 +150,7 @@ export const phrases: Phrase[] = [
       example: "The bleaching reef is a canary in the coal mine nobody's filing away.",
       level: "C2",
       tags: ["risk"],
+      examples: ["Coral bleaching is a canary in the coal mine.", "Melting permafrost is a canary in the coal mine."],
     },
 ];
 
