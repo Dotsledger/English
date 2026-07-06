@@ -155,3 +155,56 @@ export type PhraseMemoryEntry = {
 };
 
 export type PhraseMemoryStore = Record<string, PhraseMemoryEntry>;
+
+// ─── v2 learning engine ───
+
+/** Lifecycle stage — only ever advances, and only through retrieval. */
+export type PhraseStage = "seen" | "recognised" | "produced" | "mastered";
+
+/** Leitner box. Intervals: 1, 3, 7, 16, 35 days. */
+export type Box = 1 | 2 | 3 | 4 | 5;
+
+export type DeckEntry = {
+  phraseId: string;
+  source: "catalog" | "custom";
+  stage: PhraseStage;
+  box: Box;
+  /** In the Leitner review queue (saved by the user or entered via a failed checkpoint). */
+  inDeck: boolean;
+  /** "Ya la domino" — never shown in feeds, never queued. Wins over deck entry. */
+  suppressed: boolean;
+  timesSeen: number;
+  correctCount: number;
+  wrongCount: number;
+  /** Correct production reviews while box >= 4; at 2 the phrase is mastered. */
+  producedCorrectAtLongBoxes: number;
+  lastSeenAt: number | null;
+  lastAttemptAt: number | null;
+  nextReviewAt: number | null;
+  peekCount: number;
+  lastPeekMs: number | null;
+  addedToDeckAt: number | null;
+};
+
+export type DeckStore = Record<string, DeckEntry>;
+
+/** A phrase the user typed in from real life ("+" quick capture). */
+export type CapturedPhrase = {
+  id: string;
+  text: string;
+  note: string;
+  meaningEs: string;
+  createdAt: number;
+};
+
+export type CaptureStore = Record<string, CapturedPhrase>;
+
+/** ISO date (YYYY-MM-DD) → true, for the weekly "días activos" count. */
+export type ActivityStore = Record<string, true>;
+
+export type MissionStore = {
+  /** ISO Monday of the mission week, e.g. "2026-07-06". */
+  weekKey: string;
+  phraseIds: string[];
+  done: Record<string, true>;
+};

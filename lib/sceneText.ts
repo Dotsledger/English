@@ -1,4 +1,5 @@
 import type { ContentScene, Phrase } from "@/lib/types";
+import { normalize } from "@/lib/text";
 
 /** All user-visible English text of a scene, joined for phrase matching. */
 export function sceneVisibleText(scene: ContentScene): string {
@@ -25,9 +26,6 @@ export function sceneVisibleText(scene: ContentScene): string {
       return [scene.headline, scene.detail, scene.consequence].join("\n");
   }
 }
-
-const normalize = (s: string) =>
-  s.toLowerCase().replace(/[‘’']/g, "'").replace(/\s+/g, " ");
 
 /** True if the phrase (or an accepted natural variant) appears in the text. */
 export function phraseAppearsIn(text: string, phrase: Phrase): boolean {
