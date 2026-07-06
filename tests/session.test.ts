@@ -70,6 +70,17 @@ describe("leitner box math", () => {
     expect(recognised.stage).toBe("recognised");
     const produced = applyReviewResult(deckEntry({ stage: "recognised", box: 3 }), { correct: true, produced: true }, NOW);
     expect(produced.stage).toBe("produced");
+    expect(produced.producedAt).toBe(NOW); // stamped on first reaching produced
+  });
+
+  it("does not overwrite producedAt on later production reviews", () => {
+    const earlier = NOW - 5 * DAY;
+    const entry = applyReviewResult(
+      deckEntry({ stage: "produced", box: 4, producedAt: earlier }),
+      { correct: true, produced: true },
+      NOW
+    );
+    expect(entry.producedAt).toBe(earlier);
   });
 
   it("stages never regress on wrong answers", () => {

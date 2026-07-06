@@ -11,6 +11,7 @@ import { TopicTile } from "@/components/TopicTile";
 import { DueCta } from "@/components/DueCta";
 import { ProgressPipeline } from "@/components/ProgressPipeline";
 import { MissionCard } from "@/components/MissionCard";
+import { RecapCard } from "@/components/RecapCard";
 import { CaptureSheet } from "@/components/CaptureSheet";
 
 const SHOWN_COUNT = 4;
@@ -147,6 +148,7 @@ export function TopicGrid() {
       </Link>
 
       <ProgressPipeline />
+      <RecapCard />
       <MissionCard />
 
       <div className="mb-3 flex gap-1.5 px-1" role="group" aria-label="Filtrar por nivel">

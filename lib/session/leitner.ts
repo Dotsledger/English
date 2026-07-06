@@ -39,6 +39,10 @@ export function applyReviewResult(
     if (result.produced) {
       if (entry.box >= 4) next.producedCorrectAtLongBoxes += 1;
       next.stage = advanceStage(next.stage, "produced");
+      // Stamp the first time this phrase reaches "produced" (weekly recap).
+      if (next.stage === "produced" && (entry.producedAt ?? null) === null) {
+        next.producedAt = now;
+      }
       if (next.producedCorrectAtLongBoxes >= 2) {
         next.stage = advanceStage(next.stage, "mastered");
       }

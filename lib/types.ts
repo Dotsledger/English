@@ -197,12 +197,15 @@ export type DeckEntry = {
 
 export type DeckStore = Record<string, DeckEntry>;
 
-/** Per-day thaw budget for backlog auto-triage (Feature 1). */
+/** Per-day thaw budget for backlog auto-triage (Feature 1), plus the
+ * ISO-Monday of the last acknowledged weekly recap (Feature 6). */
 export type TriageStore = {
   /** ISO date (local) of the last thaw. */
   lastThawDate: string;
   /** How many frozen items were thawed on lastThawDate. */
   thawedToday: number;
+  /** ISO Monday of the week whose recap the user has already seen. */
+  recapAckedWeek?: string;
 };
 
 /** The user's own sentences per phrase (mastery gate) — their personal corpus. */

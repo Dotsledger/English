@@ -101,7 +101,8 @@ export function reconcileTriage(
           thawIds.has(id) ? [id, { ...e, frozen: false }] : [id, e]
         )
       );
-      nextTriage = { lastThawDate: today, thawedToday: usedToday + toThaw.length };
+      // Spread to preserve unrelated fields (e.g. recapAckedWeek).
+      nextTriage = { ...triage, lastThawDate: today, thawedToday: usedToday + toThaw.length };
     }
   }
 

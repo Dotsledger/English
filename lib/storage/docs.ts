@@ -141,7 +141,9 @@ export function parseTriage(raw: string | null): TriageStore {
   ) {
     return { lastThawDate: "", thawedToday: 0 };
   }
-  return { lastThawDate: parsed.lastThawDate, thawedToday: parsed.thawedToday };
+  const store: TriageStore = { lastThawDate: parsed.lastThawDate, thawedToday: parsed.thawedToday };
+  if (typeof parsed.recapAckedWeek === "string") store.recapAckedWeek = parsed.recapAckedWeek;
+  return store;
 }
 
 export function parseSentences(raw: string | null): SentenceStore {
