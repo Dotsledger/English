@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "Everyone in the room knew it was a waste of time.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["That recurring status call is a waste of time.", "Formatting the deck for hours was a waste of time."],
     },
   {
       id: "easier-said-than-done",
@@ -18,6 +19,7 @@ export const phrases: Phrase[] = [
       example: "Ignoring every notification is easier said than done.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Reaching inbox zero is easier said than done.", "Delegating well is easier said than done."],
     },
   {
       id: "bite-off-more-than-you-can-chew",
@@ -31,6 +33,7 @@ export const phrases: Phrase[] = [
         "bit off more than he could chew",
         "biting off more than you can chew",
       ],
+      examples: ["Do not bite off more than you can chew this sprint.", "Take three big projects and you bite off more than you can chew."],
     },
   {
       id: "out-of-habit",
@@ -39,6 +42,7 @@ export const phrases: Phrase[] = [
       example: "Knowledge work kept the schedule purely out of habit.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["We reply to every email out of habit, not need.", "He checks Slack out of habit every few minutes."],
     },
   {
       id: "drop-everything",
@@ -48,6 +52,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "risk"],
       variants: ["drops everything", "dropped everything", "dropping everything"],
+      examples: ["One urgent ping and we drop everything.", "She dropped everything for a meeting that could have been an email."],
     },
   {
       id: "practice-what-you-preach",
@@ -61,6 +66,7 @@ export const phrases: Phrase[] = [
         "practised what she preached",
         "practicing what you preach",
       ],
+      examples: ["If you preach deep work, practice what you preach.", "Set boundaries and, for once, practice what you preach."],
     },
   {
       id: "carry-more-weight-than",
@@ -70,6 +76,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["carries more weight than", "carried more weight than"],
+      examples: ["A quick demo can carry more weight than a long report.", "Her recommendation carried more weight than the whole panel's."],
     },
   {
       id: "drown-out",
@@ -79,6 +86,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["drowns out", "drowned out", "drowning out"],
+      examples: ["Endless notifications drown out the real priorities.", "The loudest voice drowned out the better idea."],
     },
   {
       id: "game-the-system",
@@ -88,6 +96,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "opinion"],
       variants: ["games the system", "gamed the system", "gaming the system"],
+      examples: ["Vanity metrics let people game the system.", "He gamed the system with fake busy blocks."],
     },
   {
       id: "carve-out-time",
@@ -97,6 +106,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["carves out time", "carved out time", "carving out time"],
+      examples: ["Carve out time for deep work before the inbox opens.", "She carved out time each morning just to think."],
     },
   {
       id: "wash-their-hands-of",
@@ -106,6 +116,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["wash your hands of", "washed their hands of", "washing their hands of"],
+      examples: ["Once it ships, they wash their hands of the bugs.", "Management washed their hands of the overtime problem."],
     },
   {
       id: "keep-up-the-pretence",
@@ -115,6 +126,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["keeps up the pretence", "kept up the pretence", "keeping up the pretence"],
+      examples: ["Nobody can keep up the pretence of eight productive hours.", "The team kept up the pretence that the deadline was fine."],
     },
   {
       id: "dig-your-own-grave",
@@ -124,6 +136,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["mistake", "risk"],
       variants: ["digs your own grave", "dug your own grave", "digging your own grave"],
+      examples: ["Overpromise every week and you dig your own grave.", "Saying yes to everything is digging your own grave."],
     },
   {
       id: "serve-no-purpose",
@@ -133,6 +146,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["serves no purpose", "served no purpose", "serving no purpose"],
+      examples: ["Meetings without an agenda serve no purpose.", "That extra approval step served no purpose."],
     },
   {
       id: "fall-on-deaf-ears",
@@ -142,6 +156,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["falls on deaf ears", "fell on deaf ears", "falling on deaf ears"],
+      examples: ["Complaints about the tool fall on deaf ears.", "Her warning fell on deaf ears until launch day."],
     },
 ];
 
