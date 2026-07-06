@@ -3,7 +3,7 @@
 A mobile-first webapp prototype for Spanish speakers to absorb English phrases while scrolling short-form content — closer to TikTok/Stories than to a language course.
 
 **Surface:** a full-screen swipeable feed of editorial micro-content about topics you'd read anyway.
-**Hidden engine:** retrieval practice, Leitner spaced repetition, and a local phrase-lifecycle memory — optimised for an adult learner whose bottleneck is lexical *production*, not comprehension. No streaks, no XP, no guilt.
+**Hidden engine:** retrieval practice, Leitner spaced repetition, browser-native *spoken* production, and a local phrase-lifecycle memory — optimised for an adult learner whose bottleneck is lexical production (and specifically *speaking*), not comprehension. No streaks, no XP, no guilt, and — by design — no backlog wall after time away.
 
 ## Live demo
 
@@ -48,10 +48,12 @@ advances it** — exposure alone never does:
 
 - **SEEN** — appeared in a feed card.
 - **RECOGNISED** — answered a multiple-choice retrieval correctly.
-- **PRODUCED** — completed a cloze or typed the phrase from the Spanish prompt.
-- **MASTERED** — produced correctly twice while sitting at the two longest review intervals.
+- **PRODUCED** — completed a cloze, or typed/spoke the phrase from the Spanish prompt.
+- **MASTERED** — produced correctly twice at the two longest intervals, **or** passed the box-5
+  free-production gate with a "Me salió" self-assessment (see below).
 
-Stages never regress. Wrong answers only demote the Leitner box — non-punitive by design.
+Stages never regress. Wrong answers (or a "No me salió" self-grade) only demote the Leitner box —
+non-punitive by design.
 
 ### Spaced repetition (My Deck)
 
@@ -60,12 +62,49 @@ Correct → up one box; wrong → down one box (floor 1), rescheduled at the new
 Phrases enter the queue when the user saves them (tap the phrase on any card) or fails a
 checkpoint. "Ya la domino" suppresses a phrase everywhere and wins over deck entry.
 
-The review exercise depends on the box (`lib/session/exercisePicker.ts`): boxes 1–2 multiple
-choice (ES→EN, distractors drawn from the same category+level, `lib/exercises/mcq.ts`), boxes
-3–4 cloze over the phrase's own example sentence with a first-letter hint
-(`lib/exercises/cloze.ts`), box 5 free-typing from the Spanish prompt. Typed answers forgive a
-single typo (Damerau–Levenshtein ≤ 1, `lib/exercises/grade.ts`) unless the answer is short or
-the typo makes it ambiguous with another phrase.
+The review exercise depends on the box (`lib/session/exercisePicker.ts`): box 1–2 multiple
+choice (ES→EN, distractors drawn from the same category+level, `lib/exercises/mcq.ts`), box 3
+cloze over an example sentence with a first-letter hint (`lib/exercises/cloze.ts`), boxes 4–5
+free production. Typed answers forgive a single typo (Damerau–Levenshtein ≤ 1,
+`lib/exercises/grade.ts`) unless the answer is short or the typo makes it ambiguous with another
+phrase.
+
+### Spoken production (browser-native, free)
+
+Boxes 4–5 prefer **spoken** production where the browser supports it (`lib/speech.ts` wraps
+`webkitSpeechRecognition`, `en-GB`): the Spanish prompt shows, you tap the mic and say the
+phrase, and a fuzzy token match (`matchesSpokenTarget` in `lib/exercises/grade.ts`, ≥ 80%
+per-token similarity, phrase may sit inside a longer utterance) grades it. A 10-second soft timer
+adds gentle conversational pressure — visual only, never a failure. Support is **detected once at
+startup** (`useSpeechAvailable`); if absent, or the mic is denied, the card silently falls back to
+typing and stays typed for the session. Chrome/Edge (desktop + Android) support this over https;
+Safari is partial and Firefox has none — so every spoken card has a full typed fallback.
+Feed sessions also mix in ~1-in-5 **audio-first** cards: the sentence plays via TTS with the text
+hidden, tap reveals the text, a second tap reveals the translation.
+
+### The MASTERED gate (free production + self-assessment)
+
+At box 5, a phrase that isn't mastered yet gets a free-production gate instead of a plain review
+(`components/exercises/MasteryCard.tsx`): "Úsala en una frase tuya" — you write (or speak) your
+own sentence, see it beside the model example(s), and self-grade. **Me salió** → MASTERED (stays
+box 5); **Regular** → unchanged, back in 3 days; **No me salió** → down one box. Every attempt is
+saved to a personal corpus (`KEY_SENTENCES`), shown on the card and in a read-only "Tus frases"
+list in Settings, and included in export/import.
+
+### Abandonment-proof SRS (survival layer)
+
+Classic Leitner punishes absence with a growing backlog — the top abandonment trigger. Three pure
+mechanisms in `lib/session/triage.ts` prevent that:
+
+- **Displayed due count is capped at 8** — the home CTA never shows the raw backlog number.
+- **Comeback mode** — after ≥ 4 days away, the home CTA becomes "Bienvenido de vuelta — 5 frases
+  en 90 segundos" and launches a review-only micro-session of the most valuable due items
+  (`/comeback`, `composeComebackSession`). No backlog number, no guilt copy.
+- **Backlog auto-triage** — above 25 active due items, the least-invested overflow is *frozen* out
+  of every count and queue; frozen items thaw at most 3/day once the queue is cleared to ≤ 10.
+  Reconciliation runs on home mount and session end (`reconcileTriage`, `useReconcileTriage`).
+
+All progress copy is loss-framing-free by policy (no "perdiste", "racha rota", etc.).
 
 ### Sessions
 
@@ -83,12 +122,15 @@ Infinite scroll is gone — everything is a 12–15 card session with an explici
 Session position lives only in React (`lib/session/runReducer.ts`); every learning result
 commits to storage per card, so a mid-session reload loses position, never progress.
 
-### Weekly mission & progress
+### Weekly mission, recap & progress
 
 Every Monday (computed locally) three PRODUCED phrases become the week's mission: use them in a
-real conversation, check them off manually for a one-box boost (`lib/mission.ts`). Home shows
-honest pipeline counts (Dominadas / En camino / Vistas) and "días activos esta semana: n/7" —
-resets weekly, never framed as a loss.
+real conversation, check them off manually for a one-box boost (`lib/mission.ts`). Also on Mondays,
+a **weekly recap** (`lib/recap.ts`, `components/RecapCard.tsx`) celebrates the week that just
+ended — active days, phrases newly produced (`DeckEntry.producedAt`), and the most-practised
+category — positive framing only, no week-over-week comparison, shown once (acknowledged week
+stored on the triage doc). Home also shows honest pipeline counts (Dominadas / En camino / Vistas)
+and "días activos esta semana: n/7" — resets weekly, never framed as a loss.
 
 ### Quick capture
 
@@ -108,6 +150,12 @@ The logical schema is versioned in a meta document. v1 (localStorage-only) data 
 automatically on first load (`lib/storage/migrate.ts`): recognition-era results map to at most
 stage RECOGNISED / box 3, since v1 never tested production. v1 keys are kept for rollback.
 
+v3 added fields **without a destructive migration**: `DeckEntry.frozen` and `DeckEntry.producedAt`
+are optional (existing entries load unchanged and default at read sites), and two new documents
+(`KEY_TRIAGE` for the daily thaw budget + recap acknowledgement, `KEY_SENTENCES` for the personal
+corpus) default to empty when absent. `Phrase.examples` is committed content, not user state, so
+it needs no migration at all.
+
 **Export / import:** Ajustes (⚙) → "Exportar mi progreso" downloads a versioned JSON bundle;
 importing validates every document before writing and reloads the app.
 
@@ -116,13 +164,14 @@ importing validates every document before writing and reloads the app.
 - `lib/types.ts` — scene types, `Phrase`, `DeckEntry` (lifecycle + Leitner state), capture/activity/mission docs
 - `lib/data/categories/{slug}.ts` — one content module per category (phrases, topics, scenes, checkpoints); `lib/data/{phrases,topics,scenes}.ts` are barrels that concatenate them, so imports never change
 - `lib/sceneText.ts` + `tests/content.test.ts` — build-time guarantee that every scene's sticky phrase appears in its visible text and every phrase's example supports a cloze
-- `lib/exercises/` — MCQ/cloze/free-type generation and grading (pure, rng-injectable)
-- `lib/session/` — Leitner math, session composers, checkpoint interleaving, run reducer (pure)
-- `lib/deckOps.ts` — one pure function per user interaction (seen, save, suppress, peek, answers)
-- `lib/storage/` — backends, write queue, document parsers, migration, export/import
+- `lib/exercises/` — MCQ/cloze/free-type generation, grading, spoken-target matching, example rotation (pure, rng-injectable)
+- `lib/session/` — Leitner math, category/snack/comeback composers, checkpoint interleaving, backlog triage, run reducer (pure)
+- `lib/speech.ts` / `lib/recap.ts` — SpeechRecognition wrapper; pure weekly-recap builder
+- `lib/deckOps.ts` — one pure function per user interaction (seen, save, suppress, peek, answers, mastery self-grade, corpus)
+- `lib/storage/` — backends, write queue, document parsers (deck/topics/captures/activity/mission/triage/sentences), migration, export/import
 - `components/AppStateProvider.tsx` — single provider hydrating all documents; per-concern hooks (`useDeck`, `useCaptures`, …) with an update queue so writes before hydration are never lost
-- `components/SessionPlayer.tsx` — the swipe shell: scenes, checkpoints, reviews, end card
-- `components/TopicGrid.tsx` — home hub: due CTA, Daily Snack, pipeline, mission, filters, grid, capture
+- `components/SessionPlayer.tsx` — the swipe shell: scenes (incl. audio-first), checkpoints, MCQ/typed/spoken reviews, mastery gate, end card
+- `components/TopicGrid.tsx` — home hub: due/comeback CTA, Daily Snack, pipeline, recap, mission, filters, grid, capture, settings
 - `tests/` — Vitest + Testing Library (content rules, storage, migration, exercises, composers, player)
 
 No backend, no auth, no external APIs — all content is local TypeScript data; all user state is on-device.
@@ -131,7 +180,10 @@ No backend, no auth, no external APIs — all content is local TypeScript data; 
 
 1. Add entries to the category module in `lib/data/categories/` (or create a new module and
    register it in the three barrels). Every scene's `phraseId` must reference a phrase whose
-   text (or a listed variant) appears verbatim in the scene's visible text, and every phrase's
-   `example` must contain the phrase — `npm run test` enforces both.
-2. New categories appear in the home filter automatically (`CATEGORIES` is derived).
-3. Levels are B2/C1/C2; phrases are 2–5 word chunks, British English, no textbook tone.
+   text (or a listed variant) appears verbatim in the scene's visible text, and **every example —
+   the primary `example` and each entry in the optional `examples[]` — must contain the phrase and
+   be cloze-able** — `npm run test` enforces all of this.
+2. `examples[]` holds 2–3 alternative sentences (same phrase, different scenario); reviews and
+   cloze rotate across `[example, ...examples]`. British English, ≤ 18 words, contemporary tone.
+3. New categories appear in the home filter automatically (`CATEGORIES` is derived).
+4. Levels are B2/C1/C2; phrases are 2–5 word chunks, British English, no textbook tone.
