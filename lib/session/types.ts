@@ -10,6 +10,8 @@ export type SessionCard =
   | { kind: "review"; exercise: Exercise; box: Box; stage: PhraseStage }
   /** Box-5 free-production gate with self-assessment (the path to MASTERED). */
   | { kind: "mastery"; phraseId: string }
+  /** Opt-in level-check milestone offer (never auto-starts). */
+  | { kind: "check_offer" }
   | { kind: "end" };
 
 export type SessionPlan = {

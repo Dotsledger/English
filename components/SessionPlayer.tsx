@@ -8,10 +8,12 @@ import {
   useActivity,
   useCompletedTopics,
   useDeck,
+  useLevel,
   useSentences,
   useTriage,
 } from "@/components/AppStateProvider";
 import { reconcileTriage } from "@/lib/session/triage";
+import { bumpCardsSeen } from "@/lib/level";
 import {
   appendSentence,
   markSeen,
@@ -58,6 +60,7 @@ export function SessionPlayer({
   const completedTopics = useCompletedTopics();
   const triage = useTriage();
   const sentences = useSentences();
+  const level = useLevel();
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const seenSceneIds = useRef<Set<string>>(new Set());
   const closedOut = useRef(false);
@@ -78,8 +81,9 @@ export function SessionPlayer({
       seenSceneIds.current.add(card.scene.id);
       const phraseId = card.scene.phraseId;
       deck.update((prev) => markSeen(prev, phraseId, Date.now()));
+      level.update((prev) => bumpCardsSeen(prev)); // milestone counter
     }
-  }, [card, deck]);
+  }, [card, deck, level]);
 
   // Session close-out: activity day + contributing topics, exactly once.
   useEffect(() => {
@@ -283,6 +287,34 @@ export function SessionPlayer({
               alreadyAnswered={answered}
               onGrade={(verdict, sentence) => gradeMastery(card.phraseId, verdict, sentence)}
             />
+          </div>
+        ) : card.kind === "check_offer" ? (
+          <div
+            key={`check-offer-${state.index}`}
+            data-testid="check-offer"
+            className="scene-enter flex h-full flex-col justify-center gap-6 px-6 pb-6 text-center"
+          >
+            <span className="text-4xl">✨</span>
+            <h2 className="text-3xl font-bold leading-tight text-white">
+              Chequeo de nivel disponible
+            </h2>
+            <p className="text-base text-white/65">
+              Un repaso rápido para ver cómo vas. 2 min, cuando quieras.
+            </p>
+            <Link
+              href="/check"
+              data-testid="check-offer-start"
+              className="mx-auto w-full max-w-xs rounded-2xl bg-white px-6 py-4 text-base font-semibold text-black active:scale-[0.98]"
+            >
+              Hacer el chequeo
+            </Link>
+            <button
+              type="button"
+              onClick={goNext}
+              className="text-sm text-white/45 active:scale-95"
+            >
+              Ahora no
+            </button>
           </div>
         ) : null}
       </div>

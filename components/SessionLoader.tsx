@@ -12,7 +12,8 @@ import {
 } from "@/lib/session/composeCategorySession";
 import { composeSnackSession } from "@/lib/session/composeSnackSession";
 import { composeComebackSession } from "@/lib/session/composeComebackSession";
-import { useCaptures, useCompletedTopics, useDeck } from "@/components/AppStateProvider";
+import { isCheckAvailable } from "@/lib/level";
+import { useCaptures, useCompletedTopics, useDeck, useLevel } from "@/components/AppStateProvider";
 import { SessionPlayer } from "@/components/SessionPlayer";
 
 const CONTENT: ComposerContent = {
@@ -39,41 +40,49 @@ export function SessionLoader({ mode, title }: { mode: SessionMode; title: strin
   const deck = useDeck();
   const completedTopics = useCompletedTopics();
   const captures = useCaptures();
+  const level = useLevel();
   const [plan, setPlan] = useState<SessionPlan | null>(null);
 
-  const ready = deck.ready && completedTopics.ready && captures.ready;
+  const ready = deck.ready && completedTopics.ready && captures.ready && level.ready;
 
   const compose = useCallback((): SessionPlan => {
     const completedIds = new Set(Object.keys(completedTopics.value));
+    let composed: SessionPlan;
     if (mode.kind === "category") {
       const suppressed = new Set(
         Object.values(deck.value)
           .filter((e) => e.suppressed)
           .map((e) => e.phraseId)
       );
-      return composeCategorySession({
+      composed = composeCategorySession({
         seedTopicId: mode.seedTopicId,
         content: CONTENT,
         completedTopicIds: completedIds,
         suppressedPhraseIds: suppressed,
       });
-    }
-    if (mode.kind === "comeback") {
-      return composeComebackSession({
+    } else if (mode.kind === "comeback") {
+      composed = composeComebackSession({
         deck: deck.value,
         captures: captures.value,
         content: CONTENT,
         now: Date.now(),
       });
+    } else {
+      composed = composeSnackSession({
+        deck: deck.value,
+        captures: captures.value,
+        content: CONTENT,
+        completedTopicIds: completedIds,
+        now: Date.now(),
+      });
     }
-    return composeSnackSession({
-      deck: deck.value,
-      captures: captures.value,
-      content: CONTENT,
-      completedTopicIds: completedIds,
-      now: Date.now(),
-    });
-  }, [deck.value, completedTopics.value, captures.value, mode]);
+    // Offer the level check as an opt-in first card in normal feeds (not in
+    // the focused comeback micro-session).
+    if (mode.kind !== "comeback" && isCheckAvailable(level.value)) {
+      composed = { ...composed, cards: [{ kind: "check_offer" }, ...composed.cards] };
+    }
+    return composed;
+  }, [deck.value, completedTopics.value, captures.value, level.value, mode]);
 
   useEffect(() => {
     if (!ready || plan) return;
