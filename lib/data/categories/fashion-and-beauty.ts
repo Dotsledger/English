@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "The £3 t-shirt is cut-price at any cost — someone else paid the difference.",
       level: "B2",
       tags: ["money", "risk"],
+      examples: ["Fast fashion chases cut-price at any cost.", "Cut-price at any cost always hides a human bill."],
     },
   {
       id: "send-it-back",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money"],
       variants: ["sends it back", "sent it back", "sending it back"],
+      examples: ["If the fit is off, just send it back.", "She sent it back after only one wear."],
     },
   {
       id: "snap-up-and-flip",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money"],
       variants: ["snaps up and flips", "snapped up and flipped", "snapping up and flipping"],
+      examples: ["Resellers snap up and flip limited drops.", "Bots snapped up and flipped the trainers in seconds."],
     },
   {
       id: "bargain-hunter",
@@ -36,6 +39,7 @@ export const phrases: Phrase[] = [
       example: "\"70% off\" a price nobody paid still fools a bargain hunter.",
       level: "B2",
       tags: ["money", "opinion"],
+      examples: ["A fake discount still fools a bargain hunter.", "Every sale rush attracts a bargain hunter."],
     },
   {
       id: "one-mans-trash",
@@ -44,6 +48,7 @@ export const phrases: Phrase[] = [
       example: "Charity shops proved one man's trash is another's treasure hunt.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["In vintage, one man's trash is another's treasure.", "Charity shops prove one man's trash still sells."],
     },
   {
       id: "chase-eternal-youth",
@@ -53,6 +58,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["chases eternal youth", "chased eternal youth", "chasing eternal youth"],
+      examples: ["Endless serums promise to chase eternal youth.", "The whole industry sells us chasing eternal youth."],
     },
   {
       id: "doctored-image",
@@ -61,6 +67,7 @@ export const phrases: Phrase[] = [
       example: "The before/after is really just a doctored image comparison.",
       level: "C1",
       tags: ["risk"],
+      examples: ["That flawless campaign is a doctored image.", "Every before shot is a doctored image."],
     },
   {
       id: "pay-for-the-privilege",
@@ -74,6 +81,7 @@ export const phrases: Phrase[] = [
         "paid for the privilege",
         "paying for the privilege",
       ],
+      examples: ["For a visible logo, you pay for the privilege.", "Members pay for the privilege of early access."],
     },
   {
       id: "poor-fit",
@@ -82,6 +90,7 @@ export const phrases: Phrase[] = [
       example: "Clothes designed for a retired body statistic are a poor fit for almost everyone.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["The sizing guide hid a poor fit.", "Online, a poor fit is very common."],
     },
   {
       id: "put-out-to-pasture",
@@ -91,6 +100,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["puts out to pasture", "putting out to pasture"],
+      examples: ["Last season's line gets put out to pasture.", "The brand is putting out to pasture its classic scent."],
     },
   {
       id: "genuine-article",
@@ -99,6 +109,7 @@ export const phrases: Phrase[] = [
       example: "When the superfake fools the boutique, what's the genuine article even selling?",
       level: "C2",
       tags: ["opinion"],
+      examples: ["That handbag is not the genuine article.", "Only experts can spot the genuine article."],
     },
   {
       id: "keep-up-the-mystique",
@@ -108,6 +119,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["money", "opinion"],
       variants: ["keeps up the mystique", "kept up the mystique", "keeping up the mystique"],
+      examples: ["Luxury brands keep up the mystique with scarcity.", "Limited drops kept up the mystique for years."],
     },
   {
       id: "the-done-thing",
@@ -116,6 +128,7 @@ export const phrases: Phrase[] = [
       example: "Botox went from taboo to the done thing on a lunch break.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["Logo-less luxury is the done thing now.", "Overdressing is not the done thing here."],
     },
   {
       id: "give-credit-where-its-due",
@@ -124,6 +137,7 @@ export const phrases: Phrase[] = [
       example: "The muse who defined the brand deserves to give credit where it's due — to herself.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["Give credit where it's due: the tailoring is superb.", "We should give credit where it's due to the designer."],
     },
   {
       id: "reek-of-old-money",
@@ -133,6 +147,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "money"],
       variants: ["reeks of old money", "reeked of old money", "reeking of old money"],
+      examples: ["Quiet luxury is meant to reek of old money.", "Those worn loafers reeked of old money."],
     },
 ];
 
