@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { ContentScene } from "@/lib/types";
 import { getPhrase } from "@/lib/data/phrases";
+import { isTtsAvailable, speak } from "@/lib/tts";
 import { PhraseBadge, type BadgeStage } from "@/components/PhraseBadge";
 import { HeroImageScene } from "@/components/scenes/HeroImageScene";
 import { EditorialPosterScene } from "@/components/scenes/EditorialPosterScene";
@@ -50,6 +54,7 @@ export function SceneRenderer({
   scene,
   stage,
   saved,
+  audioFirst = false,
   onPeek,
   onSave,
   onSuppress,
@@ -57,6 +62,8 @@ export function SceneRenderer({
   scene: ContentScene;
   stage: BadgeStage;
   saved: boolean;
+  /** Play the sentence via TTS with the text hidden until tapped. */
+  audioFirst?: boolean;
   onPeek?: (ms: number) => void;
   onSave?: () => void;
   onSuppress?: () => void;
@@ -64,10 +71,25 @@ export function SceneRenderer({
   const phrase = getPhrase(scene.phraseId);
   const isHero = scene.sceneType === "hero_image";
 
+  // Audio-first only engages when TTS actually exists; otherwise it degrades
+  // to a normal card (text visible from the start).
+  const [ttsReady, setTtsReady] = useState(false);
+  const gated = audioFirst && ttsReady;
+  const [textRevealed, setTextRevealed] = useState(false);
+  useEffect(() => {
+    const available = isTtsAvailable();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time startup feature detection, hydration-safe
+    setTtsReady(available);
+    if (audioFirst && available) speak(phrase.example);
+  }, [audioFirst, phrase.example]);
+
+  const showBody = !gated || textRevealed;
+
   return (
     <div
       data-testid={`scene-${scene.id}`}
       data-scene-type={scene.sceneType}
+      data-audio-first={audioFirst ? "true" : undefined}
       className="relative flex h-full flex-col"
     >
       {isHero && (
@@ -84,18 +106,45 @@ export function SceneRenderer({
           </span>
         </div>
 
-        {sceneBody(scene)}
+        {showBody ? (
+          sceneBody(scene)
+        ) : (
+          <button
+            type="button"
+            data-testid="audio-first-reveal"
+            onClick={() => setTextRevealed(true)}
+            className="flex flex-1 flex-col items-center justify-center gap-4 text-center active:scale-[0.99]"
+          >
+            <span className="flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/40 bg-sky-500/15 text-3xl">
+              🔊
+            </span>
+            <span className="text-lg font-semibold text-white">Escucha la frase</span>
+            <span className="text-sm text-white/50">Toca para ver el texto</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                speak(phrase.example);
+              }}
+              className="mt-1 rounded-full border border-white/12 bg-white/[0.06] px-4 py-1.5 text-xs text-white/70"
+            >
+              Repetir audio
+            </button>
+          </button>
+        )}
 
-        <div className="mt-6">
-          <PhraseBadge
-            phrase={phrase}
-            stage={stage}
-            saved={saved}
-            onPeek={onPeek}
-            onSave={onSave}
-            onSuppress={onSuppress}
-          />
-        </div>
+        {showBody && (
+          <div className="mt-6">
+            <PhraseBadge
+              phrase={phrase}
+              stage={stage}
+              saved={saved}
+              onPeek={onPeek}
+              onSave={onSave}
+              onSuppress={onSuppress}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

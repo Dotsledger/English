@@ -2,7 +2,8 @@ import type { Box, ContentScene, PhraseStage } from "@/lib/types";
 import type { Exercise, McqExercise } from "@/lib/exercises/types";
 
 export type SessionCard =
-  | { kind: "content"; scene: ContentScene }
+  /** `audioFirst` plays the sentence via TTS with text hidden until tapped. */
+  | { kind: "content"; scene: ContentScene; audioFirst?: boolean }
   /** In-feed retrieval of a phrase seen earlier in this same session. */
   | { kind: "checkpoint"; exercise: McqExercise; authoredSceneId?: string }
   /** Leitner review drawn from the deck (Daily Snack). */

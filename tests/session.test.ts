@@ -120,7 +120,7 @@ describe("exercise picker", () => {
     expect(exerciseTypeFor(1)).toBe("mcq");
     expect(exerciseTypeFor(2)).toBe("mcq");
     expect(exerciseTypeFor(3)).toBe("cloze");
-    expect(exerciseTypeFor(4)).toBe("cloze");
+    expect(exerciseTypeFor(4)).toBe("freetype");
     expect(exerciseTypeFor(5)).toBe("freetype");
   });
 

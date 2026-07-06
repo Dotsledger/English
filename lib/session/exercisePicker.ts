@@ -4,10 +4,12 @@ import { generateRecognitionMcq } from "@/lib/exercises/mcq";
 import { generateCloze } from "@/lib/exercises/cloze";
 import { generateFreeType, generateCaptureFreeType } from "@/lib/exercises/freetype";
 
-/** Boxes 1–2 recognise, 3–4 produce with scaffolding, 5 produce cold. */
+/** Boxes 1–2 recognise (MCQ), box 3 produce with scaffolding (cloze),
+ * boxes 4–5 produce cold (freetype) — the two production boxes where
+ * spoken production applies when the browser supports it. */
 export function exerciseTypeFor(box: DeckEntry["box"]): Exercise["type"] {
   if (box <= 2) return "mcq";
-  if (box <= 4) return "cloze";
+  if (box === 3) return "cloze";
   return "freetype";
 }
 

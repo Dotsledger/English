@@ -64,3 +64,36 @@ export function gradeAnswer(
   }
   return { verdict: "wrong" };
 }
+
+/**
+ * Grades a spoken utterance against a target phrase. Speech recognition
+ * drops punctuation and rewords freely, and the target usually sits inside
+ * a longer sentence, so we slide the target's token window across the
+ * transcript and accept when ≥ 80% of the target tokens match (each token
+ * exact or one typo away). Any accepted answer (text or variant) can match.
+ */
+export function matchesSpokenTarget(transcript: string, acceptedAnswers: string[]): boolean {
+  const spokenTokens = cleanAnswer(transcript).split(" ").filter(Boolean);
+  if (spokenTokens.length === 0) return false;
+
+  for (const accepted of acceptedAnswers) {
+    const target = cleanAnswer(accepted).split(" ").filter(Boolean);
+    if (target.length === 0) continue;
+    const need = Math.ceil(target.length * 0.8);
+    // Try every window of the transcript the width of the target phrase.
+    for (let start = 0; start + target.length <= spokenTokens.length; start++) {
+      let hits = 0;
+      for (let i = 0; i < target.length; i++) {
+        const a = target[i];
+        const b = spokenTokens[start + i];
+        if (a === b || withinEditDistance1(a, b)) hits += 1;
+      }
+      if (hits >= need) return true;
+    }
+    // Single-token targets that appear anywhere also count.
+    if (target.length === 1 && spokenTokens.some((t) => t === target[0] || withinEditDistance1(t, target[0]))) {
+      return true;
+    }
+  }
+  return false;
+}

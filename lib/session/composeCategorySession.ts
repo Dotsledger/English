@@ -2,6 +2,7 @@ import type { CheckpointScene, ContentScene, Phrase, TopicTile } from "@/lib/typ
 import type { SessionCard, SessionPlan } from "@/lib/session/types";
 import { pickRandomTopics } from "@/lib/pickTopics";
 import { interleaveCheckpoints } from "@/lib/session/checkpoints";
+import { markAudioFirst } from "@/lib/session/audioFirst";
 
 export type ComposerContent = {
   topics: TopicTile[];
@@ -66,14 +67,16 @@ export function composeCategorySession(opts: {
     pushTopic(topic.id);
   }
 
-  const cards = interleaveCheckpoints(contentCards, {
-    authored: opts.content.authoredCheckpoints,
-    phrases: opts.content.phrases,
-    phraseById: opts.content.phraseById,
-    index: opts.content.index,
-    rng,
-    budget: checkpointBudget,
-  });
+  const cards = markAudioFirst(
+    interleaveCheckpoints(contentCards, {
+      authored: opts.content.authoredCheckpoints,
+      phrases: opts.content.phrases,
+      phraseById: opts.content.phraseById,
+      index: opts.content.index,
+      rng,
+      budget: checkpointBudget,
+    })
+  );
 
   cards.push({ kind: "end" });
   return { id: `s-${Math.floor(rng() * 1e9)}`, mode: "category", cards };

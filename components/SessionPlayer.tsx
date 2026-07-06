@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { SessionPlan } from "@/lib/session/types";
 import { phraseById } from "@/lib/data/phrases";
 import { useActivity, useCompletedTopics, useDeck, useTriage } from "@/components/AppStateProvider";
@@ -22,11 +22,13 @@ import {
   sessionReducer,
 } from "@/lib/session/runReducer";
 import { countsAsProduction } from "@/lib/session/exercisePicker";
+import { useSpeechAvailable } from "@/components/useSpeechAvailable";
 import { FeedProgress } from "@/components/FeedProgress";
 import { SceneRenderer, sceneBackgroundClass } from "@/components/SceneRenderer";
 import { SessionEnd } from "@/components/SessionEnd";
 import { McqCard } from "@/components/exercises/McqCard";
 import { TypedAnswerCard } from "@/components/exercises/TypedAnswerCard";
+import { SpokenAnswerCard } from "@/components/exercises/SpokenAnswerCard";
 
 const SWIPE_THRESHOLD = 48;
 
@@ -47,6 +49,9 @@ export function SessionPlayer({
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const seenSceneIds = useRef<Set<string>>(new Set());
   const closedOut = useRef(false);
+  const speechAvailable = useSpeechAvailable();
+  const [speechDisabled, setSpeechDisabled] = useState(false);
+  const useSpoken = speechAvailable && !speechDisabled;
 
   const card = state.plan.cards[state.index];
   const finished = isFinished(state);
@@ -197,7 +202,11 @@ export function SessionPlayer({
           <SessionEnd title={title} stats={computeStats(state)} onAnotherRound={onAnotherRound} />
         ) : card.kind === "content" ? (
           <div key={card.scene.id} className="scene-enter h-full">
-            <SceneRenderer scene={card.scene} {...interactionsFor(card.scene.phraseId)} />
+            <SceneRenderer
+              scene={card.scene}
+              audioFirst={card.audioFirst}
+              {...interactionsFor(card.scene.phraseId)}
+            />
           </div>
         ) : card.kind === "checkpoint" ? (
           <div key={`checkpoint-${state.index}`} className="scene-enter h-full">
@@ -218,6 +227,14 @@ export function SessionPlayer({
                 kicker="Repaso rápido"
                 selectedIndex={answered ? (state.answers[state.index].selectedIndex ?? null) : null}
                 onSelect={(i, correct) => answerReview(card.exercise.phraseId, correct, false, i)}
+              />
+            ) : useSpoken && card.exercise.type === "freetype" ? (
+              <SpokenAnswerCard
+                exercise={card.exercise}
+                phrase={phraseById.get(card.exercise.phraseId) ?? null}
+                previousCorrect={answered ? state.answers[state.index].correct : null}
+                onResult={(correct) => answerReview(card.exercise.phraseId, correct, true)}
+                onDisableSpeech={() => setSpeechDisabled(true)}
               />
             ) : (
               <TypedAnswerCard

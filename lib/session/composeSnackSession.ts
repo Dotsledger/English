@@ -5,6 +5,7 @@ import { pickRandomTopics } from "@/lib/pickTopics";
 import { dueEntries, upcomingEntries } from "@/lib/session/leitner";
 import { buildReviewExercise } from "@/lib/session/exercisePicker";
 import { interleaveCheckpoints } from "@/lib/session/checkpoints";
+import { markAudioFirst } from "@/lib/session/audioFirst";
 
 const DEFAULT_TARGET = 13;
 const DUE_SHARE = 0.6;
@@ -113,14 +114,16 @@ export function composeSnackSession(opts: {
     }
   }
 
-  const cards = interleaveCheckpoints(merged, {
-    authored: content.authoredCheckpoints,
-    phrases: content.phrases,
-    phraseById: content.phraseById,
-    index: content.index,
-    rng,
-    budget: checkpointBudget,
-  });
+  const cards = markAudioFirst(
+    interleaveCheckpoints(merged, {
+      authored: content.authoredCheckpoints,
+      phrases: content.phrases,
+      phraseById: content.phraseById,
+      index: content.index,
+      rng,
+      budget: checkpointBudget,
+    })
+  );
 
   cards.push({ kind: "end" });
   return { id: `s-${Math.floor(rng() * 1e9)}`, mode: "snack", cards };
