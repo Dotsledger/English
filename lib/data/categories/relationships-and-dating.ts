@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "No battery info? That's a red flag.",
       level: "C1",
       tags: ["risk"],
+      examples: ["Love-bombing on day one is a red flag.", "The way he talks about his ex is a red flag."],
     },
   {
       id: "keep-you-hooked",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["keeps you hooked", "kept you hooked", "keeping you hooked"],
+      examples: ["Dating apps keep you hooked with endless matches.", "Mixed signals kept you hooked far too long."],
     },
   {
       id: "speaks-volumes",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["speak volumes", "spoke volumes", "speaking volumes"],
+      examples: ["How someone treats waiters speaks volumes.", "His long silence spoke volumes."],
     },
   {
       id: "cut-your-losses",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "opinion"],
       variants: ["cutting your losses", "cut his losses", "cut her losses"],
+      examples: ["Three bad dates in, cut your losses.", "She cut her losses after the third cancelled plan."],
     },
   {
       id: "keep-your-options-open",
@@ -46,6 +50,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["keeping your options open", "kept your options open", "keep their options open"],
+      examples: ["It is fine to keep your options open early on.", "Endless swiping is really just keeping your options open forever."],
     },
   {
       id: "the-writing-on-the-wall",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       example: "It's the writing on the wall long before the split.",
       level: "C1",
       tags: ["risk", "opinion"],
+      examples: ["After months of excuses, the writing on the wall was clear.", "She ignored the writing on the wall until he left."],
     },
   {
       id: "out-of-sight-out-of-mind",
@@ -62,6 +68,7 @@ export const phrases: Phrase[] = [
       example: "It's simply out of sight, out of mind, then back again.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["Long distance really tests out of sight, out of mind.", "For him it was out of sight, out of mind within a week."],
     },
   {
       id: "spoilt-for-choice",
@@ -71,6 +78,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["spoiled for choice"],
+      examples: ["Dating apps leave you spoilt for choice and oddly lonely.", "Spoiled for choice, he never settled on anyone."],
     },
   {
       id: "kick-the-can-down-the-road",
@@ -80,6 +88,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["kicking the can down the road", "kicked the can down the road"],
+      examples: ["Avoiding the talk is just kicking the can down the road.", "They kick the can down the road on moving in together."],
     },
   {
       id: "speak-for-itself",
@@ -89,6 +98,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["speaks for itself", "spoke for itself"],
+      examples: ["A thoughtful gesture can speak for itself.", "His steady effort spoke for itself."],
     },
   {
       id: "pick-at-the-scab",
@@ -98,6 +108,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["picking at the scab", "picked at the scab"],
+      examples: ["Rereading old texts is picking at the scab.", "Do not pick at the scab of a healed breakup."],
     },
   {
       id: "put-in-the-work",
@@ -107,6 +118,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["putting in the work", "puts in the work"],
+      examples: ["Good relationships mean you put in the work daily.", "He never puts in the work and wonders why it fades."],
     },
 ];
 
