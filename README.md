@@ -132,6 +132,30 @@ category — positive framing only, no week-over-week comparison, shown once (ac
 stored on the triage doc). Home also shows honest pipeline counts (Dominadas / En camino / Vistas)
 and "días activos esta semana: n/7" — resets weekly, never framed as a loss.
 
+### Level check (internal progress milestone)
+
+An occasional, opt-in "Chequeo de nivel" gamifies advancement without gating
+anything. It's an **internal progress score, not a CEFR certification** (stated
+once, in a first-time-only tooltip on the home badge).
+
+- Scale: a never-decreasing decimal per band, B2.0 → B2.10 → C1.0 → … → C2.10,
+  starting at B2.0 (`lib/level.ts`). A weak check holds the score **flat**; it
+  never drops, and it **never gates content** — every category/level stays
+  browsable.
+- Trigger: a milestone counter (`cardsSinceCheck`) increments on each newly-seen
+  content card; at a re-rolled ~50–60 threshold, `SessionLoader` prepends an
+  opt-in "Chequeo de nivel disponible ✨" card to normal feeds. It never
+  auto-starts and never interrupts an in-progress session.
+- Composition (`lib/checkSession.ts`, zero AI, existing exercises): ~40%
+  recognition MCQ from MASTERED phrases, ~40% cloze from PRODUCED, ~20% stretch
+  (recognition of unstudied next-band phrases), with fallbacks so it's always
+  composable. The check scores 0–100% and **never mutates the deck**.
+- Movement (`applyCheckResult`): ≥ 85% → +0.4 sublevel, 60–84% → +0.1, < 60% →
+  no change; caps within a band at .10 and crosses to the next band's .0 only
+  from .10; ceiling C2.10. The result screen is always forward-framed
+  ("¡Subes a B2.4! 🎉" / "Sigues en B2.6 — un poco más y subes"). The current
+  level shows as a small always-visible badge near the pipeline counters.
+
 ### Quick capture
 
 The "+" button stores a phrase heard in real life (text + optional note/translation) straight
@@ -167,8 +191,9 @@ importing validates every document before writing and reloads the app.
 - `lib/exercises/` — MCQ/cloze/free-type generation, grading, spoken-target matching, example rotation (pure, rng-injectable)
 - `lib/session/` — Leitner math, category/snack/comeback composers, checkpoint interleaving, backlog triage, run reducer (pure)
 - `lib/speech.ts` / `lib/recap.ts` — SpeechRecognition wrapper; pure weekly-recap builder
+- `lib/level.ts` / `lib/checkSession.ts` — internal level engine (never-decreasing, non-gating) + level-check composer
 - `lib/deckOps.ts` — one pure function per user interaction (seen, save, suppress, peek, answers, mastery self-grade, corpus)
-- `lib/storage/` — backends, write queue, document parsers (deck/topics/captures/activity/mission/triage/sentences), migration, export/import
+- `lib/storage/` — backends, write queue, document parsers (deck/topics/captures/activity/mission/triage/sentences/level), migration, export/import
 - `components/AppStateProvider.tsx` — single provider hydrating all documents; per-concern hooks (`useDeck`, `useCaptures`, …) with an update queue so writes before hydration are never lost
 - `components/SessionPlayer.tsx` — the swipe shell: scenes (incl. audio-first), checkpoints, MCQ/typed/spoken reviews, mastery gate, end card
 - `components/TopicGrid.tsx` — home hub: due/comeback CTA, Daily Snack, pipeline, recap, mission, filters, grid, capture, settings
