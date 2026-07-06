@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "Every archive has an author, and history keeps the victor's version.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Textbooks often tell only the victor's version.", "The history here is the victor's version, retold."],
     },
   {
       id: "watertight-on-paper",
@@ -18,6 +19,7 @@ export const phrases: Phrase[] = [
       example: "An alibi that's watertight on paper is exactly what detectives distrust.",
       level: "B2",
       tags: ["risk", "opinion"],
+      examples: ["The alibi looked watertight on paper.", "His whole story sounded watertight on paper."],
     },
   {
       id: "look-the-other-way",
@@ -27,6 +29,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["looks the other way", "looked the other way", "looking the other way"],
+      examples: ["Officials chose to look the other way.", "Neighbours looked the other way for years."],
     },
   {
       id: "fall-for-it",
@@ -36,6 +39,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["mistake", "risk"],
       variants: ["falls for it", "fell for it", "falling for it"],
+      examples: ["The con worked because people fall for it.", "The whole town fell for it."],
     },
   {
       id: "hiding-in-plain-sight",
@@ -44,6 +48,7 @@ export const phrases: Phrase[] = [
       example: "A king lay under a council car park, hiding in plain sight for 500 years.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["The fugitive was hiding in plain sight.", "The vital clue had been hiding in plain sight."],
     },
   {
       id: "under-duress",
@@ -52,6 +57,7 @@ export const phrases: Phrase[] = [
       example: "A confession made under duress means little once the DNA disagrees.",
       level: "C1",
       tags: ["risk"],
+      examples: ["The confession clearly came under duress.", "Signed under duress, it meant nothing."],
     },
   {
       id: "disarm-with-charm",
@@ -61,6 +67,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk"],
       variants: ["disarms with charm", "disarmed with charm", "disarming with charm"],
+      examples: ["Con artists disarm with charm.", "He disarmed with charm before the swindle."],
     },
   {
       id: "miscarriage-of-justice",
@@ -69,6 +76,7 @@ export const phrases: Phrase[] = [
       example: "Twenty years exonerated by DNA is a miscarriage of justice with a press release.",
       level: "C1",
       tags: ["risk"],
+      examples: ["The verdict was a miscarriage of justice.", "New evidence revealed a miscarriage of justice."],
     },
   {
       id: "fit-the-facts-to-the-theory",
@@ -82,6 +90,7 @@ export const phrases: Phrase[] = [
         "fitted the facts to the theory",
         "fitting the facts to the theory",
       ],
+      examples: ["Bad detectives fit the facts to the theory.", "They fit the facts to the theory, not the reverse."],
     },
   {
       id: "backfire-spectacularly",
@@ -91,6 +100,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "mistake"],
       variants: ["backfires spectacularly", "backfired spectacularly", "backfiring spectacularly"],
+      examples: ["The cover-up would backfire spectacularly.", "The scheme backfired spectacularly in court."],
     },
   {
       id: "pull-the-wool-over-their-eyes",
@@ -104,6 +114,7 @@ export const phrases: Phrase[] = [
         "pulled the wool over their eyes",
         "pulling the wool over their eyes",
       ],
+      examples: ["The forger managed to pull the wool over their eyes.", "Con men pull the wool over their eyes for decades."],
     },
   {
       id: "turn-queens-evidence",
@@ -113,6 +124,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["turns Queen's evidence", "turned Queen's evidence", "turning Queen's evidence"],
+      examples: ["The accomplice agreed to turn Queen's evidence.", "He turned Queen's evidence to save himself."],
     },
   {
       id: "product-of-their-time",
@@ -121,6 +133,7 @@ export const phrases: Phrase[] = [
       example: "The great man theory forgot every hero is also a product of their time.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["The ruling was a product of their time.", "Such attitudes were a product of their time."],
     },
   {
       id: "junk-science",
@@ -129,6 +142,7 @@ export const phrases: Phrase[] = [
       example: "The handwriting expert's method turned out to be junk science.",
       level: "C2",
       tags: ["risk"],
+      examples: ["The whole case rested on junk science.", "Bite-mark analysis is junk science."],
     },
   {
       id: "hoist-by-his-own-petard",
@@ -137,6 +151,7 @@ export const phrases: Phrase[] = [
       example: "Years of silence undone by one vain slip — hoist by his own petard.",
       level: "C2",
       tags: ["risk", "opinion"],
+      examples: ["The blackmailer was hoist by his own petard.", "He was hoist by his own petard when the letter surfaced."],
     },
 ];
 
