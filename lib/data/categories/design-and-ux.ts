@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "It looks premium, but makes you think too much.",
       level: "C1",
       tags: ["opinion", "design"],
+      examples: ["A checkout that makes you think is a checkout that loses sales.", "Good signage never makes you think; you just move."],
     },
   {
       id: "the-wrong-way",
@@ -18,6 +19,7 @@ export const phrases: Phrase[] = [
       example: "Most people use it the wrong way.",
       level: "C1",
       tags: ["mistake"],
+      examples: ["A door handle that pulls the wrong way is a design failure.", "Half the users held the remote the wrong way round."],
     },
   {
       id: "sense-of-control",
@@ -27,6 +29,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["a feeling of control"],
+      examples: ["A visible undo button gives users a sense of control.", "Progress bars restore a feeling of control during long waits."],
     },
   {
       id: "get-it-wrong",
@@ -36,6 +39,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["mistake"],
       variants: ["gets it wrong", "got it wrong", "getting it wrong"],
+      examples: ["Skip user testing and you will get it wrong in public.", "The redesign got it wrong by hiding the search bar."],
     },
   {
       id: "buy-time",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["buys time", "bought time", "buying time"],
+      examples: ["A loading spinner can buy time without annoying anyone.", "The skeleton screen bought time while the data loaded."],
     },
   {
       id: "play-it-safe",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["plays it safe", "played it safe", "playing it safe"],
+      examples: ["Designers who always play it safe never surprise anyone.", "They played it safe and shipped the same grey template again."],
     },
   {
       id: "dressed-up-as-fact",
@@ -63,6 +69,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["dress up as fact", "dressing up as fact"],
+      examples: ["A confident chart is often just opinion dressed up as fact.", "Marketing copy dressing up as fact erodes trust fast."],
     },
   {
       id: "water-down",
@@ -72,6 +79,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["waters down", "watered down", "watering down"],
+      examples: ["Committees water down bold designs into safe mush.", "Each review round watered down the original idea."],
     },
   {
       id: "in-the-eye-of-the-beholder",
@@ -80,6 +88,7 @@ export const phrases: Phrase[] = [
       example: "\"Intuitive\" just means familiar — and familiar is in the eye of the beholder.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["Beauty in an interface is in the eye of the beholder.", "Whether it feels clean is in the eye of the beholder."],
     },
   {
       id: "give-the-benefit-of-the-doubt",
@@ -93,6 +102,7 @@ export const phrases: Phrase[] = [
         "gave the benefit of the doubt",
         "giving the benefit of the doubt",
       ],
+      examples: ["New users rarely give the benefit of the doubt to a slow app.", "Give the benefit of the doubt once; after that they leave."],
     },
   {
       id: "reinvent-the-wheel",
@@ -102,6 +112,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["reinvents the wheel", "reinvented the wheel", "reinventing the wheel"],
+      examples: ["A custom date picker just to reinvent the wheel badly.", "They reinvented the wheel instead of using the native control."],
     },
   {
       id: "solution-in-search-of-a-problem",
@@ -110,6 +121,7 @@ export const phrases: Phrase[] = [
       example: "It was a solution in search of a problem with great packaging.",
       level: "C2",
       tags: ["opinion", "risk"],
+      examples: ["That chatty assistant is a solution in search of a problem.", "Blockchain here is a solution in search of a problem."],
     },
   {
       id: "too-close-to-it",
@@ -118,6 +130,7 @@ export const phrases: Phrase[] = [
       example: "After months of building something, you're simply too close to it.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["The founder is too close to it to see the confusing flow.", "After months on one screen, you get too close to it."],
     },
   {
       id: "lose-sight-of-the-big-picture",
@@ -131,6 +144,7 @@ export const phrases: Phrase[] = [
         "lost sight of the big picture",
         "losing sight of the big picture",
       ],
+      examples: ["Obsess over pixels and you lose sight of the big picture.", "Endless A/B tests make teams lose sight of the big picture."],
     },
   {
       id: "race-to-the-bottom",
@@ -139,6 +153,7 @@ export const phrases: Phrase[] = [
       example: "Playing it safe on every rebrand turned into a race to the bottom.",
       level: "C2",
       tags: ["risk", "money"],
+      examples: ["Cloning competitors is a race to the bottom on quality.", "Free-tier wars became a race to the bottom for everyone."],
     },
   {
       id: "go-unnoticed",
@@ -148,6 +163,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["goes unnoticed", "went unnoticed", "going unnoticed"],
+      examples: ["The best microcopy tends to go unnoticed.", "A tiny colour change went unnoticed by every tester."],
     },
 ];
 
