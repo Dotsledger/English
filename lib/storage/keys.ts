@@ -6,6 +6,7 @@ export const KEY_MISSION = "sticky-english.mission.v2";
 export const KEY_META = "sticky-english.meta.v2";
 export const KEY_TRIAGE = "sticky-english.triage.v3";
 export const KEY_SENTENCES = "sticky-english.sentences.v3";
+export const KEY_LEVEL = "sticky-english.level.v3";
 
 export const ALL_KEYS = [
   KEY_DECK,
@@ -16,4 +17,5 @@ export const ALL_KEYS = [
   KEY_META,
   KEY_TRIAGE,
   KEY_SENTENCES,
+  KEY_LEVEL,
 ] as const;

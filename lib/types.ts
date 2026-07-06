@@ -212,6 +212,32 @@ export type TriageStore = {
 export type UserSentence = { text: string; createdAt: number };
 export type SentenceStore = Record<string, UserSentence[]>;
 
+// ─── Level Check (internal progress milestone) ───
+
+export type CefrBand = "B2" | "C1" | "C2";
+
+export type LevelCheckRecord = {
+  at: number;
+  band: CefrBand;
+  /** Sublevel 0..10 (the ".N" in "B2.4"). */
+  sub: number;
+  /** Check score 0..100. */
+  score: number;
+};
+
+/** Internal, never-decreasing progress score. NOT a CEFR certification. */
+export type LevelState = {
+  band: CefrBand;
+  sub: number;
+  /** Content cards seen since the last check (milestone counter). */
+  cardsSinceCheck: number;
+  /** Cards needed to unlock the next check (~50–60, re-rolled each cycle). */
+  checkThreshold: number;
+  history: LevelCheckRecord[];
+  /** Whether the "not an official certification" tooltip has been shown. */
+  tooltipSeen: boolean;
+};
+
 /** A phrase the user typed in from real life ("+" quick capture). */
 export type CapturedPhrase = {
   id: string;

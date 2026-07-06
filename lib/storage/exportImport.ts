@@ -4,6 +4,7 @@ import {
   KEY_ACTIVITY,
   KEY_CAPTURES,
   KEY_DECK,
+  KEY_LEVEL,
   KEY_META,
   KEY_MISSION,
   KEY_SENTENCES,
@@ -13,13 +14,22 @@ import {
   parseActivity,
   parseCaptures,
   parseDeck,
+  parseLevel,
   parseMeta,
   parseMission,
   parseSentences,
   parseTopics,
 } from "@/lib/storage/docs";
 
-const EXPORTED_KEYS = [KEY_DECK, KEY_TOPICS, KEY_CAPTURES, KEY_ACTIVITY, KEY_MISSION, KEY_SENTENCES];
+const EXPORTED_KEYS = [
+  KEY_DECK,
+  KEY_TOPICS,
+  KEY_CAPTURES,
+  KEY_ACTIVITY,
+  KEY_MISSION,
+  KEY_SENTENCES,
+  KEY_LEVEL,
+];
 
 export type ExportBundle = {
   app: "sticky-english";
@@ -88,6 +98,8 @@ export async function importAll(
       }
       case KEY_SENTENCES:
         return JSON.stringify(parseSentences(raw));
+      case KEY_LEVEL:
+        return JSON.stringify(parseLevel(raw));
       default:
         return null;
     }

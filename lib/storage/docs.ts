@@ -5,11 +5,14 @@ import type {
   CaptureStore,
   DeckEntry,
   DeckStore,
+  CefrBand,
+  LevelState,
   MissionStore,
   PhraseStage,
   SentenceStore,
   TriageStore,
 } from "@/lib/types";
+import { initialLevel } from "@/lib/level";
 
 /**
  * Corruption-safe parsers for every v2 document. Same philosophy as v1's
@@ -159,6 +162,44 @@ export function parseSentences(raw: string | null): SentenceStore {
     if (list.length > 0) store[key] = list;
   }
   return store;
+}
+
+const BANDS: CefrBand[] = ["B2", "C1", "C2"];
+
+/** Corruption-safe: any malformed field falls back to a fresh B2.0 state. */
+export function parseLevel(raw: string | null): LevelState {
+  const parsed = safeParse(raw);
+  const fresh = initialLevel();
+  if (!parsed) return fresh;
+  const band = BANDS.includes(parsed.band as CefrBand) ? (parsed.band as CefrBand) : fresh.band;
+  const sub =
+    typeof parsed.sub === "number" && parsed.sub >= 0 && parsed.sub <= 10 ? parsed.sub : fresh.sub;
+  const cardsSinceCheck =
+    typeof parsed.cardsSinceCheck === "number" && parsed.cardsSinceCheck >= 0
+      ? parsed.cardsSinceCheck
+      : 0;
+  const checkThreshold =
+    typeof parsed.checkThreshold === "number" && parsed.checkThreshold > 0
+      ? parsed.checkThreshold
+      : fresh.checkThreshold;
+  const history = Array.isArray(parsed.history)
+    ? parsed.history.filter(
+        (h): h is LevelState["history"][number] =>
+          isRecord(h) &&
+          BANDS.includes(h.band as CefrBand) &&
+          typeof h.sub === "number" &&
+          typeof h.score === "number" &&
+          typeof h.at === "number"
+      )
+    : [];
+  return {
+    band,
+    sub,
+    cardsSinceCheck,
+    checkThreshold,
+    history,
+    tooltipSeen: parsed.tooltipSeen === true,
+  };
 }
 
 export type MetaDoc = { schemaVersion: number; migratedFromV1At?: number };

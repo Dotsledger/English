@@ -13,6 +13,7 @@ import type {
   ActivityStore,
   CaptureStore,
   DeckStore,
+  LevelState,
   MissionStore,
   SentenceStore,
   TriageStore,
@@ -25,6 +26,7 @@ import {
   KEY_CAPTURES,
   KEY_DECK,
   KEY_MISSION,
+  KEY_LEVEL,
   KEY_SENTENCES,
   KEY_TOPICS,
   KEY_TRIAGE,
@@ -33,6 +35,7 @@ import {
   parseActivity,
   parseCaptures,
   parseDeck,
+  parseLevel,
   parseMission,
   parseSentences,
   parseTopics,
@@ -117,6 +120,7 @@ type AppState = {
   mission: Doc<MissionStore | null>;
   triage: Doc<TriageStore>;
   sentences: Doc<SentenceStore>;
+  level: Doc<LevelState>;
 };
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -129,6 +133,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const mission = usePersistedDoc(KEY_MISSION, parseMission);
   const triage = usePersistedDoc(KEY_TRIAGE, parseTriage);
   const sentences = usePersistedDoc(KEY_SENTENCES, parseSentences);
+  const level = usePersistedDoc(KEY_LEVEL, parseLevel);
 
   useEffect(() => {
     installFlushListeners();
@@ -136,7 +141,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   return (
     <AppStateContext.Provider
-      value={{ deck, completedTopics, captures, activity, mission, triage, sentences }}
+      value={{ deck, completedTopics, captures, activity, mission, triage, sentences, level }}
     >
       {children}
     </AppStateContext.Provider>
@@ -175,4 +180,8 @@ export function useTriage(): Doc<TriageStore> {
 
 export function useSentences(): Doc<SentenceStore> {
   return useAppState().sentences;
+}
+
+export function useLevel(): Doc<LevelState> {
+  return useAppState().level;
 }
