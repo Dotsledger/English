@@ -26,18 +26,22 @@ export function locatePhrase(
 }
 
 /**
- * Cloze from the phrase's own example sentence: the phrase is blanked and
- * the first letter shown as a hint. Null when the phrase can't be located
+ * Cloze from one of the phrase's example sentences (defaults to the
+ * primary; reviews pass a rotated one): the phrase is blanked and the
+ * first letter shown as a hint. Null when the phrase can't be located
  * (callers fall back to MCQ; a content test keeps catalog phrases at 100%).
  */
-export function generateCloze(phrase: Phrase): ClozeExercise | null {
-  const location = locatePhrase(phrase.example, phrase);
+export function generateCloze(
+  phrase: Phrase,
+  example: string = phrase.example
+): ClozeExercise | null {
+  const location = locatePhrase(example, phrase);
   if (!location) return null;
   return {
     type: "cloze",
     phraseId: phrase.id,
-    before: phrase.example.slice(0, location.start),
-    after: phrase.example.slice(location.end),
+    before: example.slice(0, location.start),
+    after: example.slice(location.end),
     hint: location.matched[0],
     answer: location.matched,
     acceptedAnswers: [phrase.text, ...(phrase.variants ?? [])],

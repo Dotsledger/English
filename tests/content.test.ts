@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { contentScenes, checkpointScenes, buildFeed } from "@/lib/data/scenes";
 import { CATEGORIES, LEVELS, topics } from "@/lib/data/topics";
-import { phraseById } from "@/lib/data/phrases";
+import { phraseById, phrases } from "@/lib/data/phrases";
 import { phraseAppearsIn, sceneVisibleText } from "@/lib/sceneText";
+import { phraseExamples } from "@/lib/exercises/examples";
+import { generateCloze } from "@/lib/exercises/cloze";
 import type { SceneType } from "@/lib/types";
 
 const ALL_SCENE_TYPES: SceneType[] = [
@@ -135,5 +137,20 @@ describe("content requirements", () => {
     const feed = buildFeed("electric-scooters");
     expect(feed.some((s) => s.type === "checkpoint")).toBe(true);
     expect(feed.filter((s) => s.type === "content").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("every example (primary and alternatives) contains the phrase and is cloze-able", () => {
+    for (const phrase of phrases) {
+      for (const example of phraseExamples(phrase)) {
+        expect(
+          phraseAppearsIn(example, phrase),
+          `phrase "${phrase.text}" must appear in example: ${example}`
+        ).toBe(true);
+        expect(
+          generateCloze(phrase, example),
+          `example must be cloze-able for "${phrase.text}": ${example}`
+        ).not.toBeNull();
+      }
+    }
   });
 });

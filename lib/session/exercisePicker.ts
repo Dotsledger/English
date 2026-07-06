@@ -4,6 +4,7 @@ import type { SessionCard } from "@/lib/session/types";
 import { generateRecognitionMcq } from "@/lib/exercises/mcq";
 import { generateCloze } from "@/lib/exercises/cloze";
 import { generateFreeType, generateCaptureFreeType } from "@/lib/exercises/freetype";
+import { pickExample } from "@/lib/exercises/examples";
 
 export type ReviewDeps = {
   phrases: Phrase[];
@@ -43,10 +44,14 @@ export function buildReviewExercise(entry: DeckEntry, deps: ReviewDeps): Exercis
   switch (exerciseTypeFor(entry.box)) {
     case "mcq":
       return generateRecognitionMcq(phrase, deps.phrases, deps.index, deps.rng);
-    case "cloze":
+    case "cloze": {
+      // Rotate across the phrase's example contexts.
+      const example = pickExample(phrase, deps.rng);
       return (
-        generateCloze(phrase) ?? generateRecognitionMcq(phrase, deps.phrases, deps.index, deps.rng)
+        generateCloze(phrase, example) ??
+        generateRecognitionMcq(phrase, deps.phrases, deps.index, deps.rng)
       );
+    }
     case "freetype":
       return generateFreeType(phrase);
   }
