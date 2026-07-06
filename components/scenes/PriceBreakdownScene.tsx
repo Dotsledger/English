@@ -1,9 +1,18 @@
-import type { PriceBreakdownScene as PriceBreakdownSceneType } from "@/lib/types";
+import type { PriceBreakdownScene as PriceBreakdownSceneType, Phrase } from "@/lib/types";
+import { HighlightPhrase } from "@/components/HighlightPhrase";
 
-export function PriceBreakdownScene({ scene }: { scene: PriceBreakdownSceneType }) {
+export function PriceBreakdownScene({
+  scene,
+  phrase,
+}: {
+  scene: PriceBreakdownSceneType;
+  phrase: Phrase;
+}) {
   return (
-    <div className="flex flex-1 flex-col justify-center gap-5">
-      <h2 className="text-2xl font-bold leading-snug text-white">{scene.title}</h2>
+    <div className="flex flex-col gap-5">
+      <h2 className="text-2xl font-bold leading-snug text-white">
+        <HighlightPhrase text={scene.title} phrase={phrase} />
+      </h2>
       <div className="overflow-hidden rounded-3xl border border-white/10">
         {scene.rows.map((row, i) => (
           <div
@@ -17,8 +26,8 @@ export function PriceBreakdownScene({ scene }: { scene: PriceBreakdownSceneType 
           </div>
         ))}
       </div>
-      <p className="whitespace-pre-line text-xl font-semibold leading-snug text-amber-300">
-        {scene.punchline}
+      <p className="whitespace-pre-line text-xl font-semibold leading-snug text-white/90">
+        <HighlightPhrase text={scene.punchline} phrase={phrase} />
       </p>
     </div>
   );

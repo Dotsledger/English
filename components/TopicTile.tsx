@@ -16,11 +16,16 @@ const tileBackground: Record<string, string> = {
 export function TopicTile({
   topic,
   completed = false,
+  previewPhraseIds,
 }: {
   topic: TopicTileType;
   completed?: boolean;
+  /** Overrides which preview phrases to show (used to dedupe across covers). */
+  previewPhraseIds?: string[];
 }) {
-  const previews = topic.previewPhraseIds.slice(0, 2).map((id) => getPhrase(id));
+  const previews = (previewPhraseIds ?? topic.previewPhraseIds.slice(0, 2)).map((id) =>
+    getPhrase(id)
+  );
 
   return (
     <Link

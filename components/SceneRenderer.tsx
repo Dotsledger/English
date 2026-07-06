@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ContentScene } from "@/lib/types";
+import type { ContentScene, Phrase } from "@/lib/types";
 import { getPhrase } from "@/lib/data/phrases";
 import { isTtsAvailable, speak } from "@/lib/tts";
-import { PhraseBadge, type BadgeStage } from "@/components/PhraseBadge";
+import { PhraseBadge } from "@/components/PhraseBadge";
 import { HeroImageScene } from "@/components/scenes/HeroImageScene";
 import { EditorialPosterScene } from "@/components/scenes/EditorialPosterScene";
 import { ChatScene } from "@/components/scenes/ChatScene";
@@ -16,28 +16,28 @@ import { DecisionScene } from "@/components/scenes/DecisionScene";
 import { ChecklistScene } from "@/components/scenes/ChecklistScene";
 import { NewsAlertScene } from "@/components/scenes/NewsAlertScene";
 
-function sceneBody(scene: ContentScene) {
+function sceneBody(scene: ContentScene, phrase: Phrase) {
   switch (scene.sceneType) {
     case "hero_image":
-      return <HeroImageScene scene={scene} />;
+      return <HeroImageScene scene={scene} phrase={phrase} />;
     case "editorial_poster":
-      return <EditorialPosterScene scene={scene} />;
+      return <EditorialPosterScene scene={scene} phrase={phrase} />;
     case "chat":
-      return <ChatScene scene={scene} />;
+      return <ChatScene scene={scene} phrase={phrase} />;
     case "myth_vs_reality":
-      return <MythRealityScene scene={scene} />;
+      return <MythRealityScene scene={scene} phrase={phrase} />;
     case "price_breakdown":
-      return <PriceBreakdownScene scene={scene} />;
+      return <PriceBreakdownScene scene={scene} phrase={phrase} />;
     case "red_flag":
-      return <RedFlagScene scene={scene} />;
+      return <RedFlagScene scene={scene} phrase={phrase} />;
     case "mini_story":
-      return <MiniStoryScene scene={scene} />;
+      return <MiniStoryScene scene={scene} phrase={phrase} />;
     case "decision":
-      return <DecisionScene scene={scene} />;
+      return <DecisionScene scene={scene} phrase={phrase} />;
     case "checklist":
-      return <ChecklistScene scene={scene} />;
+      return <ChecklistScene scene={scene} phrase={phrase} />;
     case "news_alert":
-      return <NewsAlertScene scene={scene} />;
+      return <NewsAlertScene scene={scene} phrase={phrase} />;
   }
 }
 
@@ -52,21 +52,21 @@ export function sceneBackgroundClass(scene: ContentScene): string {
 
 export function SceneRenderer({
   scene,
-  stage,
   saved,
   audioFirst = false,
   onPeek,
   onSave,
   onSuppress,
+  onUndoSuppress,
 }: {
   scene: ContentScene;
-  stage: BadgeStage;
   saved: boolean;
   /** Play the sentence via TTS with the text hidden until tapped. */
   audioFirst?: boolean;
   onPeek?: (ms: number) => void;
   onSave?: () => void;
   onSuppress?: () => void;
+  onUndoSuppress?: () => void;
 }) {
   const phrase = getPhrase(scene.phraseId);
   const isHero = scene.sceneType === "hero_image";
@@ -100,48 +100,56 @@ export function SceneRenderer({
       )}
 
       <div className="relative flex h-full flex-col px-6 pb-6 pt-2">
-        <div className="mb-4">
-          <span className="inline-flex rounded-full border border-white/12 bg-black/25 px-3 py-1 text-[11px] font-medium tracking-wide text-white/60 backdrop-blur-sm">
-            {scene.topic} · {scene.angle}
-          </span>
-        </div>
-
-        {showBody ? (
-          sceneBody(scene)
-        ) : (
-          <button
-            type="button"
-            data-testid="audio-first-reveal"
-            onClick={() => setTextRevealed(true)}
-            className="flex flex-1 flex-col items-center justify-center gap-4 text-center active:scale-[0.99]"
-          >
-            <span className="flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/40 bg-sky-500/15 text-3xl">
-              🔊
+        {/* Context chip + body centre as one unit — no dead gap above the
+            headline. Hero scenes stay bottom-weighted. */}
+        <div
+          className={`flex min-h-0 flex-1 flex-col gap-4 ${
+            isHero ? "justify-end" : "justify-center"
+          }`}
+        >
+          <div>
+            <span className="inline-flex rounded-full border border-white/12 bg-black/25 px-3 py-1 text-[11px] font-medium tracking-wide text-white/70 backdrop-blur-sm">
+              {scene.topic} · {scene.angle}
             </span>
-            <span className="text-lg font-semibold text-white">Escucha la frase</span>
-            <span className="text-sm text-white/50">Toca para ver el texto</span>
+          </div>
+
+          {showBody ? (
+            sceneBody(scene, phrase)
+          ) : (
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                speak(phrase.example);
-              }}
-              className="mt-1 rounded-full border border-white/12 bg-white/[0.06] px-4 py-1.5 text-xs text-white/70"
+              data-testid="audio-first-reveal"
+              onClick={() => setTextRevealed(true)}
+              className="flex flex-col items-center justify-center gap-4 py-10 text-center active:scale-[0.99]"
             >
-              Repetir audio
+              <span className="flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/40 bg-sky-500/15 text-3xl">
+                🔊
+              </span>
+              <span className="text-lg font-semibold text-white">Escucha la frase</span>
+              <span className="text-sm text-white/60">Toca para ver el texto</span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  speak(phrase.example);
+                }}
+                className="mt-1 rounded-full border border-white/12 bg-white/[0.06] px-4 py-1.5 text-xs text-white/70"
+              >
+                Repetir audio
+              </button>
             </button>
-          </button>
-        )}
+          )}
+        </div>
 
         {showBody && (
-          <div className="mt-6">
+          <div className="mt-5 shrink-0">
             <PhraseBadge
               phrase={phrase}
-              stage={stage}
               saved={saved}
               onPeek={onPeek}
               onSave={onSave}
               onSuppress={onSuppress}
+              onUndoSuppress={onUndoSuppress}
             />
           </div>
         )}

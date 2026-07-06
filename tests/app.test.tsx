@@ -63,7 +63,7 @@ describe("home / topic grid", () => {
   it("renders the topic grid with the first 4 default topic tiles", () => {
     renderHome();
     expect(screen.getByTestId("topic-grid")).toBeDefined();
-    expect(screen.getByText("Pick a rabbit hole")).toBeDefined();
+    expect(screen.getByText("Explora")).toBeDefined();
     for (const id of DEFAULT_TOPIC_IDS.slice(0, 4)) {
       expect(screen.getByTestId(`topic-tile-${id}`)).toBeDefined();
     }
@@ -181,23 +181,25 @@ describe("topic completion badge", () => {
 });
 
 describe("scene rendering", () => {
-  it("all scene types render with the phrase badge and hidden translation", () => {
+  it("all scene types render with the phrase badge and a blurred (unrevealed) translation", () => {
     for (const scene of contentScenes.slice(0, 40)) {
-      const { unmount } = render(<SceneRenderer scene={scene} stage="new" saved={false} />);
+      const { unmount } = render(<SceneRenderer scene={scene} saved={false} />);
       const el = screen.getByTestId(`scene-${scene.id}`);
       expect(el.getAttribute("data-scene-type")).toBe(scene.sceneType);
       expect(screen.getByTestId("phrase-badge")).toBeDefined();
-      expect(screen.queryByTestId("phrase-meaning")).toBeNull();
+      // The meaning is present but blurred until the reveal button is tapped.
+      expect(screen.getByTestId("phrase-meaning").getAttribute("data-revealed")).toBe("false");
       expect(screen.getByTestId("reveal-meaning")).toBeDefined();
       unmount();
     }
   });
 
-  it("tapping reveal shows the Spanish meaning", () => {
+  it("tapping reveal unblurs the Spanish meaning", () => {
     const scene = contentScenes[0];
-    render(<SceneRenderer scene={scene} stage="new" saved={false} />);
+    render(<SceneRenderer scene={scene} saved={false} />);
+    expect(screen.getByTestId("phrase-meaning").getAttribute("data-revealed")).toBe("false");
     fireEvent.click(screen.getByTestId("reveal-meaning"));
-    expect(screen.getByTestId("phrase-meaning")).toBeDefined();
+    expect(screen.getByTestId("phrase-meaning").getAttribute("data-revealed")).toBe("true");
   });
 });
 
@@ -284,15 +286,22 @@ describe("session player interactions", () => {
     });
   });
 
-  it("'Ya la domino' suppresses the phrase", async () => {
+  it("long-pressing the phrase opens the action sheet and 'Ya la domino' suppresses it", async () => {
     const plan = renderSession();
     const phraseId = plan.cards[0].kind === "content" ? plan.cards[0].scene.phraseId : "";
-    fireEvent.click(screen.getByTestId("suppress-phrase"));
+    // No visible suppress link next to the reveal button anymore.
+    expect(screen.queryByTestId("suppress-phrase")).toBeNull();
+    // Long-press the phrase module (>=500ms) to open the sheet.
+    fireEvent.pointerDown(screen.getByTestId("phrase-badge"));
+    await new Promise((r) => setTimeout(r, 600));
+    fireEvent.click(await screen.findByTestId("suppress-phrase"));
     await waitFor(async () => {
       await flushWrites();
       const deck = parseDeck(window.localStorage.getItem(KEY_DECK));
       expect(deck[phraseId]?.suppressed).toBe(true);
     });
+    // Inline undo is offered.
+    expect(screen.getByTestId("suppress-undo")).toBeDefined();
   });
 });
 

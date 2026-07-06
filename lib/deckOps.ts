@@ -72,6 +72,13 @@ export function suppressPhrase(deck: DeckStore, phraseId: string, now: number): 
   };
 }
 
+/** Undo a "Ya la domino" (inline undo after the action sheet). */
+export function unsuppressPhrase(deck: DeckStore, phraseId: string): DeckStore {
+  const entry = deck[phraseId];
+  if (!entry) return deck;
+  return { ...deck, [phraseId]: { ...entry, suppressed: false } };
+}
+
 /** Tap-to-reveal telemetry: how long before the user peeked at the Spanish. */
 export function recordPeek(deck: DeckStore, phraseId: string, ms: number): DeckStore {
   const entry = entryOf(deck, phraseId);

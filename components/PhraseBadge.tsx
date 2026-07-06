@@ -6,43 +6,39 @@ import { isTtsAvailable, speak } from "@/lib/tts";
 
 export type BadgeStage = PhraseStage | "new";
 
-const stageLabel: Record<BadgeStage, string> = {
-  new: "nueva",
-  seen: "vista",
-  recognised: "reconocida",
-  produced: "producida",
-  mastered: "dominada",
-};
-
-const stageColor: Record<BadgeStage, string> = {
-  new: "bg-sky-400/20 text-sky-300",
-  seen: "bg-violet-400/20 text-violet-300",
-  recognised: "bg-amber-400/20 text-amber-300",
-  produced: "bg-emerald-400/20 text-emerald-300",
-  mastered: "bg-emerald-400/30 text-emerald-200",
-};
+const LONG_PRESS_MS = 500;
 
 export function PhraseBadge({
   phrase,
-  stage,
   saved,
   onPeek,
   onSave,
   onSuppress,
+  onUndoSuppress,
 }: {
   phrase: Phrase;
-  stage: BadgeStage;
+  /** Lifecycle stage is internal — not shown on feed cards. */
+  stage?: BadgeStage;
   saved: boolean;
   onPeek?: (ms: number) => void;
   onSave?: () => void;
   onSuppress?: () => void;
+  onUndoSuppress?: () => void;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [justSuppressed, setJustSuppressed] = useState(false);
   const mountedAt = useRef<number | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressFired = useRef(false);
+  const ttsReady = isTtsAvailable();
+
   useEffect(() => {
     mountedAt.current = Date.now();
+    return () => {
+      if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    };
   }, []);
-  const ttsReady = isTtsAvailable();
 
   const reveal = () => {
     if (revealed) return;
@@ -50,35 +46,61 @@ export function PhraseBadge({
     onPeek?.(mountedAt.current === null ? 0 : Date.now() - mountedAt.current);
   };
 
+  const startLongPress = () => {
+    if (!onSuppress) return;
+    longPressFired.current = false;
+    longPressTimer.current = setTimeout(() => {
+      longPressFired.current = true;
+      setSheetOpen(true);
+    }, LONG_PRESS_MS);
+  };
+  const cancelLongPress = () => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    longPressTimer.current = null;
+  };
+
+  const handleSave = () => {
+    if (longPressFired.current) {
+      longPressFired.current = false;
+      return; // the press became a long-press; don't also save
+    }
+    onSave?.();
+  };
+
+  const confirmSuppress = () => {
+    setSheetOpen(false);
+    setJustSuppressed(true);
+    onSuppress?.();
+  };
+
   return (
     <div
       data-testid="phrase-badge"
-      className="badge-pop inline-flex flex-col gap-1.5 rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 backdrop-blur-md"
+      className="badge-pop relative w-full rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3.5 backdrop-blur-md"
+      onPointerDown={startLongPress}
+      onPointerUp={cancelLongPress}
+      onPointerLeave={cancelLongPress}
+      onPointerCancel={cancelLongPress}
     >
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
-          Sticky phrase
-        </span>
-        <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${stageColor[stage]}`}
-        >
-          {stageLabel[stage]}
-        </span>
-      </div>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
+        Sticky phrase
+      </span>
 
-      <div className="flex items-center gap-2">
+      <div className="mt-1.5 flex items-center justify-between gap-2">
         <button
           type="button"
           data-testid="save-phrase"
-          onClick={onSave}
+          onClick={handleSave}
           aria-pressed={saved}
           aria-label={saved ? "Guardada en tu mazo" : "Guardar en tu mazo"}
-          className="flex items-center gap-2 text-left active:scale-[0.98]"
+          className="flex min-h-11 flex-1 items-center gap-2.5 text-left active:scale-[0.99]"
         >
-          <span className="text-lg font-semibold leading-tight text-white">{phrase.text}</span>
+          <span className="text-[1.65rem] font-bold leading-tight text-amber-300">
+            {phrase.text}
+          </span>
           <span
             aria-hidden
-            className={`text-base transition-transform ${saved ? "badge-pop text-rose-400" : "text-white/25"}`}
+            className={`text-xl transition-transform ${saved ? "badge-pop text-rose-400" : "text-white/30"}`}
           >
             {saved ? "♥" : "♡"}
           </span>
@@ -89,37 +111,87 @@ export function PhraseBadge({
             data-testid="speak-phrase"
             onClick={() => speak(phrase.example)}
             aria-label="Escuchar el ejemplo"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-sm text-white/70 active:scale-90"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-base text-white/70 active:scale-90"
           >
             🔊
           </button>
         )}
       </div>
 
-      {revealed ? (
-        <span data-testid="phrase-meaning" className="badge-pop text-sm text-white/60">
+      <button
+        type="button"
+        data-testid="reveal-meaning"
+        onClick={reveal}
+        aria-label={revealed ? undefined : "Toca para comprobar el significado"}
+        className="relative mt-2 block min-h-11 w-full text-left"
+      >
+        <span
+          data-testid="phrase-meaning"
+          data-revealed={revealed}
+          className={`block text-base text-white/70 transition-[filter] duration-200 ${
+            revealed ? "" : "select-none blur-[6px]"
+          }`}
+        >
           {phrase.meaningEs}
         </span>
-      ) : (
-        <button
-          type="button"
-          data-testid="reveal-meaning"
-          onClick={reveal}
-          className="self-start rounded-full border border-white/12 bg-white/[0.05] px-3 py-1 text-xs text-white/55 active:scale-[0.97]"
+        {!revealed && (
+          <span className="absolute inset-0 flex items-center text-sm font-medium text-white/60">
+            Toca para comprobar
+          </span>
+        )}
+      </button>
+
+      {justSuppressed && (
+        <div
+          data-testid="suppress-undo"
+          className="badge-pop mt-2 flex items-center justify-between rounded-xl bg-white/[0.08] px-3 py-2 text-xs text-white/70"
         >
-          ¿Qué crees que significa? Toca para comprobar
-        </button>
+          <span>No volverás a verla</span>
+          <button
+            type="button"
+            data-testid="undo-suppress"
+            onClick={() => {
+              setJustSuppressed(false);
+              onUndoSuppress?.();
+            }}
+            className="font-semibold text-white underline underline-offset-2 active:scale-95"
+          >
+            Deshacer
+          </button>
+        </div>
       )}
 
-      {onSuppress && (
-        <button
-          type="button"
-          data-testid="suppress-phrase"
-          onClick={onSuppress}
-          className="self-start text-[11px] text-white/30 underline-offset-2 active:underline"
+      {sheetOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => setSheetOpen(false)}
+          role="dialog"
+          aria-label="Acciones de la frase"
         >
-          Ya la domino
-        </button>
+          <div
+            className="w-full max-w-lg rounded-t-3xl border-t border-white/10 bg-[#14141d] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="mb-1 text-base font-semibold text-white">{phrase.text}</p>
+            <p className="mb-3 text-sm text-white/50">{phrase.meaningEs}</p>
+            <button
+              type="button"
+              data-testid="suppress-phrase"
+              onClick={confirmSuppress}
+              className="min-h-12 w-full rounded-2xl border border-white/12 bg-white/[0.06] px-4 py-3 text-sm font-medium text-white active:scale-[0.99]"
+            >
+              Ya la domino
+            </button>
+            <button
+              type="button"
+              onClick={() => setSheetOpen(false)}
+              className="mt-2 min-h-11 w-full px-4 py-2 text-sm text-white/45"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

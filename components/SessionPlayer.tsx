@@ -21,6 +21,7 @@ import {
   recordReviewResult,
   saveToDeck,
   suppressPhrase,
+  unsuppressPhrase,
   type MasteryVerdict,
 } from "@/lib/deckOps";
 import { localIsoDate } from "@/lib/dates";
@@ -189,7 +190,6 @@ export function SessionPlayer({
   };
 
   const interactionsFor = (phraseId: string) => ({
-    stage: deck.value[phraseId]?.stage ?? ("new" as const),
     saved: deck.value[phraseId]?.inDeck === true,
     onPeek: (ms: number) => deck.update((prev) => recordPeek(prev, phraseId, ms)),
     onSave: () => {
@@ -197,6 +197,7 @@ export function SessionPlayer({
       deck.update((prev) => saveToDeck(prev, phraseId, Date.now()));
     },
     onSuppress: () => deck.update((prev) => suppressPhrase(prev, phraseId, Date.now())),
+    onUndoSuppress: () => deck.update((prev) => unsuppressPhrase(prev, phraseId)),
   });
 
   const total = Math.max(state.plan.cards.length - 1, 1); // end card excluded
@@ -287,17 +288,19 @@ export function SessionPlayer({
       </div>
 
       {!finished && (
-        <div className="relative z-10 flex items-center justify-between px-6 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <span className="swipe-hint text-xs text-white/45">
+        <div className="relative z-10 flex items-center justify-center px-6 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">
+          <span className="swipe-hint text-xs text-white/55">
             {canGoNext ? "Desliza hacia arriba ↑" : "Responde para seguir"}
           </span>
-          <div className="flex gap-1.5">
+          {/* Arrow buttons are only useful with a mouse; on touch the swipe
+              gesture is the interaction, so hide them there. */}
+          <div className="fine-pointer-only absolute right-4 gap-1.5">
             <button
               type="button"
               aria-label="Anterior"
               onClick={goPrev}
               disabled={state.index === 0}
-              className="flex h-11 w-11 items-center justify-center rounded-full text-lg text-white/35 disabled:opacity-30"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-lg text-white/45 disabled:opacity-30"
             >
               ↑
             </button>
@@ -306,7 +309,7 @@ export function SessionPlayer({
               aria-label="Siguiente"
               onClick={goNext}
               disabled={!canGoNext}
-              className="flex h-11 w-11 items-center justify-center rounded-full text-lg text-white/35 disabled:opacity-30"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-lg text-white/45 disabled:opacity-30"
             >
               ↓
             </button>

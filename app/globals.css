@@ -107,3 +107,14 @@ body {
 .soft-timer {
   animation: soft-timer 10s linear forwards;
 }
+
+/* Show only on devices with a precise pointer (mouse/trackpad). Touch
+   devices use the swipe gesture, so the nav arrows stay hidden there. */
+.fine-pointer-only {
+  display: none;
+}
+@media (pointer: fine) {
+  .fine-pointer-only {
+    display: flex;
+  }
+}

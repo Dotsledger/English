@@ -9,6 +9,7 @@ import { useCompletedTopics } from "@/components/AppStateProvider";
 import { useReconcileTriage } from "@/components/useReconcileTriage";
 import { TopicTile } from "@/components/TopicTile";
 import { DueCta } from "@/components/DueCta";
+import { SnackHero } from "@/components/SnackHero";
 import { ProgressPipeline } from "@/components/ProgressPipeline";
 import { MissionCard } from "@/components/MissionCard";
 import { RecapCard } from "@/components/RecapCard";
@@ -29,6 +30,23 @@ function computePool(levels: Level[], categories: string[]): TopicTileType[] {
 
 function toggle<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+}
+
+/** Two preview phrases per cover, with no phrase repeated across covers. */
+function dedupePreviews(shown: TopicTileType[]): Map<string, string[]> {
+  const used = new Set<string>();
+  const map = new Map<string, string[]>();
+  for (const topic of shown) {
+    const picks: string[] = [];
+    for (const id of topic.previewPhraseIds) {
+      if (picks.length >= 2) break;
+      if (used.has(id)) continue;
+      picks.push(id);
+      used.add(id);
+    }
+    map.set(topic.id, picks);
+  }
+  return map;
 }
 
 export function TopicGrid() {
@@ -88,6 +106,8 @@ export function TopicGrid() {
     window.setTimeout(() => setSpinning(false), 500);
   };
 
+  const previewsByTopic = dedupePreviews(shown);
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-lg flex-col px-4 pb-10 pt-[max(1.5rem,env(safe-area-inset-top))]">
       <header className="mb-4 px-1">
@@ -114,42 +134,28 @@ export function TopicGrid() {
             </Link>
           </div>
         </div>
-        <div className="mt-2 flex items-start justify-between gap-3">
-          <h1 className="text-3xl font-bold leading-tight text-white">Pick a rabbit hole</h1>
-          <button
-            type="button"
-            onClick={handleRefresh}
-            data-testid="refresh-topics"
-            aria-label="Ver otros temas"
-            className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-lg text-white/70 active:scale-90"
-          >
-            <span className={spinning ? "inline-block animate-spin" : "inline-block"}>↻</span>
-          </button>
-        </div>
-        <p className="mt-1 text-sm text-white/50">
-          Scroll something interesting. The English sticks on its own.
-        </p>
+        <p className="mt-1 text-sm text-white/60">Un ratito de inglés, cuando quieras.</p>
       </header>
 
       <DueCta />
-
-      <Link
-        href="/snack"
-        data-testid="daily-snack"
-        className="mb-4 flex items-center justify-between rounded-2xl bg-white px-5 py-4 active:scale-[0.99]"
-      >
-        <div className="flex flex-col">
-          <span className="text-base font-bold text-black">Daily Snack</span>
-          <span className="text-xs text-black/55">Repaso + algo nuevo · 3-5 min</span>
-        </div>
-        <span aria-hidden className="text-xl text-black/70">
-          →
-        </span>
-      </Link>
+      <SnackHero />
 
       <ProgressPipeline />
       <RecapCard />
       <MissionCard />
+
+      <div className="mb-3 mt-2 flex items-center justify-between px-1">
+        <h2 className="text-lg font-bold text-white">Explora</h2>
+        <button
+          type="button"
+          onClick={handleRefresh}
+          data-testid="refresh-topics"
+          aria-label="Ver otros temas"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-lg text-white/70 active:scale-90"
+        >
+          <span className={spinning ? "inline-block animate-spin" : "inline-block"}>↻</span>
+        </button>
+      </div>
 
       <div className="mb-3 flex gap-1.5 px-1" role="group" aria-label="Filtrar por nivel">
         {LEVELS.map((level) => {
@@ -161,12 +167,13 @@ export function TopicGrid() {
               onClick={() => handleToggleLevel(level)}
               aria-pressed={active}
               data-testid={`filter-level-${level}`}
-              className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 active
                   ? "border-white bg-white text-black"
-                  : "border-white/15 bg-white/[0.05] text-white/60"
+                  : "border-white/25 bg-transparent text-white/70"
               }`}
             >
+              {active && <span aria-hidden>✓</span>}
               {level}
             </button>
           );
@@ -210,7 +217,12 @@ export function TopicGrid() {
           className="scene-enter grid grid-cols-2 gap-3"
         >
           {shown.map((topic) => (
-            <TopicTile key={topic.id} topic={topic} completed={progress[topic.id] === true} />
+            <TopicTile
+              key={topic.id}
+              topic={topic}
+              completed={progress[topic.id] === true}
+              previewPhraseIds={previewsByTopic.get(topic.id)}
+            />
           ))}
         </div>
       )}
