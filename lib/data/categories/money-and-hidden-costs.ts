@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money"],
       variants: ["hidden costs"],
+      examples: ["The cheap flight had a hidden cost: airport transfers.", "Subscriptions bury hidden costs in the annual renewal."],
     },
   {
       id: "theres-a-catch",
@@ -20,6 +21,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["there is a catch"],
+      examples: ["Zero percent finance sounds great, but there's a catch.", "The bonus rate is lovely; there is a catch after month three."],
     },
   {
       id: "tip-of-the-iceberg",
@@ -29,6 +31,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "risk"],
       variants: ["the tip of the iceberg", "tip of the iceberg"],
+      examples: ["The monthly fee is just the tip of the iceberg.", "Late charges are only the tip of the iceberg here."],
     },
   {
       id: "lose-value-overnight",
@@ -38,6 +41,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money"],
       variants: ["loses value overnight", "lost value overnight", "losing value overnight"],
+      examples: ["New cars lose value overnight the moment you drive off.", "The token lost value overnight when the hype faded."],
     },
   {
       id: "pay-through-the-nose",
@@ -47,6 +51,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money"],
       variants: ["pays through the nose", "paid through the nose", "paying through the nose"],
+      examples: ["Forget to cancel and you pay through the nose next year.", "Tourists paid through the nose for the same coffee."],
     },
   {
       id: "foot-the-bill",
@@ -56,6 +61,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money"],
       variants: ["foots the bill", "footed the bill", "footing the bill"],
+      examples: ["When it breaks out of warranty, you foot the bill.", "Taxpayers footed the bill for the whole bailout."],
     },
   {
       id: "put-off-until-tomorrow",
@@ -65,6 +71,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["puts off until tomorrow", "putting off until tomorrow"],
+      examples: ["Debt you put off until tomorrow only grows.", "He puts off until tomorrow every awkward invoice."],
     },
   {
       id: "baked-into-the-price",
@@ -74,6 +81,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "risk"],
       variants: ["bake into the price", "baking into the price"],
+      examples: ["The delivery fee is quietly baked into the price.", "They keep baking into the price fees you never see."],
     },
   {
       id: "eat-into-your-returns",
@@ -83,6 +91,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money"],
       variants: ["eats into your returns", "ate into your returns", "eating into your returns"],
+      examples: ["Small annual fees eat into your returns over decades.", "Inflation quietly ate into your returns last year."],
     },
   {
       id: "come-at-a-steep-price",
@@ -92,6 +101,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "consequence"],
       variants: ["comes at a steep price", "came at a steep price", "coming at a steep price"],
+      examples: ["Convenience can come at a steep price.", "That instant loan came at a steep price in interest."],
     },
   {
       id: "sell-yourself-short",
@@ -101,6 +111,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "money"],
       variants: ["selling yourself short", "sold yourself short"],
+      examples: ["Accept the first offer and you sell yourself short.", "Take the lowball and you have sold yourself short."],
     },
   {
       id: "nickel-and-dime-you",
@@ -110,6 +121,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["money", "risk"],
       variants: ["nickel-and-diming you", "nickel and dime you"],
+      examples: ["Budget hotels nickel-and-dime you for towels and wifi.", "Airlines keep nickel-and-diming you at every step."],
     },
   {
       id: "throw-good-money-after-bad",
@@ -119,6 +131,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["money", "mistake"],
       variants: ["throwing good money after bad", "threw good money after bad"],
+      examples: ["Do not throw good money after bad on a failing bet.", "Repairing that banger is throwing good money after bad."],
     },
   {
       id: "skin-in-the-game",
@@ -128,6 +141,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["have skin in the game", "having skin in the game", "no skin in the game"],
+      examples: ["Advisers with skin in the game give better advice.", "He has no skin in the game, so ignore the tip."],
     },
   {
       id: "jump-through-hoops",
@@ -137,6 +151,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["jumping through hoops", "jumped through hoops"],
+      examples: ["You jump through hoops to claim the cashback.", "We jumped through hoops just to close the account."],
     },
 ];
 
