@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["a lesser of two evils"],
+      examples: ["Many voters just pick the lesser of two evils.", "The coalition felt like a lesser of two evils."],
     },
   {
       id: "sit-on-the-fence",
@@ -20,6 +21,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["sits on the fence", "sat on the fence", "sitting on the fence"],
+      examples: ["Politicians love to sit on the fence before an election.", "He sat on the fence until the polls were clear."],
     },
   {
       id: "empty-promises",
@@ -29,6 +31,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["an empty promise"],
+      examples: ["The manifesto was full of empty promises.", "Free broadband turned out to be an empty promise."],
     },
   {
       id: "false-dilemma",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       example: "Presenting two options where a dozen exist is a false dilemma.",
       level: "B2",
       tags: ["opinion", "mistake"],
+      examples: ["With us or against us is a false dilemma.", "The whole debate rested on a false dilemma."],
     },
   {
       id: "behind-closed-doors",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       example: "A surprising amount of legislation is written behind closed doors.",
       level: "B2",
       tags: ["risk"],
+      examples: ["The real deal was struck behind closed doors.", "Budgets are decided behind closed doors."],
     },
   {
       id: "gain-traction",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["gains traction", "gained traction", "gaining traction"],
+      examples: ["The petition began to gain traction online.", "The idea gained traction after the scandal."],
     },
   {
       id: "preach-to-the-choir",
@@ -63,6 +69,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["preaches to the choir", "preached to the choir", "preaching to the choir"],
+      examples: ["Rallies mostly preach to the choir.", "The op-ed just preached to the choir."],
     },
   {
       id: "echo-chamber",
@@ -72,6 +79,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["echo chambers"],
+      examples: ["Your feed can quietly become an echo chamber.", "Algorithms build echo chambers by design."],
     },
   {
       id: "beat-the-drum-for",
@@ -81,6 +89,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["beats the drum for", "beat the drum", "beating the drum for"],
+      examples: ["Pundits beat the drum for war for weeks.", "She kept beating the drum for reform."],
     },
   {
       id: "hold-sway-over",
@@ -90,6 +99,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["holds sway over", "held sway over", "holding sway over"],
+      examples: ["Lobby groups hold sway over the committee.", "A few donors held sway over the agenda."],
     },
   {
       id: "manufacture-consent",
@@ -99,6 +109,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["manufactures consent", "manufactured consent", "manufacturing consent"],
+      examples: ["Endless repetition helps manufacture consent.", "The campaign manufactured consent for the cut."],
     },
   {
       id: "elephant-in-the-room",
@@ -108,6 +119,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["an elephant in the room"],
+      examples: ["Nobody named the elephant in the room: the deficit.", "Immigration was an elephant in the room all night."],
     },
   {
       id: "double-standard",
@@ -117,6 +129,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["double standards"],
+      examples: ["Applying one rule only to allies is a double standard.", "Voters punished the party's double standards."],
     },
   {
       id: "the-powers-that-be",
@@ -125,6 +138,7 @@ export const phrases: Phrase[] = [
       example: "The powers that be rarely appear on the ballot.",
       level: "C2",
       tags: ["opinion", "risk"],
+      examples: ["The powers that be prefer a quiet press.", "Appeals to the powers that be went nowhere."],
     },
   {
       id: "bitter-pill-to-swallow",
@@ -134,6 +148,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["a bitter pill"],
+      examples: ["The tax rise was a bitter pill to swallow.", "Defeat is always a bitter pill."],
     },
 ];
 
