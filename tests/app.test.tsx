@@ -15,10 +15,12 @@ import {
 } from "@/lib/session/composeCategorySession";
 import { STORAGE_KEY, emptyEntry } from "@/lib/phraseMemory";
 import { TOPIC_PROGRESS_KEY } from "@/lib/topicProgress";
+import { LevelBadge } from "@/components/LevelBadge";
+import { initialLevel } from "@/lib/level";
 import { resetBackendForTests } from "@/lib/storage/backend";
 import { flushWrites } from "@/lib/storage/writeQueue";
-import { parseActivity, parseDeck, parseTopics } from "@/lib/storage/docs";
-import { KEY_ACTIVITY, KEY_DECK, KEY_TOPICS } from "@/lib/storage/keys";
+import { parseActivity, parseDeck, parseLevel, parseTopics } from "@/lib/storage/docs";
+import { KEY_ACTIVITY, KEY_DECK, KEY_LEVEL, KEY_TOPICS } from "@/lib/storage/keys";
 
 beforeEach(() => {
   cleanup();
@@ -163,6 +165,43 @@ describe("home / topic grid", () => {
       expect(screen.queryByTestId("topic-tile-electric-scooters")).toBeNull();
     });
     expect(screen.getAllByTestId(/^topic-tile-/)).toHaveLength(4);
+  });
+});
+
+describe("level badge + first-time tooltip", () => {
+  function renderBadge() {
+    return render(
+      <AppStateProvider>
+        <LevelBadge />
+      </AppStateProvider>
+    );
+  }
+
+  it("shows B2.0 for a fresh user and the disclaimer tooltip once", async () => {
+    renderBadge();
+    expect(screen.getByTestId("level-badge").textContent).toBe("B2.0");
+    const tip = await screen.findByTestId("level-tooltip");
+    expect(tip.textContent).toContain("no es una certificación oficial");
+  });
+
+  it("dismissing the tooltip persists and hides it", async () => {
+    renderBadge();
+    fireEvent.click(await screen.findByTestId("level-tooltip-dismiss"));
+    await waitFor(() => expect(screen.queryByTestId("level-tooltip")).toBeNull());
+    await waitFor(async () => {
+      await flushWrites();
+      expect(parseLevel(window.localStorage.getItem(KEY_LEVEL)).tooltipSeen).toBe(true);
+    });
+  });
+
+  it("reflects a seeded level and hides the tooltip once seen", async () => {
+    window.localStorage.setItem(
+      KEY_LEVEL,
+      JSON.stringify({ ...initialLevel(() => 0), band: "C1", sub: 3, tooltipSeen: true })
+    );
+    renderBadge();
+    await waitFor(() => expect(screen.getByTestId("level-badge").textContent).toBe("C1.3"));
+    expect(screen.queryByTestId("level-tooltip")).toBeNull();
   });
 });
 

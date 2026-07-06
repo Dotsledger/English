@@ -10,6 +10,7 @@ import { useReconcileTriage } from "@/components/useReconcileTriage";
 import { TopicTile } from "@/components/TopicTile";
 import { DueCta } from "@/components/DueCta";
 import { SnackHero } from "@/components/SnackHero";
+import { LevelBadge } from "@/components/LevelBadge";
 import { ProgressPipeline } from "@/components/ProgressPipeline";
 import { MissionCard } from "@/components/MissionCard";
 import { RecapCard } from "@/components/RecapCard";
@@ -140,6 +141,7 @@ export function TopicGrid() {
       <DueCta />
       <SnackHero />
 
+      <LevelBadge />
       <ProgressPipeline />
       <RecapCard />
       <MissionCard />
