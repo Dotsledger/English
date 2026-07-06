@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "Cheap is not always cheaper.",
       level: "C1",
       tags: ["money", "comparison"],
+      examples: ["Booking early is not always cheaper than waiting for a seat sale.", "Budget airlines are not always cheaper once bags are added."],
     },
   {
       id: "ended-up-paying",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "consequence"],
       variants: ["end up paying", "ends up paying", "you end up paying"],
+      examples: ["We ended up paying more for the so-called free hotel breakfast.", "Skip travel insurance and you end up paying at the worst moment."],
     },
   {
       id: "nobody-tells-you",
@@ -27,6 +29,7 @@ export const phrases: Phrase[] = [
       example: "Nobody tells you the rules until you break one.",
       level: "C1",
       tags: ["twist"],
+      examples: ["Nobody tells you about the resort fee until you check out.", "The visa queue is the bit nobody tells you about."],
     },
   {
       id: "get-fined",
@@ -36,6 +39,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "rules"],
       variants: ["getting fined", "got fined", "get you fined"],
+      examples: ["Board with the wrong ticket and you can get fined on the spot.", "She got fined for a bag two centimetres too big."],
     },
   {
       id: "get-your-moneys-worth",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "opinion"],
       variants: ["getting your money's worth", "got your money's worth"],
+      examples: ["Use the city pass daily to get your money's worth.", "You only got your money's worth after three museums."],
     },
   {
       id: "out-of-date",
@@ -54,6 +59,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["out-of-date"],
+      examples: ["The guidebook's prices were hopelessly out of date.", "An out-of-date map sent us down a closed road."],
     },
   {
       id: "run-the-risk",
@@ -63,6 +69,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk"],
       variants: ["runs the risk", "ran the risk", "running the risk"],
+      examples: ["Pack only hand luggage and you run the risk of gate-checking.", "Booking non-refundable, they ran the risk of losing it all."],
     },
   {
       id: "nothing-is-free",
@@ -72,6 +79,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "opinion"],
       variants: ["nothing's free"],
+      examples: ["At the airport, nothing is free, not even the trolley.", "Those lounge perks? Nothing's free."],
     },
   {
       id: "loved-to-death",
@@ -80,6 +88,7 @@ export const phrases: Phrase[] = [
       example: "A quiet place can be loved to death.",
       level: "C1",
       tags: ["twist", "risk"],
+      examples: ["The tiny village is being loved to death by day-trippers.", "That quiet beach was loved to death within a decade."],
     },
   {
       id: "play-on-your-fears",
@@ -89,6 +98,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "opinion"],
       variants: ["plays on your fears", "played on your fears", "playing on your fears"],
+      examples: ["Upsells at check-in play on your fears of missing out.", "The insurance pitch played on your fears of a lost bag."],
     },
   {
       id: "reach-breaking-point",
@@ -98,6 +108,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk"],
       variants: ["reaches breaking point", "reached breaking point", "reaching breaking point"],
+      examples: ["Crowds reach breaking point during the summer festival.", "By August the old town has reached breaking point."],
     },
   {
       id: "pick-up-the-tab",
@@ -107,6 +118,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money"],
       variants: ["picks up the tab", "picked up the tab", "picking up the tab"],
+      examples: ["Locals pick up the tab for tourist infrastructure through taxes.", "The city picked up the tab for the crowds' clean-up."],
     },
   {
       id: "fall-short-of-expectations",
@@ -120,6 +132,7 @@ export const phrases: Phrase[] = [
         "fell short of expectations",
         "falling short of expectations",
       ],
+      examples: ["Glossy photos often make a hotel fall short of expectations.", "Package tours can fall short of expectations in peak season."],
     },
   {
       id: "tick-the-box",
@@ -129,6 +142,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["ticks the box", "ticked the box", "ticking the box"],
+      examples: ["Some travellers just tick the box on landmarks and leave.", "He ticked the box on the Eiffel Tower and moved on."],
     },
   {
       id: "beat-them-at-their-own-game",
@@ -138,6 +152,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["beating them at their own game"],
+      examples: ["Use the airline's own app to beat them at their own game.", "Frequent flyers keep beating them at their own game."],
     },
   {
       id: "daylight-robbery",
@@ -146,6 +161,7 @@ export const phrases: Phrase[] = [
       example: "Most travelers just call it daylight robbery.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["Five euros for water at the gate is daylight robbery.", "The taxi fare from the airport was daylight robbery."],
     },
   {
       id: "wear-you-down",
@@ -155,6 +171,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["wears you down", "wore you down", "wearing you down"],
+      examples: ["Endless connections wear you down before you even arrive.", "The queues wore you down by lunchtime."],
     },
 ];
 
