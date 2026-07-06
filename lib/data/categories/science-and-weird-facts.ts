@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "Good content lives between both.",
       level: "C2",
       tags: ["abstract"],
+      examples: ["The truth usually sits somewhere between both extremes.", "There is a subtle difference between both readings."],
     },
   {
       id: "make-a-mountain-out-of-a-molehill",
@@ -23,6 +24,7 @@ export const phrases: Phrase[] = [
         "made a mountain out of a molehill",
         "making a mountain out of a molehill",
       ],
+      examples: ["Tabloids love to make a mountain out of a molehill from one weak study.", "Do not make a mountain out of a molehill over a rounding error."],
     },
   {
       id: "stand-the-test-of-time",
@@ -32,6 +34,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["stands the test of time", "stood the test of time", "standing the test of time"],
+      examples: ["Few viral facts stand the test of time.", "Newton's basics stood the test of time surprisingly well."],
     },
   {
       id: "out-of-the-ordinary",
@@ -40,6 +43,7 @@ export const phrases: Phrase[] = [
       example: "An octopus's circulatory system is out of the ordinary.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Nothing out of the ordinary, until the numbers repeated exactly.", "The reading looked out of the ordinary for a calm night."],
     },
   {
       id: "defy-common-sense",
@@ -49,6 +53,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["defies common sense", "defied common sense", "defying common sense"],
+      examples: ["Quantum results routinely defy common sense.", "The experiment defied common sense and held up anyway."],
     },
   {
       id: "strange-but-true",
@@ -57,6 +62,7 @@ export const phrases: Phrase[] = [
       example: "It sounds invented, but it's strange but true.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Octopuses have three hearts: strange but true.", "Strange but true, honey never really spoils."],
     },
   {
       id: "more-than-meets-the-eye",
@@ -66,6 +72,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["there's more to it than meets the eye"],
+      examples: ["A dull grey rock can hold more than meets the eye.", "With deep-sea life, there's more to it than meets the eye."],
     },
   {
       id: "outnumber-by-far",
@@ -75,6 +82,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["outnumbers by far", "outnumbered by far"],
+      examples: ["Bacteria outnumber by far the cells we call our own.", "Microbes outnumbered by far everything visible in the sample."],
     },
   {
       id: "fly-in-the-face-of",
@@ -84,6 +92,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["flies in the face of", "flew in the face of", "flying in the face of"],
+      examples: ["The data seem to fly in the face of the old theory.", "Her finding flies in the face of decades of assumptions."],
     },
   {
       id: "against-the-odds",
@@ -93,6 +102,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["against all odds"],
+      examples: ["The tiny probe kept working against the odds.", "Against all odds, the ancient seeds sprouted."],
     },
   {
       id: "hold-up-to-scrutiny",
@@ -102,6 +112,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["holds up to scrutiny", "held up to scrutiny", "holding up to scrutiny"],
+      examples: ["Extraordinary claims rarely hold up to scrutiny.", "The viral statistic never held up to scrutiny."],
     },
   {
       id: "miss-what-isnt-there",
@@ -111,6 +122,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["mistake", "opinion"],
       variants: ["misses what isn't there", "missed what wasn't there"],
+      examples: ["Our brains happily miss what isn't there.", "The eye misses what isn't there and invents the rest."],
     },
   {
       id: "jump-the-gun",
@@ -120,6 +132,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["mistake"],
       variants: ["jumps the gun", "jumped the gun", "jumping the gun"],
+      examples: ["Reporters jump the gun before peer review.", "The lab jumped the gun announcing the result."],
     },
   {
       id: "conspicuous-by-its-absence",
@@ -128,6 +141,7 @@ export const phrases: Phrase[] = [
       example: "Given the odds, contact should exist — instead it's conspicuous by its absence.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["In the fossil record, the link is conspicuous by its absence.", "Hard evidence was conspicuous by its absence."],
     },
   {
       id: "far-cry-from",
@@ -136,6 +150,7 @@ export const phrases: Phrase[] = [
       example: "Real research is a far cry from the tidy poster on the wall.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["A lab model is a far cry from the messy real world.", "The forecast was a far cry from what actually happened."],
     },
 ];
 
