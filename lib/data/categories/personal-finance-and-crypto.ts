@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "40% returns a month? That's too good to be true.",
       level: "C1",
       tags: ["opinion", "risk"],
+      examples: ["A guaranteed twenty percent return is too good to be true.", "The airdrop looked too good to be true, and it was."],
     },
   {
       id: "worth-the-hype",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["worth the hype it gets"],
+      examples: ["Most meme coins are simply not worth the hype.", "Those ETFs may not be worth the hype it gets."],
     },
   {
       id: "eggs-in-one-basket",
@@ -27,6 +29,7 @@ export const phrases: Phrase[] = [
       example: "Three tech stocks is putting all your eggs in one basket.",
       level: "B2",
       tags: ["money", "risk"],
+      examples: ["All your savings in one coin is eggs in one basket.", "Do not put all your eggs in one basket."],
     },
   {
       id: "safety-net",
@@ -35,6 +38,7 @@ export const phrases: Phrase[] = [
       example: "An emergency fund is a safety net most people don't have.",
       level: "B2",
       tags: ["money", "risk"],
+      examples: ["An emergency fund is a safety net most people lack.", "Crypto is not a safety net, whatever the ads say."],
     },
   {
       id: "live-beyond-your-means",
@@ -44,6 +48,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "risk"],
       variants: ["living beyond your means", "lived beyond your means"],
+      examples: ["Buy-now-pay-later makes it easy to live beyond your means.", "Financing a lifestyle is just living beyond your means."],
     },
   {
       id: "easy-come-easy-go",
@@ -52,6 +57,7 @@ export const phrases: Phrase[] = [
       example: "Money you didn't earn slowly, you lose fast — easy come, easy go.",
       level: "B2",
       tags: ["money", "opinion"],
+      examples: ["Gambling gains are easy come, easy go.", "He treated the windfall as easy come, easy go."],
     },
   {
       id: "in-the-red",
@@ -60,6 +66,7 @@ export const phrases: Phrase[] = [
       example: "Overdraft fees are designed around ending up in the red.",
       level: "B2",
       tags: ["money"],
+      examples: ["Three months of overspending left them in the red.", "The account slipped in the red after the fees."],
     },
   {
       id: "zero-sum-game",
@@ -68,6 +75,7 @@ export const phrases: Phrase[] = [
       example: "Day trading against machines is a zero-sum game.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["Day trading is largely a zero-sum game.", "Short-term speculation can feel like a zero-sum game."],
     },
   {
       id: "pump-and-dump",
@@ -76,6 +84,7 @@ export const phrases: Phrase[] = [
       example: "Coordinated buys and coordinated exits — a classic pump and dump.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["That coin was a classic pump and dump.", "Influencers ran a pump and dump on their followers."],
     },
   {
       id: "left-holding-the-bag",
@@ -84,6 +93,7 @@ export const phrases: Phrase[] = [
       example: "Retail arrives right when the whales leave you left holding the bag.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["When it crashed, latecomers were left holding the bag.", "The retail crowd got left holding the bag."],
     },
   {
       id: "rug-pull",
@@ -92,6 +102,7 @@ export const phrases: Phrase[] = [
       example: "The anonymous team vanished with the pool — a rug pull in broad daylight.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["The team vanished in a rug pull overnight.", "Investors lost everything in a rug pull."],
     },
   {
       id: "ponzi-scheme",
@@ -100,6 +111,7 @@ export const phrases: Phrase[] = [
       example: "Yields paid from new deposits are the maths of a Ponzi scheme.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["New deposits paid old investors: a Ponzi scheme.", "The fund was a Ponzi scheme in a smart suit."],
     },
   {
       id: "greater-fool",
@@ -108,6 +120,7 @@ export const phrases: Phrase[] = [
       example: "\"It's worth what someone will pay\" is the greater fool theory in disguise.",
       level: "C2",
       tags: ["money", "opinion"],
+      examples: ["You are betting on the greater fool buying higher.", "The greater fool theory drives every bubble."],
     },
   {
       id: "exit-liquidity",
@@ -116,6 +129,7 @@ export const phrases: Phrase[] = [
       example: "Someone has to be the exit liquidity when insiders sell.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["Retail buyers became exit liquidity for insiders.", "Late arrivals are just exit liquidity."],
     },
   {
       id: "tulip-mania",
@@ -124,6 +138,7 @@ export const phrases: Phrase[] = [
       example: "Bulbs then, tokens now — same graph, same tulip mania.",
       level: "C2",
       tags: ["money", "opinion"],
+      examples: ["The NFT craze rhymed with tulip mania.", "Every bubble echoes tulip mania."],
     },
   {
       id: "siren-song",
@@ -132,6 +147,7 @@ export const phrases: Phrase[] = [
       example: "The 20% yield was a siren song right before the collapse.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["Quick riches are a siren song for beginners.", "Leverage is a siren song that sinks accounts."],
     },
   {
       id: "snake-oil",
@@ -140,6 +156,7 @@ export const phrases: Phrase[] = [
       example: "New technology, same old snake oil pitch.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["Most trading courses are snake oil.", "The guaranteed system was pure snake oil."],
     },
 ];
 
