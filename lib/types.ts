@@ -184,9 +184,23 @@ export type DeckEntry = {
   peekCount: number;
   lastPeekMs: number | null;
   addedToDeckAt: number | null;
+  /** Backlog triage: overflow items parked out of every due count/queue.
+   * Optional so existing v2 entries load unchanged (default false). */
+  frozen?: boolean;
+  /** First time this phrase reached "produced" — powers the weekly recap.
+   * Optional for backward compatibility (default null). */
+  producedAt?: number | null;
 };
 
 export type DeckStore = Record<string, DeckEntry>;
+
+/** Per-day thaw budget for backlog auto-triage (Feature 1). */
+export type TriageStore = {
+  /** ISO date (local) of the last thaw. */
+  lastThawDate: string;
+  /** How many frozen items were thawed on lastThawDate. */
+  thawedToday: number;
+};
 
 /** A phrase the user typed in from real life ("+" quick capture). */
 export type CapturedPhrase = {

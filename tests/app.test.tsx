@@ -134,7 +134,26 @@ describe("home / topic grid", () => {
     renderHome();
     const cta = await screen.findByTestId("due-cta");
     expect(cta.getAttribute("href")).toBe("/snack");
-    expect(cta.textContent).toContain("a punto de olvidarse");
+    expect(cta.textContent).toContain("lista para repasar");
+  });
+
+  it("switches to the comeback CTA after a long absence", async () => {
+    const entry = {
+      ...emptyEntry("not-worth-it"),
+      timesSeen: 1,
+      timesRecalled: 1,
+      correctCount: 1,
+      confidenceScore: 1,
+      nextReviewAt: Date.now() - 1000,
+    };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ "not-worth-it": entry }));
+    const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+    const iso = `${fiveDaysAgo.getFullYear()}-${String(fiveDaysAgo.getMonth() + 1).padStart(2, "0")}-${String(fiveDaysAgo.getDate()).padStart(2, "0")}`;
+    window.localStorage.setItem(KEY_ACTIVITY, JSON.stringify({ [iso]: true }));
+    renderHome();
+    const cta = await screen.findByTestId("comeback-cta");
+    expect(cta.getAttribute("href")).toBe("/comeback");
+    expect(screen.queryByTestId("due-cta")).toBeNull();
   });
 
   it("swaps out a default topic that's already been completed", async () => {

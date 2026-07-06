@@ -6,6 +6,7 @@ import type { Level, TopicTile as TopicTileType } from "@/lib/types";
 import { CATEGORIES, DEFAULT_TOPIC_IDS, LEVELS, topicById, topics } from "@/lib/data/topics";
 import { pickTopicsPreferringUnseen } from "@/lib/pickTopics";
 import { useCompletedTopics } from "@/components/AppStateProvider";
+import { useReconcileTriage } from "@/components/useReconcileTriage";
 import { TopicTile } from "@/components/TopicTile";
 import { DueCta } from "@/components/DueCta";
 import { ProgressPipeline } from "@/components/ProgressPipeline";
@@ -41,6 +42,7 @@ export function TopicGrid() {
   const completedTopics = useCompletedTopics();
   const progress = completedTopics.value;
   const adjustedForProgress = useRef(false);
+  useReconcileTriage();
 
   const applyFilters = (levels: Level[], categories: string[]) => {
     const pool = computePool(levels, categories);

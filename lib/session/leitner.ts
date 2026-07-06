@@ -60,13 +60,21 @@ export function jumpBox(entry: DeckEntry, now: number): DeckEntry {
   return { ...entry, box, nextReviewAt: now + intervalForBox(box) };
 }
 
-/** Deck entries whose review is due, most overdue first. */
+/** Deck entries whose review is due, most overdue first. Frozen items
+ * (backlog triage) are parked out of every due count and queue. */
 export function dueEntries(
   deck: Record<string, DeckEntry>,
   now: number
 ): DeckEntry[] {
   return Object.values(deck)
-    .filter((e) => e.inDeck && !e.suppressed && e.nextReviewAt !== null && e.nextReviewAt <= now)
+    .filter(
+      (e) =>
+        e.inDeck &&
+        !e.suppressed &&
+        !e.frozen &&
+        e.nextReviewAt !== null &&
+        e.nextReviewAt <= now
+    )
     .sort((a, b) => (a.nextReviewAt ?? 0) - (b.nextReviewAt ?? 0));
 }
 
@@ -76,6 +84,13 @@ export function upcomingEntries(
   now: number
 ): DeckEntry[] {
   return Object.values(deck)
-    .filter((e) => e.inDeck && !e.suppressed && e.nextReviewAt !== null && e.nextReviewAt > now)
+    .filter(
+      (e) =>
+        e.inDeck &&
+        !e.suppressed &&
+        !e.frozen &&
+        e.nextReviewAt !== null &&
+        e.nextReviewAt > now
+    )
     .sort((a, b) => (a.nextReviewAt ?? 0) - (b.nextReviewAt ?? 0));
 }

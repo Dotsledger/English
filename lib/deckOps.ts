@@ -21,6 +21,8 @@ export function freshEntry(phraseId: string, source: DeckEntry["source"]): DeckE
     peekCount: 0,
     lastPeekMs: null,
     addedToDeckAt: null,
+    frozen: false,
+    producedAt: null,
   };
 }
 

@@ -11,7 +11,7 @@ export type SessionCard =
 
 export type SessionPlan = {
   id: string;
-  mode: "category" | "snack";
+  mode: "category" | "snack" | "comeback";
   /** Last card is always { kind: "end" }. */
   cards: SessionCard[];
 };

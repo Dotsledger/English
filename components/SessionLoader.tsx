@@ -11,6 +11,7 @@ import {
   type ComposerContent,
 } from "@/lib/session/composeCategorySession";
 import { composeSnackSession } from "@/lib/session/composeSnackSession";
+import { composeComebackSession } from "@/lib/session/composeComebackSession";
 import { useCaptures, useCompletedTopics, useDeck } from "@/components/AppStateProvider";
 import { SessionPlayer } from "@/components/SessionPlayer";
 
@@ -25,7 +26,8 @@ const CONTENT: ComposerContent = {
 
 export type SessionMode =
   | { kind: "category"; seedTopicId: string }
-  | { kind: "snack" };
+  | { kind: "snack" }
+  | { kind: "comeback" };
 
 /**
  * Composes a session plan once the persisted state has hydrated (the plan
@@ -54,6 +56,14 @@ export function SessionLoader({ mode, title }: { mode: SessionMode; title: strin
         content: CONTENT,
         completedTopicIds: completedIds,
         suppressedPhraseIds: suppressed,
+      });
+    }
+    if (mode.kind === "comeback") {
+      return composeComebackSession({
+        deck: deck.value,
+        captures: captures.value,
+        content: CONTENT,
+        now: Date.now(),
       });
     }
     return composeSnackSession({

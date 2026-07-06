@@ -7,6 +7,7 @@ import type {
   DeckStore,
   MissionStore,
   PhraseStage,
+  TriageStore,
 } from "@/lib/types";
 
 /**
@@ -54,7 +55,10 @@ export function isValidDeckEntry(value: unknown): value is DeckEntry {
     isNumberOrNull(e.nextReviewAt) &&
     typeof e.peekCount === "number" &&
     isNumberOrNull(e.lastPeekMs) &&
-    isNumberOrNull(e.addedToDeckAt)
+    isNumberOrNull(e.addedToDeckAt) &&
+    // Optional v3 fields: absent is fine; present must be well-typed.
+    (e.frozen === undefined || typeof e.frozen === "boolean") &&
+    (e.producedAt === undefined || isNumberOrNull(e.producedAt))
   );
 }
 
@@ -125,6 +129,18 @@ export function parseMission(raw: string | null): MissionStore | null {
     if (value === true) done[key] = true;
   }
   return { weekKey: parsed.weekKey, phraseIds: parsed.phraseIds as string[], done };
+}
+
+export function parseTriage(raw: string | null): TriageStore {
+  const parsed = safeParse(raw);
+  if (
+    !parsed ||
+    typeof parsed.lastThawDate !== "string" ||
+    typeof parsed.thawedToday !== "number"
+  ) {
+    return { lastThawDate: "", thawedToday: 0 };
+  }
+  return { lastThawDate: parsed.lastThawDate, thawedToday: parsed.thawedToday };
 }
 
 export type MetaDoc = { schemaVersion: number; migratedFromV1At?: number };

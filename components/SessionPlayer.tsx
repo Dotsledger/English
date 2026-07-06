@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import type { SessionPlan } from "@/lib/session/types";
 import { phraseById } from "@/lib/data/phrases";
-import { useActivity, useCompletedTopics, useDeck } from "@/components/AppStateProvider";
+import { useActivity, useCompletedTopics, useDeck, useTriage } from "@/components/AppStateProvider";
+import { reconcileTriage } from "@/lib/session/triage";
 import {
   markSeen,
   recordCheckpointResult,
@@ -42,6 +43,7 @@ export function SessionPlayer({
   const deck = useDeck();
   const activity = useActivity();
   const completedTopics = useCompletedTopics();
+  const triage = useTriage();
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const seenSceneIds = useRef<Set<string>>(new Set());
   const closedOut = useRef(false);
@@ -76,7 +78,11 @@ export function SessionPlayer({
       for (const id of topicIds) next[id] = true as const;
       return next;
     });
-  }, [finished, activity, completedTopics, state.plan.cards]);
+    // Backlog freeze/thaw now that the queue has just changed.
+    const reconciled = reconcileTriage(deck.value, triage.value, Date.now());
+    if (reconciled.deck !== deck.value) deck.update(() => reconciled.deck);
+    if (reconciled.triage !== triage.value) triage.update(() => reconciled.triage);
+  }, [finished, activity, completedTopics, deck, triage, state.plan.cards]);
 
   const goNext = useCallback(() => {
     dispatch({ type: "advance" });
