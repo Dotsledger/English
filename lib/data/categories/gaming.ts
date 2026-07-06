@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "Pre-order at full price and you buy a pig in a poke.",
       level: "B2",
       tags: ["money", "risk"],
+      examples: ["Pre-order at full price and you buy a pig in a poke.", "No reviews yet, so do not buy a pig in a poke."],
     },
   {
       id: "ship-it-and-fix-it",
@@ -18,6 +19,7 @@ export const phrases: Phrase[] = [
       example: "The day-one patch exists because studios ship it and fix it now.",
       level: "B2",
       tags: ["risk", "opinion"],
+      examples: ["Big studios ship it and fix it after launch.", "The ship it and fix it culture burns players out."],
     },
   {
       id: "hold-your-hand",
@@ -27,6 +29,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["holds your hand", "held your hand", "holding your hand"],
+      examples: ["The tutorial will not hold your hand for long.", "The game held your hand through the first hour."],
     },
   {
       id: "bite-the-dust",
@@ -36,6 +39,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["bites the dust", "bit the dust", "biting the dust"],
+      examples: ["Most live-service spin-offs bite the dust within a year.", "The servers finally bit the dust after two years."],
     },
   {
       id: "scapegoat",
@@ -44,6 +48,7 @@ export const phrases: Phrase[] = [
       example: "Lag is a scapegoat — nobody ever just loses.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Lag is always a scapegoat for a bad match.", "The netcode became a scapegoat for every loss."],
     },
   {
       id: "foot-the-whole-bill",
@@ -53,6 +58,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "risk"],
       variants: ["foots the whole bill", "footed the whole bill", "footing the whole bill"],
+      examples: ["Whales foot the whole bill for free players.", "A few big buyers footed the whole bill for the studio."],
     },
   {
       id: "burn-the-candle-at-both-ends",
@@ -66,6 +72,7 @@ export const phrases: Phrase[] = [
         "burned the candle at both ends",
         "burning the candle at both ends",
       ],
+      examples: ["Crunch makes developers burn the candle at both ends.", "Speedrunners burn the candle at both ends before events."],
     },
   {
       id: "at-their-mercy",
@@ -74,6 +81,7 @@ export const phrases: Phrase[] = [
       example: "You bought the game; when the servers close, you're at their mercy.",
       level: "C1",
       tags: ["risk"],
+      examples: ["Always-online games leave you at their mercy.", "With no offline mode, players are at their mercy."],
     },
   {
       id: "dust-it-off",
@@ -83,6 +91,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "opinion"],
       variants: ["dusts it off", "dusted it off", "dusting it off"],
+      examples: ["They dust it off and re-release the classic.", "The studio dusted it off for the anniversary."],
     },
   {
       id: "inch-by-inch",
@@ -91,6 +100,7 @@ export const phrases: Phrase[] = [
       example: "Pay-to-win creeps in inch by inch, never all at once.",
       level: "C1",
       tags: ["risk"],
+      examples: ["Each patch improved things inch by inch.", "You grind the experience bar inch by inch."],
     },
   {
       id: "toil-away",
@@ -100,6 +110,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["toils away", "toiled away", "toiling away"],
+      examples: ["Indie developers toil away for years unpaid.", "She toiled away on the mod entirely alone."],
     },
   {
       id: "fence-off-the-commons",
@@ -113,6 +124,7 @@ export const phrases: Phrase[] = [
         "fenced off the commons",
         "fencing off the commons",
       ],
+      examples: ["Paywalls fence off the commons of shared mods.", "Platforms fence off the commons players once shared."],
     },
   {
       id: "lost-to-posterity",
@@ -121,6 +133,7 @@ export const phrases: Phrase[] = [
       example: "Delisted games can be lost to posterity the moment the licence lapses.",
       level: "C2",
       tags: ["risk"],
+      examples: ["Delisted titles are lost to posterity.", "The original beta build was lost to posterity."],
     },
   {
       id: "winner-takes-all",
@@ -129,6 +142,7 @@ export const phrases: Phrase[] = [
       example: "Esports prize pools are winner takes all, ramen for eighth place.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["Battle royales are winner takes all.", "The grand final is winner takes all."],
     },
   {
       id: "tug-on-lonely-hearts",
@@ -138,6 +152,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["tugs on lonely hearts", "tugged on lonely hearts", "tugging on lonely hearts"],
+      examples: ["Gacha games tug on lonely hearts.", "The advert tugged on lonely hearts to sell skins."],
     },
 ];
 
