@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "twist"],
       variants: ["made up right there", "making it up on the spot"],
+      examples: ["That detox rule was made up on the spot by an influencer.", "Half these wellness claims sound like making it up on the spot."],
     },
   {
       id: "do-the-job",
@@ -20,6 +21,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["does the job", "did the job", "doing the job"],
+      examples: ["A brisk walk will do the job better than any supplement.", "Plain water did the job the fancy electrolyte drink promised."],
     },
   {
       id: "money-down-the-drain",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       example: "Without a deficiency, it's money down the drain.",
       level: "B2",
       tags: ["money"],
+      examples: ["Most detox teas are money down the drain.", "An unused gym membership is money down the drain."],
     },
   {
       id: "give-up-halfway",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "mistake"],
       variants: ["gives up halfway", "gave up halfway", "giving up halfway"],
+      examples: ["Crash diets make you give up halfway.", "He gave up halfway through the twelve-week plan."],
     },
   {
       id: "put-the-myth-to-rest",
@@ -46,6 +50,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["puts the myth to rest", "put this myth to rest", "putting the myth to rest"],
+      examples: ["One good trial can put the myth to rest.", "Let us put this myth to rest: sugar is not a poison."],
     },
   {
       id: "hide-behind-vague-language",
@@ -55,6 +60,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "opinion"],
       variants: ["hides behind vague language", "hiding behind vague language"],
+      examples: ["Supplements hide behind vague language like supports immunity.", "The label hides behind vague language to dodge the rules."],
     },
   {
       id: "command-a-premium",
@@ -64,6 +70,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money"],
       variants: ["commands a premium", "commanded a premium"],
+      examples: ["Organic labels command a premium at the till.", "The private clinic commanded a premium for the same test."],
     },
   {
       id: "fit-for-purpose",
@@ -73,6 +80,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["not fit for purpose"],
+      examples: ["A cheap monitor that misreads is not fit for purpose.", "The app is finally fit for purpose after the update."],
     },
   {
       id: "fly-under-the-radar",
@@ -82,6 +90,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk"],
       variants: ["flies under the radar", "flew under the radar", "flying under the radar"],
+      examples: ["Unregulated supplements fly under the radar for years.", "The dodgy clinic flew under the radar until complaints piled up."],
     },
   {
       id: "jump-to-conclusions",
@@ -91,6 +100,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["mistake", "opinion"],
       variants: ["jumps to conclusions", "jumped to conclusions", "jumping to conclusions"],
+      examples: ["One small study, and headlines jump to conclusions.", "Do not jump to conclusions from a single symptom."],
     },
   {
       id: "dress-anecdote-up-as-data",
@@ -104,6 +114,7 @@ export const phrases: Phrase[] = [
         "dressing anecdote up as data",
         "dressed anecdote up as data",
       ],
+      examples: ["Wellness gurus dress anecdote up as data.", "Glowing testimonials dress anecdote up as data to sell pills."],
     },
   {
       id: "move-the-goalposts",
@@ -113,6 +124,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion", "risk"],
       variants: ["moves the goalposts", "moved the goalposts", "moving the goalposts"],
+      examples: ["Fad diets move the goalposts every January.", "The brand moved the goalposts on what clean means."],
     },
   {
       id: "open-a-can-of-worms",
@@ -122,6 +134,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["opens a can of worms", "opened a can of worms", "opening a can of worms"],
+      examples: ["Questioning the dosage can open a can of worms.", "The recall opened a can of worms about testing."],
     },
   {
       id: "hide-in-plain-sight",
@@ -131,6 +144,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk", "twist"],
       variants: ["hides in plain sight", "hidden in plain sight", "hiding in plain sight"],
+      examples: ["Added sugar can hide in plain sight on the label.", "The real cost was hidden in plain sight all along."],
     },
 ];
 
