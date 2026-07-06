@@ -5,7 +5,7 @@ import { AppStateProvider, resetMigrationForTests } from "@/components/AppStateP
 import { SessionPlayer } from "@/components/SessionPlayer";
 import { SceneRenderer } from "@/components/SceneRenderer";
 import { TopicTile } from "@/components/TopicTile";
-import { contentScenes, checkpointScenes, topicIdByPhraseId } from "@/lib/data/scenes";
+import { contentScenes, checkpointScenes } from "@/lib/data/scenes";
 import { DEFAULT_TOPIC_IDS, topicById, topics } from "@/lib/data/topics";
 import { phrases, phraseById } from "@/lib/data/phrases";
 import { phraseCategoryIndex } from "@/lib/exercises/phraseIndex";
@@ -51,9 +51,17 @@ const CONTENT: ComposerContent = {
   index: phraseCategoryIndex,
 };
 
+function renderHome() {
+  return render(
+    <AppStateProvider>
+      <Home />
+    </AppStateProvider>
+  );
+}
+
 describe("home / topic grid", () => {
   it("renders the topic grid with the first 4 default topic tiles", () => {
-    render(<Home />);
+    renderHome();
     expect(screen.getByTestId("topic-grid")).toBeDefined();
     expect(screen.getByText("Pick a rabbit hole")).toBeDefined();
     for (const id of DEFAULT_TOPIC_IDS.slice(0, 4)) {
@@ -62,13 +70,13 @@ describe("home / topic grid", () => {
   });
 
   it("topic tiles link to their feed", () => {
-    render(<Home />);
+    renderHome();
     const tile = screen.getByTestId("topic-tile-electric-scooters");
     expect(tile.getAttribute("href")).toBe("/feed/electric-scooters");
   });
 
   it("shows exactly 4 tiles by default and 4 after refresh", () => {
-    render(<Home />);
+    renderHome();
     expect(screen.getAllByTestId(/^topic-tile-/)).toHaveLength(4);
 
     fireEvent.click(screen.getByTestId("refresh-topics"));
@@ -76,7 +84,7 @@ describe("home / topic grid", () => {
   });
 
   it("filtering by a level only shows tiles of that level", () => {
-    render(<Home />);
+    renderHome();
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     const tiles = screen.getAllByTestId(/^topic-tile-/);
     expect(tiles.length).toBeGreaterThan(0);
@@ -87,7 +95,7 @@ describe("home / topic grid", () => {
   });
 
   it("filtering by a category only shows tiles of that category", () => {
-    render(<Home />);
+    renderHome();
     fireEvent.click(screen.getByTestId("filter-category-travel"));
     const tiles = screen.getAllByTestId(/^topic-tile-/);
     expect(tiles.length).toBeGreaterThan(0);
@@ -98,24 +106,40 @@ describe("home / topic grid", () => {
   });
 
   it("unselecting a filter restores more results", () => {
-    render(<Home />);
+    renderHome();
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     expect(screen.getAllByTestId(/^topic-tile-/)).toHaveLength(4);
   });
 
-  it("surfaces a due phrase and links it back to a feed that teaches it", async () => {
-    const entry = { ...emptyEntry("not-worth-it"), nextReviewAt: Date.now() - 1000 };
+  it("shows the Daily Snack button and no due CTA when nothing is due", async () => {
+    renderHome();
+    expect(screen.getByTestId("daily-snack").getAttribute("href")).toBe("/snack");
+    await waitFor(() => {
+      expect(screen.queryByTestId("due-cta")).toBeNull();
+    });
+  });
+
+  it("surfaces a due CTA linking to the snack when reviews are waiting", async () => {
+    // A v1 entry with a past nextReviewAt migrates into a due v2 deck entry.
+    const entry = {
+      ...emptyEntry("not-worth-it"),
+      timesSeen: 1,
+      timesRecalled: 1,
+      correctCount: 1,
+      confidenceScore: 1,
+      nextReviewAt: Date.now() - 1000,
+    };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ "not-worth-it": entry }));
-    render(<Home />);
-    const chip = await screen.findByTestId("due-review-not-worth-it");
-    const topicId = topicIdByPhraseId.get("not-worth-it")!;
-    expect(chip.getAttribute("href")).toBe(`/feed/${topicId}`);
+    renderHome();
+    const cta = await screen.findByTestId("due-cta");
+    expect(cta.getAttribute("href")).toBe("/snack");
+    expect(cta.textContent).toContain("a punto de olvidarse");
   });
 
   it("swaps out a default topic that's already been completed", async () => {
     window.localStorage.setItem(TOPIC_PROGRESS_KEY, JSON.stringify({ "electric-scooters": true }));
-    render(<Home />);
+    renderHome();
     await waitFor(() => {
       expect(screen.queryByTestId("topic-tile-electric-scooters")).toBeNull();
     });
