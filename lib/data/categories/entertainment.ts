@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "opinion"],
       variants: ["milks it dry", "milked it dry", "milking it dry"],
+      examples: ["Studios milk it dry with endless sequels.", "They milked it dry until fans lost interest."],
     },
   {
       id: "give-the-game-away",
@@ -20,6 +21,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["mistake", "opinion"],
       variants: ["gives the game away", "gave the game away", "giving the game away"],
+      examples: ["One trailer can give the game away.", "The poster gave the game away before release."],
     },
   {
       id: "here-today-gone-tomorrow",
@@ -28,6 +30,7 @@ export const phrases: Phrase[] = [
       example: "Instant availability made every show feel here today, gone tomorrow.",
       level: "B2",
       tags: ["opinion"],
+      examples: ["Streaming hits are here today, gone tomorrow.", "Viral songs feel here today, gone tomorrow."],
     },
   {
       id: "make-a-killing",
@@ -37,6 +40,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money"],
       variants: ["makes a killing", "made a killing", "making a killing"],
+      examples: ["Merch lets studios make a killing.", "The reboot made a killing on opening weekend."],
     },
   {
       id: "set-for-life",
@@ -45,6 +49,7 @@ export const phrases: Phrase[] = [
       example: "One Christmas hit in 1984 left the songwriter set for life.",
       level: "B2",
       tags: ["money"],
+      examples: ["One hit franchise and the writer is set for life.", "Residuals rarely leave actors set for life."],
     },
   {
       id: "back-to-the-drawing-board",
@@ -53,6 +58,7 @@ export const phrases: Phrase[] = [
       example: "Six subscriptions to watch what cable had — back to the drawing board.",
       level: "C1",
       tags: ["opinion", "mistake"],
+      examples: ["Test screenings bombed, so it is back to the drawing board.", "The pilot flopped and they went back to the drawing board."],
     },
   {
       id: "design-by-committee",
@@ -61,6 +67,7 @@ export const phrases: Phrase[] = [
       example: "The test-screening card that rewrote the ending is design by committee.",
       level: "C1",
       tags: ["opinion", "risk"],
+      examples: ["The sequel felt like design by committee.", "Endless reshoots turned it into design by committee."],
     },
   {
       id: "behind-the-scenes",
@@ -69,6 +76,7 @@ export const phrases: Phrase[] = [
       example: "One name on stage, twelve ghostwriters behind the scenes.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["The real drama happened behind the scenes.", "A documentary showed what went on behind the scenes."],
     },
   {
       id: "strike-while-the-iron-is-hot",
@@ -77,6 +85,7 @@ export const phrases: Phrase[] = [
       example: "Streams triple after an artist dies — labels strike while the iron is hot.",
       level: "C1",
       tags: ["money", "opinion"],
+      examples: ["After the viral clip, the label had to strike while the iron is hot.", "Release the album now and strike while the iron is hot."],
     },
   {
       id: "at-odds-with",
@@ -85,6 +94,7 @@ export const phrases: Phrase[] = [
       example: "A 94% critic score is completely at odds with a 43% audience score.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["The director was at odds with the studio.", "The ending felt at odds with the tone."],
     },
   {
       id: "sleight-of-hand",
@@ -93,6 +103,7 @@ export const phrases: Phrase[] = [
       example: "Hollywood accounting is a sleight of hand that makes hits look like losses.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["The twist was a sleight of hand by the writers.", "Good editing is a sleight of hand."],
     },
   {
       id: "short-change-the-talent",
@@ -102,6 +113,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["money", "risk"],
       variants: ["short-changes the talent", "short-changed the talent", "short-changing the talent"],
+      examples: ["Streamers short-change the talent on residuals.", "The new deal short-changed the talent badly."],
     },
   {
       id: "grease-the-wheels",
@@ -111,6 +123,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["money", "risk"],
       variants: ["greases the wheels", "greased the wheels", "greasing the wheels"],
+      examples: ["A famous cameo can grease the wheels for funding.", "Sponsors greased the wheels of the premiere."],
     },
   {
       id: "airbrush-out",
@@ -120,6 +133,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk", "opinion"],
       variants: ["airbrushes out", "airbrushed out", "airbrushing out"],
+      examples: ["Studios airbrush out the flops from their history.", "They airbrushed out the scandal from the reunion."],
     },
   {
       id: "clear-the-rights",
@@ -129,6 +143,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["money", "risk"],
       variants: ["clears the rights", "cleared the rights", "clearing the rights"],
+      examples: ["You must clear the rights before streaming a song.", "They never cleared the rights for the soundtrack."],
     },
 ];
 
