@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "A smart home sounds cool until five apps fight for your attention.",
       level: "C1",
       tags: ["opinion", "twist"],
+      examples: ["A smart lock sounds cool until the wifi drops and you are locked out.", "Open-plan living sounds cool until you try to work from home."],
     },
   {
       id: "end-up-buying",
@@ -19,6 +20,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "consequence"],
       variants: ["ends up buying", "ended up buying"],
+      examples: ["People viewing three flats often end up buying the first one anyway.", "She ended up buying far more house than the budget allowed."],
     },
   {
       id: "the-real-problem-is",
@@ -27,6 +29,7 @@ export const phrases: Phrase[] = [
       example: "The real problem is the setup, not the device.",
       level: "C1",
       tags: ["opinion"],
+      examples: ["The kitchen is lovely, but the real problem is the damp behind it.", "Nice postcode, yet the real problem is the forty-minute commute."],
     },
   {
       id: "through-the-roof",
@@ -35,6 +38,7 @@ export const phrases: Phrase[] = [
       example: "Same flat, 40% more rent — prices went through the roof.",
       level: "B2",
       tags: ["money"],
+      examples: ["Rents near the new station have gone through the roof this year.", "Once they added a second bathroom, the asking price went through the roof."],
     },
   {
       id: "get-cold-feet",
@@ -44,6 +48,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion", "risk"],
       variants: ["gets cold feet", "got cold feet", "getting cold feet"],
+      examples: ["Buyers often get cold feet the week the survey lands.", "He got cold feet and pulled out the day before exchange."],
     },
   {
       id: "bidding-war",
@@ -52,6 +57,7 @@ export const phrases: Phrase[] = [
       example: "Twelve viewings in one hour turns into a bidding war by design.",
       level: "B2",
       tags: ["money", "risk"],
+      examples: ["Three offers by Saturday turned the viewing into a bidding war.", "A bidding war pushed the flat twenty grand over the asking price."],
     },
   {
       id: "come-back-to-bite-you",
@@ -61,6 +67,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "consequence"],
       variants: ["comes back to bite you", "came back to bite you", "coming back to bite you"],
+      examples: ["Skipping the survey to save money can come back to bite you.", "That cheap extension came back to bite you at resale."],
     },
   {
       id: "take-at-face-value",
@@ -70,6 +77,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["takes at face value", "took at face value", "taking at face value"],
+      examples: ["Seasoned buyers never take at face value what a listing claims.", "A good solicitor never takes at face value what the contract implies."],
     },
   {
       id: "double-edged-sword",
@@ -78,6 +86,7 @@ export const phrases: Phrase[] = [
       example: "Better cafés and evicted neighbours arrive as a double-edged sword.",
       level: "C1",
       tags: ["opinion", "risk"],
+      examples: ["A short lease is a double-edged sword: cheaper now, costly later.", "Buying at auction is a double-edged sword for first-timers."],
     },
   {
       id: "sunk-cost",
@@ -86,6 +95,7 @@ export const phrases: Phrase[] = [
       example: "£40k already spent on the renovation is a sunk cost, not a reason to continue.",
       level: "C1",
       tags: ["money", "mistake"],
+      examples: ["The survey fee is a sunk cost, whether or not you buy.", "Treating the deposit as a sunk cost stopped them walking away."],
     },
   {
       id: "bank-of-mum-and-dad",
@@ -94,6 +104,7 @@ export const phrases: Phrase[] = [
       example: "Parental wealth quietly became the bank of mum and dad.",
       level: "C1",
       tags: ["money"],
+      examples: ["Most first-time buyers here lean on the bank of mum and dad.", "Without the bank of mum and dad, that deposit would take a decade."],
     },
   {
       id: "legal-minefield",
@@ -102,6 +113,7 @@ export const phrases: Phrase[] = [
       example: "Ground rents turn leasehold into a legal minefield.",
       level: "C1",
       tags: ["risk"],
+      examples: ["Buying a flat with a short lease is a legal minefield.", "Shared ownership can be a legal minefield without a good solicitor."],
     },
   {
       id: "negative-equity",
@@ -110,6 +122,7 @@ export const phrases: Phrase[] = [
       example: "Falling prices leave some owners in negative equity.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["When prices dip, recent buyers can slip into negative equity.", "Negative equity traps you in a home you cannot afford to sell."],
     },
   {
       id: "golden-handcuffs",
@@ -118,6 +131,7 @@ export const phrases: Phrase[] = [
       example: "A great rate can turn into golden handcuffs for fifteen years.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["A cheap tracker mortgage became golden handcuffs when rates rose.", "The subsidised staff flat felt like golden handcuffs after three years."],
     },
   {
       id: "get-gazumped",
@@ -127,6 +141,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk", "money"],
       variants: ["gets gazumped", "got gazumped", "getting gazumped"],
+      examples: ["In a hot market you can get gazumped hours before exchange.", "They got gazumped by a cash buyer at the last minute."],
     },
   {
       id: "potemkin-village",
@@ -135,6 +150,7 @@ export const phrases: Phrase[] = [
       example: "The show home is a Potemkin village built for the viewing.",
       level: "C2",
       tags: ["risk", "opinion"],
+      examples: ["The show home is a Potemkin village hiding cramped real units.", "That regenerated high street is a Potemkin village after six."],
     },
   {
       id: "haves-and-have-nots",
@@ -143,6 +159,7 @@ export const phrases: Phrase[] = [
       example: "Housing wealth split a generation into the haves and have-nots.",
       level: "C2",
       tags: ["money", "opinion"],
+      examples: ["The housing ladder splits the city into the haves and have-nots.", "Home ownership now marks the line between the haves and have-nots."],
     },
   {
       id: "wolf-from-the-door",
@@ -151,6 +168,7 @@ export const phrases: Phrase[] = [
       example: "Two missed payments is all that keeps the wolf from the door.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["A lodger's rent just about keeps the wolf from the door.", "Two incomes barely keep the wolf from the door near London."],
     },
 ];
 
