@@ -82,7 +82,7 @@ export const phrases: Phrase[] = [
       id: "planned-obsolescence",
       text: "planned obsolescence",
       meaningEs: "obsolescencia programada",
-      example: "Software support quietly sets your car's expiry date.",
+      example: "Software support ending after eight years is planned obsolescence on wheels.",
       level: "C1",
       tags: ["risk", "opinion"],
     },

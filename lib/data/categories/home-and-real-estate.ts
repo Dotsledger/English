@@ -66,7 +66,7 @@ export const phrases: Phrase[] = [
       id: "take-at-face-value",
       text: "take at face value",
       meaningEs: "creerse algo tal cual",
-      example: "Don't take the listing photos at face value.",
+      example: "Listing photos are the one thing you never take at face value.",
       level: "B2",
       tags: ["risk", "opinion"],
       variants: ["takes at face value", "took at face value", "taking at face value"],

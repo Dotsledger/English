@@ -77,7 +77,7 @@ export const phrases: Phrase[] = [
       id: "rob-peter-to-pay-paul",
       text: "rob Peter to pay Paul",
       meaningEs: "desvestir a un santo para vestir a otro",
-      example: "Clean driving powered by complicated mining is robbing Peter to pay Paul.",
+      example: "Cutting exhaust fumes by strip-mining cobalt is one way to rob Peter to pay Paul.",
       level: "C1",
       tags: ["risk"],
     },

@@ -89,7 +89,7 @@ export const phrases: Phrase[] = [
       id: "take-with-a-pinch-of-salt",
       text: "take with a pinch of salt",
       meaningEs: "coger con pinzas",
-      example: "A single study on eggs should be taken with a pinch of salt.",
+      example: "A single study on eggs is something to take with a pinch of salt.",
       level: "C1",
       tags: ["opinion"],
       variants: [

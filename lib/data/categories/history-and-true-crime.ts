@@ -96,7 +96,7 @@ export const phrases: Phrase[] = [
       id: "pull-the-wool-over-their-eyes",
       text: "pull the wool over their eyes",
       meaningEs: "darles gato por liebre",
-      example: "The forger managed to pull the wool over the whole nation's eyes.",
+      example: "The forger managed to pull the wool over their eyes for forty years.",
       level: "C2",
       tags: ["risk"],
       variants: [

@@ -33,7 +33,7 @@ export const phrases: Phrase[] = [
       id: "bargain-hunter",
       text: "a bargain hunter",
       meaningEs: "un cazador de gangas",
-      example: "\"70% off\" a price nobody paid still fools the bargain hunter.",
+      example: "\"70% off\" a price nobody paid still fools a bargain hunter.",
       level: "B2",
       tags: ["money", "opinion"],
     },
