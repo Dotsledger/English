@@ -10,6 +10,7 @@ export const phrases: Phrase[] = [
       example: "If the battery costs half the price, it's not worth it.",
       level: "B2",
       tags: ["opinion", "money"],
+      examples: ["Paying extra for the panoramic roof on a lease is really not worth it.", "The extended warranty sounds reassuring, but the small print makes it not worth it."],
     },
   {
       id: "not-so-cheap",
@@ -18,6 +19,7 @@ export const phrases: Phrase[] = [
       example: "Real price: not so cheap.",
       level: "B2",
       tags: ["money"],
+      examples: ["Free charging at the dealer turns out to be not so cheap once you read the tariff.", "That bargain city car is not so cheap after insurance and the congestion charge."],
     },
   {
       id: "battery-life",
@@ -26,6 +28,7 @@ export const phrases: Phrase[] = [
       example: "They talk about speed, never about battery life.",
       level: "B2",
       tags: ["tech"],
+      examples: ["Cold British winters quietly halve the battery life the brochure promised.", "Nobody at the showroom wanted to talk about battery life after year eight."],
     },
   {
       id: "money-pit",
@@ -34,6 +37,7 @@ export const phrases: Phrase[] = [
       example: "The new car turned into a money pit within a year.",
       level: "B2",
       tags: ["money", "risk"],
+      examples: ["The classic Alfa looked gorgeous and became a money pit by the second MOT.", "Buy a cheap ex-taxi and you may inherit a money pit on wheels."],
     },
   {
       id: "ticking-time-bomb",
@@ -42,6 +46,7 @@ export const phrases: Phrase[] = [
       example: "Skipping one service line can leave a ticking time bomb under the hood.",
       level: "B2",
       tags: ["risk"],
+      examples: ["A stretched timing belt is a ticking time bomb under a quiet bonnet.", "Skipping the coolant change leaves a ticking time bomb in the engine bay."],
     },
   {
       id: "grind-to-a-halt",
@@ -51,6 +56,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk"],
       variants: ["grinds to a halt", "ground to a halt", "grinding to a halt"],
+      examples: ["Add one more lane and the ring road will still grind to a halt by eight.", "When the app's servers drop, the whole car-sharing fleet grinds to a halt."],
     },
   {
       id: "cut-corners",
@@ -60,6 +66,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "mistake"],
       variants: ["cuts corners", "cutting corners"],
+      examples: ["Budget garages cut corners on the parts you never see until they fail.", "The recall showed the supplier had been cutting corners on the brake sensor."],
     },
   {
       id: "bleed-you-dry",
@@ -69,6 +76,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "risk"],
       variants: ["bleeds you dry", "bled you dry", "bleeding you dry"],
+      examples: ["Dealer servicing plans can bleed you dry with jobs the car never needed.", "Airport parking bleeds you dry a fiver at a time."],
     },
   {
       id: "false-economy",
@@ -77,6 +85,7 @@ export const phrases: Phrase[] = [
       example: "Low monthly payments that hide a huge balloon are a false economy.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["Fitting the cheapest tyres is a false economy the first time it rains hard.", "Skipping the annual service to save cash is a false economy."],
     },
   {
       id: "planned-obsolescence",
@@ -85,6 +94,7 @@ export const phrases: Phrase[] = [
       example: "Software support ending after eight years is planned obsolescence on wheels.",
       level: "C1",
       tags: ["risk", "opinion"],
+      examples: ["Locking features behind a subscription smells like planned obsolescence by another name.", "When spare parts vanish after six years, that is planned obsolescence, not bad luck."],
     },
   {
       id: "smoke-and-mirrors",
@@ -93,6 +103,7 @@ export const phrases: Phrase[] = [
       example: "The gap between the demo and the product is mostly smoke and mirrors.",
       level: "C1",
       tags: ["risk", "opinion"],
+      examples: ["The self-driving demo was mostly smoke and mirrors and a very smooth test track.", "Range figures on the poster are smoke and mirrors once you switch the heater on."],
     },
   {
       id: "white-elephant",
@@ -101,6 +112,7 @@ export const phrases: Phrase[] = [
       example: "The sports car nobody drives is a white elephant on four wheels.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["The second family SUV became a white elephant parked outside all week.", "That town's driverless shuttle became a white elephant within a year."],
     },
   {
       id: "captive-market",
@@ -109,6 +121,7 @@ export const phrases: Phrase[] = [
       example: "Control the charging plug, and you own a captive market of drivers.",
       level: "C1",
       tags: ["money", "risk"],
+      examples: ["Own the only rapid charger for miles and you have a captive market.", "Proprietary parts turn every owner into a captive market for the brand."],
     },
   {
       id: "perverse-incentive",
@@ -117,6 +130,7 @@ export const phrases: Phrase[] = [
       example: "Minimum parking rules are a perverse incentive that taxes everyone.",
       level: "C2",
       tags: ["risk", "opinion"],
+      examples: ["Free parking for big cars is a perverse incentive dressed up as fairness.", "Paying mechanics per job creates a perverse incentive to find new faults."],
     },
   {
       id: "moral-hazard",
@@ -125,6 +139,7 @@ export const phrases: Phrase[] = [
       example: "Pricing the fine into the spreadsheet is a textbook moral hazard.",
       level: "C2",
       tags: ["risk", "money"],
+      examples: ["If the maker eats every repair bill, there is a real moral hazard in cutting quality.", "Insured against your own mistakes, you face a quiet moral hazard behind the wheel."],
     },
   {
       id: "over-a-barrel",
@@ -133,6 +148,7 @@ export const phrases: Phrase[] = [
       example: "One supplier and one price leave you over a barrel.",
       level: "C2",
       tags: ["risk"],
+      examples: ["With one dealer in town, a rare fault leaves you over a barrel.", "Lease a battery you cannot buy and the maker has you over a barrel."],
     },
   {
       id: "creative-accounting",
@@ -141,6 +157,7 @@ export const phrases: Phrase[] = [
       example: "\"Zero emission\" excludes the factory through creative accounting.",
       level: "C2",
       tags: ["money", "risk"],
+      examples: ["\"Carbon neutral\" often rests on creative accounting rather than fewer emissions.", "The scrappage savings only work with some fairly creative accounting."],
     },
   {
       id: "batten-down-the-hatches",
@@ -150,6 +167,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["risk"],
       variants: ["battens down the hatches", "battened down the hatches"],
+      examples: ["With new tariffs looming, importers are starting to batten down the hatches.", "Sales halved in a quarter, so the dealership had to batten down the hatches."],
     },
 ];
 
