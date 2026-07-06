@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Level, TopicTile as TopicTileType } from "@/lib/types";
 import { CATEGORIES, DEFAULT_TOPIC_IDS, LEVELS, topicById, topics } from "@/lib/data/topics";
-import { pickRandomTopics } from "@/lib/pickTopics";
+import { pickTopicsPreferringUnseen } from "@/lib/pickTopics";
+import { useTopicProgress } from "@/lib/useTopicProgress";
 import { TopicTile } from "@/components/TopicTile";
 import { DueReview } from "@/components/DueReview";
 
@@ -32,12 +33,34 @@ export function TopicGrid() {
   const [shown, setShown] = useState<TopicTileType[]>(DEFAULT_TOPICS);
   const [refreshKey, setRefreshKey] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const { store: progress } = useTopicProgress();
+  const adjustedForProgress = useRef(false);
 
   const applyFilters = (levels: Level[], categories: string[]) => {
     const pool = computePool(levels, categories);
-    setShown(pickRandomTopics(pool, SHOWN_COUNT));
+    const completedIds = new Set(Object.keys(progress));
+    setShown(pickTopicsPreferringUnseen(pool, SHOWN_COUNT, completedIds));
     setRefreshKey((k) => k + 1);
   };
+
+  // Once completed-topic data loads from localStorage, swap out any default
+  // tile the user has already finished — but only that one time, so it
+  // doesn't fight the user's own filter/refresh choices afterward.
+  useEffect(() => {
+    if (adjustedForProgress.current) return;
+    const completedIds = new Set(Object.keys(progress));
+    if (completedIds.size === 0) return;
+    adjustedForProgress.current = true;
+    if (DEFAULT_TOPICS.some((t) => completedIds.has(t.id))) {
+      const pool = computePool(selectedLevels, selectedCategories);
+      // Swapping out an already-finished default tile once completed-topic
+      // data loads from localStorage — same one-time-hydration pattern as
+      // usePhraseMemory's initial load, not a derived-state anti-pattern.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShown(pickTopicsPreferringUnseen(pool, SHOWN_COUNT, completedIds));
+      setRefreshKey((k) => k + 1);
+    }
+  }, [progress, selectedLevels, selectedCategories]);
 
   const handleToggleLevel = (level: Level) => {
     const next = toggle(selectedLevels, level);
@@ -141,7 +164,7 @@ export function TopicGrid() {
           className="scene-enter grid grid-cols-2 gap-3"
         >
           {shown.map((topic) => (
-            <TopicTile key={topic.id} topic={topic} />
+            <TopicTile key={topic.id} topic={topic} completed={progress[topic.id] === true} />
           ))}
         </div>
       )}

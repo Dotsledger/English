@@ -10,3 +10,21 @@ export function pickRandomTopics(pool: TopicTile[], count: number): TopicTile[] 
   }
   return shuffled.slice(shuffled.length - n);
 }
+
+/**
+ * Like `pickRandomTopics`, but avoids resurfacing already-completed topics
+ * unless the pool of untouched ones can't fill the count on its own.
+ */
+export function pickTopicsPreferringUnseen(
+  pool: TopicTile[],
+  count: number,
+  completedIds: Set<string>
+): TopicTile[] {
+  const fresh = pool.filter((t) => !completedIds.has(t.id));
+  const picked = pickRandomTopics(fresh, count);
+  if (picked.length < count) {
+    const seen = pool.filter((t) => completedIds.has(t.id));
+    picked.push(...pickRandomTopics(seen, count - picked.length));
+  }
+  return picked;
+}

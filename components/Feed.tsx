@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FeedScene, TopicTile } from "@/lib/types";
 import { getPhrase } from "@/lib/data/phrases";
 import { usePhraseMemory } from "@/lib/usePhraseMemory";
+import { useTopicProgress } from "@/lib/useTopicProgress";
 import { FeedProgress } from "@/components/FeedProgress";
 import { SceneRenderer, sceneBackgroundClass } from "@/components/SceneRenderer";
 import { CheckpointCard } from "@/components/CheckpointCard";
@@ -17,6 +18,7 @@ export function Feed({ topic, scenes }: { topic: TopicTile; scenes: FeedScene[] 
   const [finished, setFinished] = useState(false);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const { markSeen, markAttempt, getStatus } = usePhraseMemory();
+  const { markTopicCompleted } = useTopicProgress();
 
   const scene = scenes[index];
   const isCheckpoint = scene?.type === "checkpoint";
@@ -28,6 +30,10 @@ export function Feed({ topic, scenes }: { topic: TopicTile; scenes: FeedScene[] 
       markSeen(scene.phraseId, scene.id);
     }
   }, [scene, markSeen]);
+
+  useEffect(() => {
+    if (finished) markTopicCompleted(topic.id);
+  }, [finished, markTopicCompleted, topic.id]);
 
   const goNext = useCallback(() => {
     if (!canGoNext) return;

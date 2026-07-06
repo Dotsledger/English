@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
 import Home from "@/app/page";
 import { Feed } from "@/components/Feed";
 import { SceneRenderer } from "@/components/SceneRenderer";
+import { TopicTile } from "@/components/TopicTile";
 import { buildFeed, contentScenes, topicIdByPhraseId } from "@/lib/data/scenes";
 import { DEFAULT_TOPIC_IDS, topicById } from "@/lib/data/topics";
 import { STORAGE_KEY, emptyEntry, parseStore } from "@/lib/phraseMemory";
+import { TOPIC_PROGRESS_KEY, isCompleted, parseTopicProgress } from "@/lib/topicProgress";
 
 beforeEach(() => {
   cleanup();
@@ -91,6 +93,29 @@ describe("home / topic grid", () => {
     const topicId = topicIdByPhraseId.get("not-worth-it")!;
     expect(chip.getAttribute("href")).toBe(`/feed/${topicId}`);
   });
+
+  it("swaps out a default topic that's already been completed", async () => {
+    window.localStorage.setItem(TOPIC_PROGRESS_KEY, JSON.stringify({ "electric-scooters": true }));
+    render(<Home />);
+    await waitFor(() => {
+      expect(screen.queryByTestId("topic-tile-electric-scooters")).toBeNull();
+    });
+    expect(screen.getAllByTestId(/^topic-tile-/)).toHaveLength(4);
+  });
+});
+
+describe("topic completion badge", () => {
+  it("shows a checkmark for a completed topic", () => {
+    const topic = topicById.get("electric-scooters")!;
+    render(<TopicTile topic={topic} completed />);
+    expect(screen.getByTestId("topic-completed-badge")).toBeDefined();
+  });
+
+  it("hides the checkmark for a not-yet-completed topic", () => {
+    const topic = topicById.get("electric-scooters")!;
+    render(<TopicTile topic={topic} />);
+    expect(screen.queryByTestId("topic-completed-badge")).toBeNull();
+  });
 });
 
 describe("scene rendering", () => {
@@ -141,6 +166,25 @@ describe("feed navigation", () => {
     const store = parseStore(window.localStorage.getItem(STORAGE_KEY));
     expect(first.type).toBe("content");
     expect(store[first.phraseId]?.timesSeen).toBeGreaterThanOrEqual(1);
+  });
+
+  it("marks the topic completed once the feed is finished", () => {
+    const scenes = renderScooterFeed();
+    for (const scene of scenes) {
+      if (scene.type === "checkpoint") {
+        fireEvent.click(screen.getByText(scene.options[scene.correctIndex]));
+      }
+      fireEvent.keyDown(window, { key: "ArrowDown" });
+    }
+    const progress = parseTopicProgress(window.localStorage.getItem(TOPIC_PROGRESS_KEY));
+    expect(isCompleted(progress, "electric-scooters")).toBe(true);
+  });
+
+  it("does not mark the topic completed before reaching the end", () => {
+    renderScooterFeed();
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    const progress = parseTopicProgress(window.localStorage.getItem(TOPIC_PROGRESS_KEY));
+    expect(isCompleted(progress, "electric-scooters")).toBe(false);
   });
 });
 

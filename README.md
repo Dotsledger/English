@@ -44,12 +44,21 @@ npm run build
 - `lib/types.ts` — discriminated-union scene types, phrase and memory types (levels are B2/C1/C2)
 - `lib/data/` — mock phrases (309), a pool of 320 topic tiles across 20 categories, 650 content
   scenes, 48 checkpoints, feed builder
-- `lib/pickTopics.ts` — pure random-sample utility used by the "refresh" button and by filtering
-- `lib/phraseMemory.ts` — pure localStorage memory engine (seen counts, recall scheduling, corruption-safe parsing)
+- `lib/pickTopics.ts` — pure random-sample utility used by the "refresh" button and by filtering;
+  `pickTopicsPreferringUnseen` additionally avoids resurfacing completed topics until the fresh pool
+  runs out
+- `lib/phraseMemory.ts` — pure localStorage memory engine (seen counts, recall scheduling,
+  corruption-safe parsing); `getDueEntries` surfaces phrases whose `nextReviewAt` has passed
 - `lib/usePhraseMemory.ts` — React hook over the engine
+- `lib/topicProgress.ts` / `lib/useTopicProgress.ts` — pure localStorage store + hook tracking which
+  topics a user has finished
+- `components/DueReview.tsx` — home-screen strip linking due-for-review phrases back to a feed that
+  teaches them
 - `components/TopicGrid.tsx` — topic grid; level (B2/C1/C2) + category multi-select filters, shows 4
-  tiles at a time, "↻" re-samples 4 more from the filtered pool
-- `components/Feed.tsx` — full-screen feed: swipe + keyboard navigation, checkpoint gating
+  tiles at a time, "↻" re-samples 4 more from the filtered pool, swaps out already-completed
+  defaults once progress loads
+- `components/Feed.tsx` — full-screen feed: swipe + keyboard navigation, checkpoint gating, marks
+  the topic completed on reaching the end
 - `components/scenes/` — ten visually distinct scene renderers
 - `tests/` — Vitest + Testing Library (content rules, memory engine, interaction)
 
