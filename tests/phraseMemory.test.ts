@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   emptyEntry,
+  getDueEntries,
   parseStore,
   recordAttempt,
   recordSeen,
@@ -90,5 +91,35 @@ describe("parseStore (corruption safety)", () => {
 describe("statusOf", () => {
   it("defaults to new for unknown phrases", () => {
     expect(statusOf({}, "never-seen")).toBe("new");
+  });
+});
+
+describe("getDueEntries", () => {
+  it("returns nothing for an empty store", () => {
+    expect(getDueEntries({}, NOW)).toEqual([]);
+  });
+
+  it("excludes phrases with no scheduled review", () => {
+    const store = recordSeen({}, "not-worth-it", "scene-1", new Set(), NOW);
+    expect(getDueEntries(store, NOW)).toEqual([]);
+  });
+
+  it("excludes phrases scheduled in the future", () => {
+    const store = recordAttempt({}, "p", true, NOW);
+    expect(getDueEntries(store, NOW)).toEqual([]);
+    expect(getDueEntries(store, NOW + 1 * DAY + 1)).toHaveLength(1);
+  });
+
+  it("includes a wrong-answer phrase once its 5-minute cooldown passes", () => {
+    const store = recordAttempt({}, "p", false, NOW);
+    expect(getDueEntries(store, NOW + 60 * 1000)).toEqual([]);
+    expect(getDueEntries(store, NOW + 5 * 60 * 1000)).toHaveLength(1);
+  });
+
+  it("sorts most overdue first", () => {
+    let store = recordAttempt({}, "later", true, NOW);
+    store = recordAttempt(store, "sooner", false, NOW);
+    const due = getDueEntries(store, NOW + 1 * DAY + 1);
+    expect(due.map((e) => e.phraseId)).toEqual(["sooner", "later"]);
   });
 });

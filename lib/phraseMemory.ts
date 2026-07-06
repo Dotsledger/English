@@ -124,3 +124,13 @@ export function recordAttempt(
 export function statusOf(store: PhraseMemoryStore, phraseId: string): PhraseStatus {
   return store[phraseId]?.status ?? "new";
 }
+
+/** Entries whose scheduled review time has passed, most overdue first. */
+export function getDueEntries(
+  store: PhraseMemoryStore,
+  now: number = Date.now()
+): PhraseMemoryEntry[] {
+  return Object.values(store)
+    .filter((e) => e.nextReviewAt !== null && e.nextReviewAt <= now)
+    .sort((a, b) => (a.nextReviewAt ?? 0) - (b.nextReviewAt ?? 0));
+}

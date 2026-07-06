@@ -9108,6 +9108,12 @@ export const checkpointScenes: CheckpointScene[] = [
 
 const checkpointByTopic = new Map(checkpointScenes.map((c) => [c.topicId, c]));
 
+/** First topic a phrase appears in — used to route "due for review" back into a feed. */
+export const topicIdByPhraseId = new Map<string, string>();
+for (const s of contentScenes) {
+  if (!topicIdByPhraseId.has(s.phraseId)) topicIdByPhraseId.set(s.phraseId, s.topicId);
+}
+
 /**
  * Builds the feed for a topic: its content scenes in order, with the topic's
  * checkpoint (if any) inserted after the second scene — always after the

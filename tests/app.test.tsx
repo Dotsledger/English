@@ -3,9 +3,9 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import Home from "@/app/page";
 import { Feed } from "@/components/Feed";
 import { SceneRenderer } from "@/components/SceneRenderer";
-import { buildFeed, contentScenes } from "@/lib/data/scenes";
+import { buildFeed, contentScenes, topicIdByPhraseId } from "@/lib/data/scenes";
 import { DEFAULT_TOPIC_IDS, topicById } from "@/lib/data/topics";
-import { STORAGE_KEY, parseStore } from "@/lib/phraseMemory";
+import { STORAGE_KEY, emptyEntry, parseStore } from "@/lib/phraseMemory";
 
 beforeEach(() => {
   cleanup();
@@ -76,6 +76,20 @@ describe("home / topic grid", () => {
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     expect(screen.getAllByTestId(/^topic-tile-/)).toHaveLength(4);
+  });
+
+  it("shows no due-review strip when nothing is scheduled", () => {
+    render(<Home />);
+    expect(screen.queryByTestId(/^due-review-/)).toBeNull();
+  });
+
+  it("surfaces a due phrase and links it back to a feed that teaches it", async () => {
+    const entry = { ...emptyEntry("not-worth-it"), nextReviewAt: Date.now() - 1000 };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ "not-worth-it": entry }));
+    render(<Home />);
+    const chip = await screen.findByTestId("due-review-not-worth-it");
+    const topicId = topicIdByPhraseId.get("not-worth-it")!;
+    expect(chip.getAttribute("href")).toBe(`/feed/${topicId}`);
   });
 });
 

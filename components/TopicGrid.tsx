@@ -5,6 +5,7 @@ import type { Level, TopicTile as TopicTileType } from "@/lib/types";
 import { CATEGORIES, DEFAULT_TOPIC_IDS, LEVELS, topicById, topics } from "@/lib/data/topics";
 import { pickRandomTopics } from "@/lib/pickTopics";
 import { TopicTile } from "@/components/TopicTile";
+import { DueReview } from "@/components/DueReview";
 
 const SHOWN_COUNT = 4;
 const DEFAULT_TOPICS = DEFAULT_TOPIC_IDS.slice(0, SHOWN_COUNT).map((id) => topicById.get(id)!);
@@ -78,6 +79,8 @@ export function TopicGrid() {
           Scroll something interesting. The English sticks on its own.
         </p>
       </header>
+
+      <DueReview />
 
       <div className="mb-3 flex gap-1.5 px-1" role="group" aria-label="Filter by level">
         {LEVELS.map((level) => {
