@@ -11,6 +11,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["opinion"],
       variants: ["depends on"],
+      examples: ["Whether the model helps really depends on the quality of your prompt.", "It depends on how much you trust an answer you cannot check."],
     },
   {
       id: "actually-works",
@@ -20,6 +21,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "tech"],
       variants: ["actually work"],
+      examples: ["Half the AI features demoed never actually work in daily use.", "Strip the hype and see what actually works for your workflow."],
     },
   {
       id: "turn-x-into-y",
@@ -29,6 +31,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["tech", "pattern"],
       variants: ["turn", "turns", "turned"],
+      examples: ["Good prompts turn a vague idea into a working draft in seconds.", "The tool turned my scribbled notes into a tidy summary."],
     },
   {
       id: "comes-at-a-cost",
@@ -38,6 +41,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "risk"],
       variants: ["come at a cost", "came at a cost", "coming at a cost"],
+      examples: ["Faster answers come at a cost when nobody checks the sources.", "That free tier comes at a cost in privacy you rarely see."],
     },
   {
       id: "pay-the-price",
@@ -47,6 +51,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["money", "consequence"],
       variants: ["paid the price", "paying the price", "pays the price"],
+      examples: ["Automate the review step and you pay the price in silent errors.", "They paid the price for trusting the chatbot's confident guess."],
     },
   {
       id: "locked-in",
@@ -56,6 +61,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk", "money"],
       variants: ["lock you in", "locks you in", "locked you in"],
+      examples: ["Export your data early or you will end up locked in.", "Free credits are how the platform locks you in."],
     },
   {
       id: "the-small-print",
@@ -65,6 +71,7 @@ export const phrases: Phrase[] = [
       level: "B2",
       tags: ["risk"],
       variants: ["small print"],
+      examples: ["The small print lets them train models on everything you type.", "Nobody reads the small print until the bill arrives."],
     },
   {
       id: "raise-a-red-flag",
@@ -74,6 +81,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk"],
       variants: ["raises a red flag", "raised a red flag", "raising a red flag"],
+      examples: ["A tool that hides its sources should raise a red flag.", "The vague privacy policy raised a red flag with our lawyers."],
     },
   {
       id: "slip-under-the-radar",
@@ -83,6 +91,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["money", "twist"],
       variants: ["slips under the radar", "slipped under the radar", "slipping under the radar"],
+      examples: ["Small data grabs slip under the radar in a long update.", "The price rise slipped under the radar during the rebrand."],
     },
   {
       id: "pull-up-the-ladder",
@@ -92,6 +101,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion", "risk"],
       variants: ["pulls up the ladder", "pulled up the ladder", "pulling up the ladder"],
+      examples: ["Early adopters lobby to pull up the ladder behind them.", "Once they had market share, they pulled up the ladder on rivals."],
     },
   {
       id: "single-point-of-failure",
@@ -101,6 +111,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["risk", "tech"],
       variants: ["single point of failure"],
+      examples: ["One login for everything is a single point of failure.", "Routing every request through one API is a single point of failure."],
     },
   {
       id: "paper-over-the-cracks",
@@ -110,6 +121,7 @@ export const phrases: Phrase[] = [
       level: "C1",
       tags: ["opinion"],
       variants: ["papers over the cracks", "papered over the cracks", "papering over the cracks"],
+      examples: ["A slick interface can paper over the cracks in a shaky model.", "The update just papered over the cracks instead of fixing them."],
     },
   {
       id: "by-design-not-accident",
@@ -118,6 +130,7 @@ export const phrases: Phrase[] = [
       example: "That's by design, not by accident.",
       level: "C2",
       tags: ["opinion", "risk"],
+      examples: ["The app is addictive by design, not by accident.", "Those dark patterns appear by design, not by accident."],
     },
   {
       id: "conveniently-left-out",
@@ -127,6 +140,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["twist"],
       variants: ["conveniently leaves out", "conveniently leaving out"],
+      examples: ["The energy cost of training was conveniently left out.", "The demo conveniently leaves out how often it fails."],
     },
   {
       id: "run-its-course",
@@ -136,6 +150,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["runs its course", "ran its course", "running its course"],
+      examples: ["Let the hype run its course before betting the roadmap on it.", "The chatbot craze eventually ran its course at the office."],
     },
   {
       id: "for-all-the-wrong-reasons",
@@ -144,6 +159,7 @@ export const phrases: Phrase[] = [
       example: "Seamless integration sells for all the wrong reasons.",
       level: "C2",
       tags: ["opinion"],
+      examples: ["The launch went viral for all the wrong reasons.", "That feature became famous for all the wrong reasons."],
     },
   {
       id: "if-it-aint-broke",
@@ -153,6 +169,7 @@ export const phrases: Phrase[] = [
       level: "C2",
       tags: ["opinion"],
       variants: ["if it ain't broke"],
+      examples: ["The team rewrote a working tool, forgetting that if it ain't broke, don't fix it.", "Sometimes the wisest AI strategy is simple: if it ain't broke, don't fix it."],
     },
 ];
 
