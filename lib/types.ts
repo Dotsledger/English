@@ -236,6 +236,9 @@ export type LevelState = {
   history: LevelCheckRecord[];
   /** Whether the "not an official certification" tooltip has been shown. */
   tooltipSeen: boolean;
+  /** When the user last tapped "Ahora no" on an available check. The offer is
+   * suppressed for the rest of that calendar day. Cleared on completion. */
+  lastDismissedAt?: number | null;
 };
 
 /** A phrase the user typed in from real life ("+" quick capture). */

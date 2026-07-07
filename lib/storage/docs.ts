@@ -199,6 +199,7 @@ export function parseLevel(raw: string | null): LevelState {
     checkThreshold,
     history,
     tooltipSeen: parsed.tooltipSeen === true,
+    lastDismissedAt: typeof parsed.lastDismissedAt === "number" ? parsed.lastDismissedAt : null,
   };
 }
 

@@ -17,9 +17,12 @@ export function CheckLoader() {
   const deck = useDeck();
   const level = useLevel();
   const [items, setItems] = useState<CheckItem[] | null>(null);
-  const [result, setResult] = useState<{ before: LevelState; after: LevelState; score: number } | null>(
-    null
-  );
+  const [result, setResult] = useState<{
+    before: LevelState;
+    after: LevelState;
+    score: number;
+    stretchCorrect: number;
+  } | null>(null);
 
   const ready = deck.ready && level.ready;
 
@@ -38,7 +41,14 @@ export function CheckLoader() {
   }, [ready, items, deck.value, level.value]);
 
   if (result) {
-    return <CheckResult before={result.before} after={result.after} score={result.score} />;
+    return (
+      <CheckResult
+        before={result.before}
+        after={result.after}
+        score={result.score}
+        stretchCorrect={result.stretchCorrect}
+      />
+    );
   }
 
   if (!items) {
@@ -63,11 +73,11 @@ export function CheckLoader() {
   return (
     <CheckPlayer
       items={items}
-      onComplete={(score) => {
+      onComplete={(score, stretchCorrect) => {
         const before = level.value;
-        const after = applyCheckResult(before, score, Date.now());
+        const after = applyCheckResult(before, score, Date.now(), Math.random, stretchCorrect);
         level.update(() => after);
-        setResult({ before, after, score });
+        setResult({ before, after, score, stretchCorrect });
       }}
     />
   );

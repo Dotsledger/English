@@ -12,7 +12,7 @@ import {
 } from "@/lib/session/composeCategorySession";
 import { composeSnackSession } from "@/lib/session/composeSnackSession";
 import { composeComebackSession } from "@/lib/session/composeComebackSession";
-import { isCheckAvailable } from "@/lib/level";
+import { shouldOfferCheck } from "@/lib/level";
 import { useCaptures, useCompletedTopics, useDeck, useLevel } from "@/components/AppStateProvider";
 import { SessionPlayer } from "@/components/SessionPlayer";
 
@@ -77,8 +77,9 @@ export function SessionLoader({ mode, title }: { mode: SessionMode; title: strin
       });
     }
     // Offer the level check as an opt-in first card in normal feeds (not in
-    // the focused comeback micro-session).
-    if (mode.kind !== "comeback" && isCheckAvailable(level.value)) {
+    // the focused comeback micro-session). Suppressed for the rest of the day
+    // after an "Ahora no".
+    if (mode.kind !== "comeback" && shouldOfferCheck(level.value, Date.now())) {
       composed = { ...composed, cards: [{ kind: "check_offer" }, ...composed.cards] };
     }
     return composed;

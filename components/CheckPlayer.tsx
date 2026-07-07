@@ -16,7 +16,8 @@ export function CheckPlayer({
   onComplete,
 }: {
   items: CheckItem[];
-  onComplete: (scorePct: number) => void;
+  /** score = CORE-only percentage; stretchCorrect = correct next-band items. */
+  onComplete: (scorePct: number, stretchCorrect: number) => void;
 }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
@@ -33,8 +34,20 @@ export function CheckPlayer({
   const advance = () => {
     if (!answered) return;
     if (isLast) {
-      const correct = Object.values({ ...answers }).filter((a) => a.correct).length;
-      onComplete(scoreCheck(correct, items.length));
+      // Core score excludes stretch items; stretch only ever adds a bonus.
+      let coreTotal = 0;
+      let coreCorrect = 0;
+      let stretchCorrect = 0;
+      items.forEach((it, i) => {
+        const a = answers[i];
+        if (it.source === "stretch") {
+          if (a?.correct) stretchCorrect += 1;
+        } else {
+          coreTotal += 1;
+          if (a?.correct) coreCorrect += 1;
+        }
+      });
+      onComplete(scoreCheck(coreCorrect, coreTotal), stretchCorrect);
     } else {
       setIndex((i) => i + 1);
     }
@@ -67,6 +80,7 @@ export function CheckPlayer({
               exercise={item.exercise}
               phrase={phrase}
               kicker="¿Cuál es?"
+              badge={item.source === "stretch" ? "🎯 Extra" : undefined}
               selectedIndex={answered ? (answers[index].selectedIndex ?? null) : null}
               onSelect={(i, correct) => record(correct, i)}
             />

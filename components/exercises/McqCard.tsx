@@ -9,12 +9,15 @@ export function McqCard({
   exercise,
   phrase,
   kicker,
+  badge,
   selectedIndex,
   onSelect,
 }: {
   exercise: McqExercise;
   phrase: Phrase | null;
   kicker: string;
+  /** Optional pill shown next to the kicker (e.g. "🎯 Extra" for stretch items). */
+  badge?: string;
   selectedIndex: number | null;
   onSelect: (index: number, correct: boolean) => void;
 }) {
@@ -26,9 +29,19 @@ export function McqCard({
       data-testid={`mcq-${exercise.phraseId}`}
       className="flex h-full flex-col justify-center gap-6 px-6 pb-6"
     >
-      <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300">
-        {kicker}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300">
+          {kicker}
+        </span>
+        {badge && (
+          <span
+            data-testid="mcq-badge"
+            className="rounded-full border border-amber-300/30 bg-amber-300/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-300"
+          >
+            {badge}
+          </span>
+        )}
+      </div>
 
       <p className="whitespace-pre-line text-[1.7rem] font-bold leading-[1.2] text-white">
         {exercise.prompt}

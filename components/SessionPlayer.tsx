@@ -13,7 +13,7 @@ import {
   useTriage,
 } from "@/components/AppStateProvider";
 import { reconcileTriage } from "@/lib/session/triage";
-import { bumpCardsSeen } from "@/lib/level";
+import { bumpCardsSeen, dismissCheck } from "@/lib/level";
 import {
   appendSentence,
   markSeen,
@@ -310,7 +310,11 @@ export function SessionPlayer({
             </Link>
             <button
               type="button"
-              onClick={goNext}
+              data-testid="check-offer-dismiss"
+              onClick={() => {
+                level.update((prev) => dismissCheck(prev, Date.now()));
+                goNext();
+              }}
               className="text-sm text-white/45 active:scale-95"
             >
               Ahora no

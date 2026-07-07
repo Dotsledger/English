@@ -10,10 +10,13 @@ export function CheckResult({
   before,
   after,
   score,
+  stretchCorrect = 0,
 }: {
   before: LevelState;
   after: LevelState;
   score: number;
+  /** Correct next-band ("Extra") items — only ever mentioned when > 0. */
+  stretchCorrect?: number;
 }) {
   const advanced = formatLevel(before) !== formatLevel(after);
 
@@ -50,6 +53,14 @@ export function CheckResult({
         <span className="font-mono text-2xl font-semibold text-white">{score}%</span>
         <span className="text-sm text-white/50">en este chequeo</span>
       </div>
+
+      {stretchCorrect > 0 && (
+        <p data-testid="stretch-bonus-note" className="text-sm text-amber-300">
+          {stretchCorrect === 1
+            ? "🎯 Y acertaste 1 extra del nivel siguiente — vas por delante."
+            : `🎯 Y acertaste ${stretchCorrect} extras del nivel siguiente — vas por delante.`}
+        </p>
+      )}
 
       <Link
         href="/"

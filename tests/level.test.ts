@@ -2,12 +2,15 @@ import { describe, it, expect } from "vitest";
 import {
   applyCheckResult,
   bumpCardsSeen,
+  dismissCheck,
   formatLevel,
   gainForScore,
   initialLevel,
   isCheckAvailable,
   markTooltipSeen,
   nextBand,
+  shouldOfferCheck,
+  stretchBonus,
 } from "@/lib/level";
 import { parseLevel } from "@/lib/storage/docs";
 import type { LevelState } from "@/lib/types";
@@ -93,6 +96,64 @@ describe("applyCheckResult", () => {
     const lvl = applyCheckResult(base({ sub: 0 }), 90, NOW, () => 0.5);
     expect(lvl.checkThreshold).toBeGreaterThanOrEqual(50);
     expect(lvl.checkThreshold).toBeLessThanOrEqual(60);
+  });
+});
+
+describe("check offer gating (Fix 1)", () => {
+  const day = 24 * 60 * 60 * 1000;
+  const avail = base({ cardsSinceCheck: 60, checkThreshold: 55 });
+
+  it("offers when available and never dismissed", () => {
+    expect(shouldOfferCheck(avail, NOW)).toBe(true);
+  });
+
+  it("does not offer when the check isn't available yet", () => {
+    expect(shouldOfferCheck(base({ cardsSinceCheck: 3, checkThreshold: 55 }), NOW)).toBe(false);
+  });
+
+  it("suppresses the offer for the rest of the same calendar day after 'Ahora no'", () => {
+    const dismissed = dismissCheck(avail, NOW);
+    expect(dismissed.lastDismissedAt).toBe(NOW);
+    expect(shouldOfferCheck(dismissed, NOW + 6 * 60 * 60 * 1000)).toBe(false); // same day
+  });
+
+  it("re-offers on a later calendar day", () => {
+    const dismissed = dismissCheck(avail, NOW);
+    expect(shouldOfferCheck(dismissed, NOW + day)).toBe(true);
+  });
+
+  it("completing a check clears the dismissal", () => {
+    const dismissed = dismissCheck(avail, NOW);
+    const after = applyCheckResult(dismissed, 90, NOW);
+    expect(after.lastDismissedAt).toBeNull();
+  });
+});
+
+describe("stretch bonus (Fix 2)", () => {
+  it("adds +1 per correct stretch item, capped at +2", () => {
+    expect(stretchBonus(0)).toBe(0);
+    expect(stretchBonus(1)).toBe(1);
+    expect(stretchBonus(2)).toBe(2);
+    expect(stretchBonus(5)).toBe(2);
+  });
+
+  it("a correct stretch item accelerates gain beyond the core tier", () => {
+    // core 70 → +1; +1 stretch → +2 total: B2.0 → B2.2
+    expect(formatLevel(applyCheckResult(base({ sub: 0 }), 70, NOW, () => 0, 1))).toBe("B2.2");
+    // core 90 → +4; +2 stretch → +6, capped at .10: B2.0 → B2.6
+    expect(formatLevel(applyCheckResult(base({ sub: 0 }), 90, NOW, () => 0, 2))).toBe("B2.6");
+  });
+
+  it("stretch bonus alone (weak core) never crosses a band", () => {
+    // core 40 → base 0; +2 stretch bonus at B2.10 must NOT jump to C1
+    expect(formatLevel(applyCheckResult(base({ band: "B2", sub: 10 }), 40, NOW, () => 0, 2))).toBe(
+      "B2.10"
+    );
+  });
+
+  it("stretch bonus with a weak core still can't decrease the level", () => {
+    const lvl = applyCheckResult(base({ band: "B2", sub: 6 }), 40, NOW, () => 0, 2);
+    expect(formatLevel(lvl)).toBe("B2.8"); // +0 core, +2 bonus, capped within band
   });
 });
 
