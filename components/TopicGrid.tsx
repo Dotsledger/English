@@ -11,6 +11,7 @@ import { TopicTile } from "@/components/TopicTile";
 import { DueCta } from "@/components/DueCta";
 import { SnackHero } from "@/components/SnackHero";
 import { LevelBadge } from "@/components/LevelBadge";
+import { StreakBadge } from "@/components/StreakBadge";
 import { ProgressPipeline } from "@/components/ProgressPipeline";
 import { MissionCard } from "@/components/MissionCard";
 import { RecapCard } from "@/components/RecapCard";
@@ -142,6 +143,7 @@ export function TopicGrid() {
       <SnackHero />
 
       <LevelBadge />
+      <StreakBadge />
       <ProgressPipeline />
       <RecapCard />
       <MissionCard />

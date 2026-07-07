@@ -1,4 +1,4 @@
-import type { CaptureStore, DeckStore } from "@/lib/types";
+import type { CaptureStore, CefrBand, DeckStore, TopicTile } from "@/lib/types";
 import type { SessionCard, SessionPlan } from "@/lib/session/types";
 import type { ComposerContent } from "@/lib/session/composeCategorySession";
 import { pickRandomTopics } from "@/lib/pickTopics";
@@ -6,10 +6,52 @@ import { dueEntries, upcomingEntries } from "@/lib/session/leitner";
 import { reviewCardFor } from "@/lib/session/exercisePicker";
 import { interleaveCheckpoints } from "@/lib/session/checkpoints";
 import { markAudioFirst } from "@/lib/session/audioFirst";
+import { nextBand } from "@/lib/level";
 
-const DEFAULT_TARGET = 13;
-const DUE_SHARE = 0.6;
+/** Shared so SnackHero's subtitle matches the real composition (no drift). */
+export const SNACK_TARGET_CARDS = 8;
+export const SNACK_DUE_SHARE = 0.6;
+
+const DEFAULT_TARGET = SNACK_TARGET_CARDS;
+const DUE_SHARE = SNACK_DUE_SHARE;
 const FLOOR = 6;
+
+/**
+ * Orders fresh topics to weight the Daily Snack's new content toward the
+ * user's current band (~3 current : 1 next-band preview), with any other-band
+ * topics as fallback so it's a bias, never a gate. Explora and category feeds
+ * do NOT use this — they stay fully open at every level.
+ */
+export function orderTopicsByBand(
+  topics: TopicTile[],
+  band: CefrBand,
+  rng: () => number
+): TopicTile[] {
+  const nb = nextBand(band);
+  const cur = pickRandomTopics(topics.filter((t) => t.difficulty === band), Infinity, rng);
+  const nxt = pickRandomTopics(
+    topics.filter((t) => nb !== null && t.difficulty === nb),
+    Infinity,
+    rng
+  );
+  const other = pickRandomTopics(
+    topics.filter((t) => t.difficulty !== band && !(nb !== null && t.difficulty === nb)),
+    Infinity,
+    rng
+  );
+
+  const out: TopicTile[] = [];
+  let ci = 0;
+  let ni = 0;
+  let slot = 0;
+  while (ci < cur.length || ni < nxt.length) {
+    if (slot % 4 === 3 && ni < nxt.length) out.push(nxt[ni++]);
+    else if (ci < cur.length) out.push(cur[ci++]);
+    else if (ni < nxt.length) out.push(nxt[ni++]);
+    slot++;
+  }
+  return [...out, ...other];
+}
 
 /**
  * The one-tap "Daily Snack": ~60% due reviews (most overdue first, capped
@@ -27,6 +69,8 @@ export function composeSnackSession(opts: {
   now: number;
   targetCards?: number;
   rng?: () => number;
+  /** Current level band — weights new content toward it (omit ⇒ unweighted). */
+  band?: CefrBand;
 }): SessionPlan {
   const rng = opts.rng ?? Math.random;
   const target = opts.targetCards ?? DEFAULT_TARGET;
@@ -65,7 +109,10 @@ export function composeSnackSession(opts: {
 
   const contentCards: SessionCard[] = [];
   const freshTopics = content.topics.filter((t) => !opts.completedTopicIds.has(t.id));
-  for (const topic of pickRandomTopics(freshTopics, freshTopics.length, rng)) {
+  const orderedTopics = opts.band
+    ? orderTopicsByBand(freshTopics, opts.band, rng)
+    : pickRandomTopics(freshTopics, freshTopics.length, rng);
+  for (const topic of orderedTopics) {
     if (contentCards.length >= contentBudget) break;
     const newScenes = content.scenes.filter(
       (s) => s.topicId === topic.id && isNewScene(s.phraseId)

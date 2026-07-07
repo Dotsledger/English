@@ -74,6 +74,7 @@ export function SessionLoader({ mode, title }: { mode: SessionMode; title: strin
         content: CONTENT,
         completedTopicIds: completedIds,
         now: Date.now(),
+        band: level.value.band,
       });
     }
     // Offer the level check as an opt-in first card in normal feeds (not in

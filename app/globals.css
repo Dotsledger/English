@@ -108,6 +108,33 @@ body {
   animation: soft-timer 10s linear forwards;
 }
 
+/* Correct-answer flourish — a brief radial spark, under 500ms, non-blocking.
+   Only ever shown on a correct answer (calm-on-error asymmetry preserved). */
+@keyframes spark-dot {
+  0% { opacity: 0; transform: rotate(var(--a, 0deg)) translateY(0) scale(0.4); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a, 0deg)) translateY(-22px) scale(1); }
+}
+@keyframes spark-core {
+  0% { opacity: 0; transform: scale(0.3); }
+  40% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(1); }
+}
+.spark-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 6px;
+  width: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: spark-dot 460ms ease-out both;
+}
+.spark-core {
+  animation: spark-core 460ms ease-out both;
+}
+
 /* Show only on devices with a precise pointer (mouse/trackpad). Touch
    devices use the swipe gesture, so the nav arrows stay hidden there. */
 .fine-pointer-only {

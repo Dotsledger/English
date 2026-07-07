@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Phrase } from "@/lib/types";
 import type { ClozeExercise, FreeTypeExercise } from "@/lib/exercises/types";
 import { gradeAnswer, type GradeResult } from "@/lib/exercises/grade";
+import { SparkBurst } from "@/components/SparkBurst";
 
 /**
  * Shared typed-answer card for cloze (sentence with a blank, first-letter
@@ -90,7 +91,10 @@ export function TypedAnswerCard({
       )}
 
       {answered && (
-        <div className="badge-pop flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+          {(result?.verdict === "correct" ||
+            result?.verdict === "near" ||
+            (result === null && previousCorrect === true)) && <SparkBurst />}
           <p
             className={`text-base font-medium ${
               result?.verdict === "wrong" || previousCorrect === false

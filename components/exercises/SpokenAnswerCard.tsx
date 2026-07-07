@@ -6,6 +6,7 @@ import type { FreeTypeExercise } from "@/lib/exercises/types";
 import { matchesSpokenTarget } from "@/lib/exercises/grade";
 import { recognizeOnce, type SpeechHandle } from "@/lib/speech";
 import { TypedAnswerCard } from "@/components/exercises/TypedAnswerCard";
+import { SparkBurst } from "@/components/SparkBurst";
 
 const SOFT_TIMER_MS = 10_000;
 
@@ -138,7 +139,8 @@ export function SpokenAnswerCard({
       )}
 
       {phase === "answered" && (
-        <div className="badge-pop flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+          {correct && <SparkBurst />}
           <p className={`text-base font-medium ${correct ? "text-emerald-300" : "text-white/80"}`}>
             {correct ? "Eso es." : `Casi — era «${canonical}». Volverá pronto.`}
           </p>

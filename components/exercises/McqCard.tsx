@@ -2,6 +2,7 @@
 
 import type { Phrase } from "@/lib/types";
 import type { McqExercise } from "@/lib/exercises/types";
+import { SparkBurst } from "@/components/SparkBurst";
 
 /** Same visual language as the authored CheckpointCard — kicker, prompt,
  * options, calm feedback. One exercise per card. */
@@ -74,7 +75,8 @@ export function McqCard({
       </div>
 
       {answered ? (
-        <div className="badge-pop flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+          {wasCorrect && <SparkBurst />}
           <p className={`text-base font-medium ${wasCorrect ? "text-emerald-300" : "text-white/80"}`}>
             {wasCorrect ? "Eso es." : "Todo bien — volverá pronto."}
           </p>

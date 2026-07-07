@@ -9,7 +9,8 @@ import {
 } from "@/lib/session/leitner";
 import { exerciseTypeFor, buildReviewExercise } from "@/lib/session/exercisePicker";
 import { composeCategorySession, type ComposerContent } from "@/lib/session/composeCategorySession";
-import { composeSnackSession } from "@/lib/session/composeSnackSession";
+import { composeSnackSession, orderTopicsByBand } from "@/lib/session/composeSnackSession";
+import { snackComposition } from "@/components/SnackHero";
 import {
   computeStats,
   initSessionRun,
@@ -297,7 +298,7 @@ describe("composeSnackSession", () => {
     const plan = composeSnackSession({ ...base, deck: dueDeck(20), rng: seededRng(5) });
     const reviews = plan.cards.filter((c) => c.kind === "review");
     const content = plan.cards.filter((c) => c.kind === "content");
-    expect(reviews.length).toBe(8); // round(13 * 0.6)
+    expect(reviews.length).toBe(5); // round(8 * 0.6)
     expect(content.length).toBeGreaterThan(0);
     expect(plan.cards.at(-1)?.kind).toBe("end");
   });
@@ -348,10 +349,10 @@ describe("composeSnackSession", () => {
     expect(plan.cards[0].kind).toBe("end");
   });
 
-  it("caps due reviews even with a large backlog", () => {
+  it("caps the session at the (smaller) default target even with a large backlog", () => {
     const plan = composeSnackSession({ ...base, deck: dueDeck(100), rng: seededRng(5) });
     const interactive = plan.cards.filter((c) => c.kind !== "end");
-    expect(interactive.length).toBeLessThanOrEqual(15);
+    expect(interactive.length).toBeLessThanOrEqual(8);
   });
 
   it("suppressed entries never produce review cards", () => {
@@ -359,6 +360,51 @@ describe("composeSnackSession", () => {
     for (const id of Object.keys(deck)) deck[id] = { ...deck[id], suppressed: true };
     const plan = composeSnackSession({ ...base, deck, rng: seededRng(5) });
     expect(plan.cards.filter((c) => c.kind === "review")).toHaveLength(0);
+  });
+});
+
+describe("orderTopicsByBand (level-weighted new content)", () => {
+  const topic = (id: string, difficulty: "B2" | "C1" | "C2") =>
+    ({ id, difficulty, category: "X", title: id, subtitle: "", previewPhraseIds: [], visualStyle: "editorial" }) as never;
+
+  it("skews toward the current band and includes some next-band, others last", () => {
+    const topics = [
+      ...Array.from({ length: 8 }, (_, i) => topic(`b2-${i}`, "B2")),
+      ...Array.from({ length: 8 }, (_, i) => topic(`c1-${i}`, "C1")),
+      ...Array.from({ length: 4 }, (_, i) => topic(`c2-${i}`, "C2")),
+    ];
+    const ordered = orderTopicsByBand(topics, "B2", seededRng(1));
+    // Among the first 4 slots, the majority are current band; next-band appears.
+    const firstFour = ordered.slice(0, 4).map((t) => t.difficulty);
+    expect(firstFour.filter((d) => d === "B2").length).toBeGreaterThanOrEqual(3);
+    expect(ordered.some((t) => t.difficulty === "C1")).toBe(true);
+    // Other-band (C2) topics come after all current+next.
+    const lastC2 = ordered.filter((t) => t.difficulty === "C2");
+    expect(lastC2).toHaveLength(4);
+    const firstC2Index = ordered.findIndex((t) => t.difficulty === "C2");
+    const afterC2AllC2 = ordered.slice(firstC2Index).every((t) => t.difficulty === "C2");
+    expect(afterC2AllC2).toBe(true);
+  });
+
+  it("still returns every topic when the current band pool is empty (no gating)", () => {
+    const topics = [topic("c2-0", "C2"), topic("c2-1", "C2")]; // band C2 top → no next band
+    const ordered = orderTopicsByBand(topics, "C2", seededRng(2));
+    expect(ordered).toHaveLength(2);
+  });
+
+  it("weighting never drops content (all fresh topics remain reachable)", () => {
+    const topics = [topic("a", "B2"), topic("b", "C1"), topic("c", "C2")];
+    const ordered = orderTopicsByBand(topics, "B2", seededRng(3));
+    expect(new Set(ordered.map((t) => t.id))).toEqual(new Set(["a", "b", "c"]));
+  });
+});
+
+describe("snackComposition subtitle helper", () => {
+  it("splits ~60/40 of an 8-card snack and caps the shown due count", () => {
+    expect(snackComposition(0)).toEqual({ repasos: 0, nuevas: 8 });
+    expect(snackComposition(3)).toEqual({ repasos: 3, nuevas: 5 });
+    expect(snackComposition(5)).toEqual({ repasos: 5, nuevas: 3 });
+    expect(snackComposition(50)).toEqual({ repasos: 5, nuevas: 3 }); // capped at dueTarget
   });
 });
 

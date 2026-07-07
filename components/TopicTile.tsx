@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { TopicTile as TopicTileType } from "@/lib/types";
 import { getPhrase } from "@/lib/data/phrases";
+import { CategoryIcon } from "@/components/CategoryIcon";
+import { categoryAccent } from "@/lib/categoryStyle";
 
 const tileBackground: Record<string, string> = {
   urban: "scene-bg-scooter",
@@ -26,6 +28,7 @@ export function TopicTile({
   const previews = (previewPhraseIds ?? topic.previewPhraseIds.slice(0, 2)).map((id) =>
     getPhrase(id)
   );
+  const accent = categoryAccent(topic.category);
 
   return (
     <Link
@@ -35,10 +38,24 @@ export function TopicTile({
         completed ? "opacity-70" : ""
       } ${tileBackground[topic.visualStyle] ?? "scene-bg-editorial"}`}
     >
+      {/* Per-category accent bar down the left edge. */}
+      <span
+        aria-hidden
+        className="absolute inset-y-0 left-0 w-1"
+        style={{ backgroundColor: accent }}
+      />
       <div className="flex items-start justify-between gap-2">
-        <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/60">
-          {topic.difficulty}
-        </span>
+        <div className="flex items-center gap-1.5">
+          <span
+            className="flex h-6 w-6 items-center justify-center rounded-full bg-black/30"
+            style={{ color: accent }}
+          >
+            <CategoryIcon category={topic.category} className="h-3.5 w-3.5" />
+          </span>
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/60">
+            {topic.difficulty}
+          </span>
+        </div>
         <div className="flex items-center gap-1.5">
           {completed && (
             <span
