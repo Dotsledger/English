@@ -130,7 +130,7 @@ describe("home / topic grid", () => {
     expect(add?.getAttribute("aria-label")).toBe("Add to practice");
   });
 
-  it("shows the Daily Snack button and no due CTA when nothing is due", async () => {
+  it("shows the practice button and no due CTA when nothing is due", async () => {
     renderHome();
     expect(screen.getByTestId("daily-snack").getAttribute("href")).toBe("/snack");
     await waitFor(() => {
@@ -268,7 +268,7 @@ function renderSession(seed = 3) {
   });
   render(
     <AppStateProvider>
-      <SessionPlayer title="Test session" plan={plan} onAnotherRound={() => {}} />
+      <SessionPlayer title="Today's Practice" plan={plan} onAnotherRound={() => {}} />
     </AppStateProvider>
   );
   return plan;
@@ -418,6 +418,8 @@ describe("session end", () => {
       fireEvent.keyDown(window, { key: "ArrowDown" });
     }
     expect(screen.getByTestId("session-end")).toBeDefined();
+    // The practice session is titled consistently with home ("Today's Practice").
+    expect(screen.getByText("Today's Practice")).toBeDefined();
     // Learning-framed recap: headline reflects whether anything advanced.
     expect(screen.getByText(/Nice progress ✓|Session done ✓/)).toBeDefined();
 
