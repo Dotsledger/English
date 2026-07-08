@@ -54,11 +54,17 @@ export function SessionLoader({ mode, title }: { mode: SessionMode; title: strin
           .filter((e) => e.suppressed)
           .map((e) => e.phraseId)
       );
+      const seenPhraseIds = new Set(
+        Object.values(deck.value)
+          .filter((e) => e.timesSeen > 0)
+          .map((e) => e.phraseId)
+      );
       composed = composeCategorySession({
         seedTopicId: mode.seedTopicId,
         content: CONTENT,
         completedTopicIds: completedIds,
         suppressedPhraseIds: suppressed,
+        seenPhraseIds,
       });
     } else if (mode.kind === "comeback") {
       composed = composeComebackSession({

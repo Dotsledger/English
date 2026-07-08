@@ -402,7 +402,8 @@ describe("session end", () => {
       fireEvent.keyDown(window, { key: "ArrowDown" });
     }
     expect(screen.getByTestId("session-end")).toBeDefined();
-    expect(screen.getByText("Session done ✓")).toBeDefined();
+    // Learning-framed recap: headline reflects whether anything advanced.
+    expect(screen.getByText(/Nice progress ✓|Session done ✓/)).toBeDefined();
 
     const sessionTopicIds = new Set(
       plan.cards.flatMap((c) => (c.kind === "content" ? [c.scene.topicId] : []))

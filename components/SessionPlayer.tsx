@@ -28,11 +28,26 @@ import {
 } from "@/lib/deckOps";
 import { localIsoDate } from "@/lib/dates";
 import {
-  computeStats,
   initSessionRun,
   isFinished,
   sessionReducer,
 } from "@/lib/session/runReducer";
+import {
+  computeSessionRecap,
+  planPhraseIds,
+  snapshotStages,
+  type SessionRecap,
+  type StageSnapshot,
+} from "@/lib/session/transitions";
+
+const EMPTY_RECAP: SessionRecap = {
+  metNew: 0,
+  toRecognised: 0,
+  toRecalled: 0,
+  toUsable: 0,
+  toMastered: 0,
+  dueTomorrow: 0,
+};
 import { countsAsProduction } from "@/lib/session/exercisePicker";
 import { useSpeechAvailable } from "@/components/useSpeechAvailable";
 import { FeedProgress } from "@/components/FeedProgress";
@@ -67,6 +82,10 @@ export function SessionPlayer({
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const seenSceneIds = useRef<Set<string>>(new Set());
   const closedOut = useRef(false);
+  // Snapshot every phrase's stage BEFORE the session so the end screen can show
+  // what moved; the recap is computed once, when the session finishes.
+  const startStages = useRef<StageSnapshot | null>(null);
+  const [recap, setRecap] = useState<SessionRecap | null>(null);
   const speechAvailable = useSpeechAvailable();
   const [speechDisabled, setSpeechDisabled] = useState(false);
   const useSpoken = speechAvailable && !speechDisabled;
@@ -81,6 +100,13 @@ export function SessionPlayer({
     card?.kind === "contrast";
   const answered = state.answers[state.index] !== undefined;
   const canGoNext = !needsAnswer || answered;
+
+  // Capture the pre-session stage of every phrase, once, before the
+  // seen-marking effect below applies any new → seen moves.
+  useEffect(() => {
+    startStages.current = snapshotStages(deck.value, planPhraseIds(plan.cards));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- one-time mount snapshot
+  }, []);
 
   // Seen-marks commit immediately; the per-session set stops re-swipes
   // from inflating counts (same rule as v1).
@@ -106,6 +132,8 @@ export function SessionPlayer({
   useEffect(() => {
     if (!finished || closedOut.current) return;
     closedOut.current = true;
+    // Freeze the recap from the pre-session snapshot vs the now-updated deck.
+    setRecap(computeSessionRecap(startStages.current ?? {}, deck.value, Date.now()));
     activity.update((prev) => ({ ...prev, [localIsoDate()]: true as const }));
     const topicIds = new Set<string>();
     for (const c of state.plan.cards) {
@@ -252,7 +280,12 @@ export function SessionPlayer({
 
       <div className="relative z-10 flex-1 overflow-hidden">
         {finished ? (
-          <SessionEnd title={title} stats={computeStats(state)} onAnotherRound={onAnotherRound} />
+          <SessionEnd
+            title={title}
+            recap={recap ?? EMPTY_RECAP}
+            saved={state.savedPhraseIds.length}
+            onAnotherRound={onAnotherRound}
+          />
         ) : card.kind === "content" ? (
           <div key={card.scene.id} className="scene-enter h-full">
             <SceneRenderer

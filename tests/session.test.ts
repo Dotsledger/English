@@ -529,3 +529,41 @@ describe("Phase C — rich core phrases (context / situation / contrast)", () =>
     expect(reviewCardFor(entry, deps)?.kind).toBe("review");
   });
 });
+
+describe("Phase D — Context cards in Explore feeds", () => {
+  const catBase = {
+    seedTopicId: topics[0].id,
+    content: CONTENT,
+    completedTopicIds: new Set<string>(),
+    suppressedPhraseIds: new Set<string>(),
+  };
+
+  it("introduces unseen core phrases as Context cards when seenPhraseIds is given", () => {
+    const plan = composeCategorySession({ ...catBase, seenPhraseIds: new Set(), rng: seededRng(3) });
+    const ctx = plan.cards.filter((c) => c.kind === "context");
+    expect(ctx.length).toBeGreaterThanOrEqual(1);
+    for (const c of ctx) {
+      if (c.kind === "context") expect(phraseById.get(c.phraseId)?.usageContext).toBeDefined();
+    }
+    // The seed topic still leads the feed.
+    const firstContent = plan.cards.find((c) => c.kind === "content");
+    expect(firstContent?.kind === "content" ? firstContent.scene.topicId : "").toBe(topics[0].id);
+  });
+
+  it("omitting seenPhraseIds adds no Context cards (pure-composer default)", () => {
+    const plan = composeCategorySession({ ...catBase, rng: seededRng(3) });
+    expect(plan.cards.filter((c) => c.kind === "context")).toHaveLength(0);
+  });
+
+  it("does not reintroduce a core phrase the user has already seen", () => {
+    const coreId = phrases.find((p) => p.usageContext !== undefined)!.id;
+    const plan = composeCategorySession({
+      ...catBase,
+      seenPhraseIds: new Set(phrases.filter((p) => p.usageContext).map((p) => p.id)),
+      rng: seededRng(3),
+    });
+    const ctxIds = plan.cards.flatMap((c) => (c.kind === "context" ? [c.phraseId] : []));
+    expect(ctxIds).not.toContain(coreId);
+    expect(ctxIds).toHaveLength(0);
+  });
+});
