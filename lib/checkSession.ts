@@ -66,7 +66,8 @@ export function composeCheck(opts: {
       .filter((e) => !e.suppressed && e.source === "catalog" && e.stage === stage && phraseById.has(e.phraseId))
       .map((e) => e.phraseId);
   const mastered = byStage("mastered");
-  const produced = byStage("produced");
+  const usable = byStage("usable");
+  const recalled = byStage("recalled");
   const recognised = byStage("recognised");
   const seen = byStage("seen");
 
@@ -101,12 +102,12 @@ export function composeCheck(opts: {
     else addMcq(phraseId, source); // unclozeable → recognition instead
   };
 
-  // Retention: recognition MCQ, mastered first.
-  for (const id of takeDistinct([mastered, produced, recognised, seen], RETENTION, used, rng)) {
+  // Retention: recognition MCQ, most-advanced first.
+  for (const id of takeDistinct([mastered, usable, recalled, recognised, seen], RETENTION, used, rng)) {
     addMcq(id, "retention");
   }
-  // Production: cloze, produced first.
-  for (const id of takeDistinct([produced, recognised, seen, mastered], PRODUCTION, used, rng)) {
+  // Production: cloze, phrases you can already recall first.
+  for (const id of takeDistinct([recalled, usable, recognised, seen, mastered], PRODUCTION, used, rng)) {
     addCloze(id, "production");
   }
   // Stretch: recognition of unseen next-band phrases.
@@ -116,7 +117,7 @@ export function composeCheck(opts: {
   }
   // Top up to TOTAL from anything remaining studied, if pools were thin.
   if (items.length < TOTAL) {
-    for (const id of takeDistinct([seen, recognised, produced, mastered], TOTAL - items.length, used, rng)) {
+    for (const id of takeDistinct([seen, recognised, recalled, usable, mastered], TOTAL - items.length, used, rng)) {
       addMcq(id, "retention");
     }
   }

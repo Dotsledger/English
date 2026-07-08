@@ -66,18 +66,18 @@ describe("leitner box math", () => {
     expect(demoted.nextReviewAt).toBe(NOW + 1 * DAY);
   });
 
-  it("mcq correct advances seen → recognised; production advances → produced", () => {
+  it("mcq correct advances seen → recognised; scaffolded recall advances → recalled", () => {
     const recognised = applyReviewResult(deckEntry({ stage: "seen" }), { correct: true, produced: false }, NOW);
     expect(recognised.stage).toBe("recognised");
-    const produced = applyReviewResult(deckEntry({ stage: "recognised", box: 3 }), { correct: true, produced: true }, NOW);
-    expect(produced.stage).toBe("produced");
-    expect(produced.producedAt).toBe(NOW); // stamped on first reaching produced
+    const recalled = applyReviewResult(deckEntry({ stage: "recognised", box: 3 }), { correct: true, produced: true }, NOW);
+    expect(recalled.stage).toBe("recalled");
+    expect(recalled.producedAt).toBe(NOW); // stamped on first reaching recalled
   });
 
-  it("does not overwrite producedAt on later production reviews", () => {
+  it("does not overwrite producedAt on later recall reviews", () => {
     const earlier = NOW - 5 * DAY;
     const entry = applyReviewResult(
-      deckEntry({ stage: "produced", box: 4, producedAt: earlier }),
+      deckEntry({ stage: "recalled", box: 4, producedAt: earlier }),
       { correct: true, produced: true },
       NOW
     );
@@ -85,25 +85,19 @@ describe("leitner box math", () => {
   });
 
   it("stages never regress on wrong answers", () => {
-    const entry = deckEntry({ stage: "produced", box: 4 });
-    expect(applyReviewResult(entry, { correct: false, produced: true }, NOW).stage).toBe("produced");
+    const entry = deckEntry({ stage: "recalled", box: 4 });
+    expect(applyReviewResult(entry, { correct: false, produced: true }, NOW).stage).toBe("recalled");
   });
 
-  it("two correct productions while box >= 4 master the phrase", () => {
-    let entry = deckEntry({ stage: "produced", box: 4, producedCorrectAtLongBoxes: 0 });
+  it("scaffolded recall never reaches usable/mastered or touches the production counter", () => {
+    // Reaching usable/mastered requires self-generated production (the mastery
+    // gate), not scaffolded recall — no matter how many correct recall reviews.
+    let entry = deckEntry({ stage: "recalled", box: 4, producedCorrectAtLongBoxes: 0 });
     entry = applyReviewResult(entry, { correct: true, produced: true }, NOW);
-    expect(entry.stage).toBe("produced");
-    expect(entry.producedCorrectAtLongBoxes).toBe(1);
+    expect(entry.stage).toBe("recalled");
+    expect(entry.producedCorrectAtLongBoxes).toBe(0);
     entry = applyReviewResult(entry, { correct: true, produced: true }, NOW);
-    expect(entry.stage).toBe("mastered");
-  });
-
-  it("production below box 4 never counts toward mastery", () => {
-    const entry = applyReviewResult(
-      deckEntry({ stage: "produced", box: 3 }),
-      { correct: true, produced: true },
-      NOW
-    );
+    expect(entry.stage).toBe("recalled");
     expect(entry.producedCorrectAtLongBoxes).toBe(0);
   });
 

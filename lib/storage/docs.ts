@@ -19,7 +19,11 @@ import { initialLevel } from "@/lib/level";
  * parseStore: bad JSON or malformed entries fall back to empty, never throw.
  */
 
-const STAGES: PhraseStage[] = ["seen", "recognised", "produced", "mastered"];
+const STAGES: PhraseStage[] = ["new", "seen", "recognised", "recalled", "usable", "mastered"];
+/** Stages accepted on load: the current set plus the legacy "produced"
+ * (migrated to "recalled" in parseDeck). Keeps old records from being
+ * dropped as corrupt. */
+const LEGACY_STAGE_VALUES = new Set<string>([...STAGES, "produced"]);
 const BOXES: Box[] = [1, 2, 3, 4, 5];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -46,7 +50,8 @@ export function isValidDeckEntry(value: unknown): value is DeckEntry {
   return (
     typeof e.phraseId === "string" &&
     (e.source === "catalog" || e.source === "custom") &&
-    STAGES.includes(e.stage as PhraseStage) &&
+    typeof e.stage === "string" &&
+    LEGACY_STAGE_VALUES.has(e.stage) &&
     BOXES.includes(e.box as Box) &&
     typeof e.inDeck === "boolean" &&
     typeof e.suppressed === "boolean" &&
@@ -71,7 +76,11 @@ export function parseDeck(raw: string | null): DeckStore {
   if (!parsed) return {};
   const store: DeckStore = {};
   for (const [key, value] of Object.entries(parsed)) {
-    if (isValidDeckEntry(value)) store[key] = value;
+    if (isValidDeckEntry(value)) {
+      // Migrate the legacy "produced" stage → "recalled" (same rank position).
+      store[key] =
+        (value.stage as string) === "produced" ? { ...value, stage: "recalled" } : value;
+    }
   }
   return store;
 }

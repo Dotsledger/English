@@ -4,13 +4,13 @@ import { seededRngFrom } from "@/lib/rng";
 const MISSION_SIZE = 3;
 
 /**
- * Weekly mission: every Monday, 3 phrases in PRODUCED state to use in a
- * real conversation. Selection is seeded by the week key so it's stable
- * across reloads. Null when there's nothing in PRODUCED state yet.
+ * Weekly mission: every Monday, 3 phrases you can already produce (recalled
+ * or usable) to try in a real conversation. Selection is seeded by the week
+ * key so it's stable across reloads. Null when there's nothing recalled yet.
  */
 export function buildMission(deck: DeckStore, weekKey: string): MissionStore | null {
   const produced = Object.values(deck)
-    .filter((e) => e.stage === "produced" && !e.suppressed)
+    .filter((e) => (e.stage === "recalled" || e.stage === "usable") && !e.suppressed)
     .map((e) => e.phraseId)
     .sort(); // stable base order before the seeded shuffle
   if (produced.length === 0) return null;

@@ -9,18 +9,18 @@ const WEEK = "2026-07-06";
 function producedDeck(ids: string[]) {
   const deck: Record<string, ReturnType<typeof makeDeckEntry>> = {};
   for (const id of ids) {
-    deck[id] = makeDeckEntry({ phraseId: id, stage: "produced" });
+    deck[id] = makeDeckEntry({ phraseId: id, stage: "recalled" });
   }
   return deck;
 }
 
 describe("weekly mission", () => {
-  it("returns null when nothing is in PRODUCED state", () => {
+  it("returns null when nothing is recalled/usable yet", () => {
     expect(buildMission({}, WEEK)).toBeNull();
     expect(buildMission({ p: makeDeckEntry({ stage: "recognised" }) }, WEEK)).toBeNull();
   });
 
-  it("picks up to 3 produced phrases, deterministically per week", () => {
+  it("picks up to 3 recalled phrases, deterministically per week", () => {
     const deck = producedDeck(["a", "b", "c", "d", "e"]);
     const one = buildMission(deck, WEEK)!;
     const two = buildMission(deck, WEEK)!;
@@ -33,7 +33,7 @@ describe("weekly mission", () => {
   it("excludes suppressed and mastered phrases", () => {
     const deck = {
       ...producedDeck(["a"]),
-      b: makeDeckEntry({ phraseId: "b", stage: "produced", suppressed: true }),
+      b: makeDeckEntry({ phraseId: "b", stage: "recalled", suppressed: true }),
       c: makeDeckEntry({ phraseId: "c", stage: "mastered" }),
     };
     const mission = buildMission(deck, WEEK)!;

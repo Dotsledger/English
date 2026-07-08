@@ -73,38 +73,46 @@ describe("deck operations", () => {
     expect(after.p.nextReviewAt).toBe(NOW + 7 * DAY);
   });
 
-  it("review results delegate to applyReviewResult including production", () => {
+  it("review results delegate to applyReviewResult (recall → recalled, never masters)", () => {
     const deck = {
-      p: makeDeckEntry({ phraseId: "p", inDeck: true, box: 4, stage: "produced" }),
+      p: makeDeckEntry({ phraseId: "p", inDeck: true, box: 3, stage: "recognised" }),
     };
     let after = recordReviewResult(deck, "p", { correct: true, produced: true }, NOW);
+    expect(after.p.stage).toBe("recalled");
+    expect(after.p.box).toBe(4);
+    // More scaffolded recall never reaches usable/mastered.
     after = recordReviewResult(after, "p", { correct: true, produced: true }, NOW);
-    expect(after.p.stage).toBe("mastered");
+    expect(after.p.stage).toBe("recalled");
   });
 });
 
 describe("recordMasteryResult", () => {
-  const box5 = () => ({ p: makeDeckEntry({ phraseId: "p", inDeck: true, box: 5, stage: "produced" }) });
+  const box5 = () => ({ p: makeDeckEntry({ phraseId: "p", inDeck: true, box: 5, stage: "recalled" }) });
 
-  it("'me salió' masters the phrase and reschedules at the longest interval", () => {
-    const after = recordMasteryResult(box5(), "p", "me_salio", NOW);
-    expect(after.p.stage).toBe("mastered");
+  it("first 'me salió' makes it usable; a second spaced one masters it (fluent)", () => {
+    let after = recordMasteryResult(box5(), "p", "me_salio", NOW);
+    expect(after.p.stage).toBe("usable");
     expect(after.p.box).toBe(5);
     expect(after.p.nextReviewAt).toBe(NOW + 35 * DAY);
     expect(after.p.producedAt).toBe(NOW);
+    expect(after.p.producedCorrectAtLongBoxes).toBe(1);
+
+    after = recordMasteryResult(after, "p", "me_salio", NOW + 35 * DAY);
+    expect(after.p.stage).toBe("mastered");
+    expect(after.p.producedCorrectAtLongBoxes).toBe(2);
   });
 
   it("'regular' keeps the box and comes back in 3 days", () => {
     const after = recordMasteryResult(box5(), "p", "regular", NOW);
     expect(after.p.box).toBe(5);
-    expect(after.p.stage).toBe("produced");
+    expect(after.p.stage).toBe("recalled");
     expect(after.p.nextReviewAt).toBe(NOW + 3 * DAY);
   });
 
   it("'no me salió' drops one box without regressing the stage", () => {
     const after = recordMasteryResult(box5(), "p", "no_me_salio", NOW);
     expect(after.p.box).toBe(4);
-    expect(after.p.stage).toBe("produced");
+    expect(after.p.stage).toBe("recalled");
     expect(after.p.nextReviewAt).toBe(NOW + 16 * DAY);
   });
 });

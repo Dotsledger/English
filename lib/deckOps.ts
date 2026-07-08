@@ -1,5 +1,5 @@
 import type { Box, DeckEntry, DeckStore, SentenceStore } from "@/lib/types";
-import { applyReviewResult, intervalForBox } from "@/lib/session/leitner";
+import { advanceStage, applyReviewResult, intervalForBox } from "@/lib/session/leitner";
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -11,7 +11,7 @@ export function freshEntry(phraseId: string, source: DeckEntry["source"]): DeckE
   return {
     phraseId,
     source,
-    stage: "seen",
+    stage: "new",
     box: 1,
     inDeck: false,
     suppressed: false,
@@ -38,7 +38,13 @@ export function markSeen(deck: DeckStore, phraseId: string, now: number): DeckSt
   const entry = entryOf(deck, phraseId);
   return {
     ...deck,
-    [phraseId]: { ...entry, timesSeen: entry.timesSeen + 1, lastSeenAt: now },
+    [phraseId]: {
+      ...entry,
+      // Viewing moves new → seen, and never any higher ("seen ≠ learned").
+      stage: advanceStage(entry.stage, "seen"),
+      timesSeen: entry.timesSeen + 1,
+      lastSeenAt: now,
+    },
   };
 }
 
@@ -55,6 +61,8 @@ export function saveToDeck(
     ...deck,
     [phraseId]: {
       ...entry,
+      // Saving a phrase implies you've seen it; never regresses a higher stage.
+      stage: advanceStage(entry.stage, "seen"),
       inDeck: true,
       suppressed: false,
       addedToDeckAt: now,
@@ -84,7 +92,13 @@ export function recordPeek(deck: DeckStore, phraseId: string, ms: number): DeckS
   const entry = entryOf(deck, phraseId);
   return {
     ...deck,
-    [phraseId]: { ...entry, peekCount: entry.peekCount + 1, lastPeekMs: ms },
+    [phraseId]: {
+      ...entry,
+      // Peeking at the Spanish is a form of seeing it.
+      stage: advanceStage(entry.stage, "seen"),
+      peekCount: entry.peekCount + 1,
+      lastPeekMs: ms,
+    },
   };
 }
 
@@ -111,7 +125,8 @@ export function recordCheckpointResult(
         ...entry,
         correctCount: entry.correctCount + 1,
         lastAttemptAt: now,
-        stage: entry.stage === "seen" ? "recognised" : entry.stage,
+        // Recognition in a feed checkpoint → recognised (never higher).
+        stage: advanceStage(entry.stage, "recognised"),
       },
     };
   }
@@ -147,10 +162,11 @@ export function recordReviewResult(
 }
 
 /**
- * The mastery-gate self-assessment (Feature 3). "Me salió" → MASTERED and
- * rescheduled at the longest interval; "Regular" → stays put, back in 3
- * days; "No me salió" → down one box. Stages never regress on a wrong
- * self-grade — only the box drops.
+ * The mastery-gate self-assessment (Feature 3) — a self-generated *production*
+ * attempt. "Me salió" first counts as production → `usable`; a second spaced
+ * "Me salió" (two production successes at the long box) → `mastered`, the
+ * "fluent" tier. "Regular" → stays put, back in 3 days; "No me salió" → down
+ * one box. Stages never regress on a wrong self-grade — only the box drops.
  */
 export function recordMasteryResult(
   deck: DeckStore,
@@ -160,9 +176,13 @@ export function recordMasteryResult(
 ): DeckStore {
   const entry = { ...entryOf(deck, phraseId), lastAttemptAt: now };
   if (verdict === "me_salio") {
-    entry.stage = "mastered";
     entry.box = 5;
     entry.correctCount += 1;
+    entry.producedCorrectAtLongBoxes += 1;
+    entry.stage = advanceStage(entry.stage, "usable");
+    if (entry.producedCorrectAtLongBoxes >= 2) {
+      entry.stage = advanceStage(entry.stage, "mastered");
+    }
     entry.producedAt = entry.producedAt ?? now;
     entry.nextReviewAt = now + intervalForBox(5);
   } else if (verdict === "regular") {

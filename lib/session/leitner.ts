@@ -10,13 +10,16 @@ export function intervalForBox(box: Box): number {
 }
 
 const STAGE_RANK: Record<PhraseStage, number> = {
-  seen: 0,
-  recognised: 1,
-  produced: 2,
-  mastered: 3,
+  new: 0,
+  seen: 1,
+  recognised: 2,
+  recalled: 3,
+  usable: 4,
+  mastered: 5,
 };
 
-function advanceStage(current: PhraseStage, to: PhraseStage): PhraseStage {
+/** Raise a stage toward `to`, never lowering it (upgrades only). */
+export function advanceStage(current: PhraseStage, to: PhraseStage): PhraseStage {
   return STAGE_RANK[to] > STAGE_RANK[current] ? to : current;
 }
 
@@ -24,8 +27,10 @@ function advanceStage(current: PhraseStage, to: PhraseStage): PhraseStage {
  * Applies a retrieval result: correct → box +1 (cap 5), wrong → box −1
  * (floor 1), reschedule at the new box's interval. Stages only ever
  * advance (never regress on a wrong answer — only boxes drop), and only
- * through retrieval: MCQ correct → recognised, production (cloze/typed)
- * correct → produced; two correct productions while box ≥ 4 → mastered.
+ * through retrieval: recognition (MCQ) correct → recognised; recall
+ * (cloze / reverse) correct → recalled. Reaching "usable"/"mastered"
+ * requires self-generated *production*, handled by the mastery gate
+ * (recordMasteryResult), not by scaffolded recall here.
  */
 export function applyReviewResult(
   entry: DeckEntry,
@@ -37,14 +42,11 @@ export function applyReviewResult(
     next.correctCount += 1;
     next.box = Math.min(entry.box + 1, 5) as Box;
     if (result.produced) {
-      if (entry.box >= 4) next.producedCorrectAtLongBoxes += 1;
-      next.stage = advanceStage(next.stage, "produced");
-      // Stamp the first time this phrase reaches "produced" (weekly recap).
-      if (next.stage === "produced" && (entry.producedAt ?? null) === null) {
+      // Recall with a prompt/scaffold (cloze, reverse) → recalled.
+      next.stage = advanceStage(next.stage, "recalled");
+      // Stamp the first time this phrase reaches "recalled" (weekly recap).
+      if (next.stage === "recalled" && (entry.producedAt ?? null) === null) {
         next.producedAt = now;
-      }
-      if (next.producedCorrectAtLongBoxes >= 2) {
-        next.stage = advanceStage(next.stage, "mastered");
       }
     } else {
       next.stage = advanceStage(next.stage, "recognised");

@@ -2,6 +2,12 @@ export type PhraseStatus = "new" | "seen" | "learning" | "familiar" | "strong";
 
 export type Level = "B2" | "C1" | "C2";
 
+/** Per-phrase authoring difficulty, independent of CEFR level. */
+export type PhraseDifficulty = "easy" | "medium" | "hard";
+
+/** A confusable phrase and how it differs, for Contrast cards. */
+export type PhraseContrast = { phrase: string; explanationEs: string };
+
 export type Phrase = {
   id: string;
   text: string;
@@ -14,6 +20,21 @@ export type Phrase = {
   /** Alternative example sentences (same phrase, different scenario). Reviews
    * and cloze rotate among [example, ...examples]. Optional/backward-compatible. */
   examples?: string[];
+  // ── Rich metadata (optional; present on curated "core" life phrases) ──
+  /** Literal, word-for-word Spanish gloss when it differs from the natural one. */
+  literalMeaningEs?: string;
+  /** When/why a native uses it — powers the Context card's "cuándo usarla". */
+  usageContext?: string;
+  /** Real-life prompts that should elicit this phrase — powers Situation cards. */
+  situations?: string[];
+  /** Words this phrase commonly combines with. */
+  collocations?: string[];
+  /** A common mistake or misuse to avoid. */
+  avoid?: string;
+  /** Confusable phrases + how they differ — powers Contrast cards. */
+  contrastWith?: PhraseContrast[];
+  /** Authoring difficulty, independent of CEFR `level`. */
+  difficulty?: PhraseDifficulty;
 };
 
 export type TopicTile = {
@@ -161,8 +182,20 @@ export type PhraseMemoryStore = Record<string, PhraseMemoryEntry>;
 
 // ─── v2 learning engine ───
 
-/** Lifecycle stage — only ever advances, and only through retrieval. */
-export type PhraseStage = "seen" | "recognised" | "produced" | "mastered";
+/**
+ * Lifecycle stage — only ever advances, and only through retrieval.
+ *
+ *   new        never meaningfully introduced (usually = no deck entry)
+ *   seen       viewed, but never recalled ("seen ≠ learned")
+ *   recognised recognises the meaning / picks it correctly (MCQ)
+ *   recalled   can produce it with a prompt or scaffold (cloze / reverse)
+ *   usable     produced it in a self-generated sentence / real situation
+ *   mastered   repeated spaced production — the "fluent" tier
+ *
+ * Only successful active recall or production moves a phrase upward. Viewing
+ * a card can move `new → seen`, never higher.
+ */
+export type PhraseStage = "new" | "seen" | "recognised" | "recalled" | "usable" | "mastered";
 
 /** Leitner box. Intervals: 1, 3, 7, 16, 35 days. */
 export type Box = 1 | 2 | 3 | 4 | 5;
@@ -190,8 +223,9 @@ export type DeckEntry = {
   /** Backlog triage: overflow items parked out of every due count/queue.
    * Optional so existing v2 entries load unchanged (default false). */
   frozen?: boolean;
-  /** First time this phrase reached "produced" — powers the weekly recap.
-   * Optional for backward compatibility (default null). */
+  /** First time this phrase reached "recalled" (self-produced with a prompt)
+   * — powers the weekly recap. Optional for backward compatibility (default
+   * null). Formerly stamped at the "produced" stage, now "recalled". */
   producedAt?: number | null;
 };
 

@@ -12,9 +12,9 @@ export function ProgressPipeline() {
   if (!deck.ready || !activity.ready) return null;
 
   const entries = Object.values(deck.value).filter((e) => !e.suppressed);
-  const vistas = entries.filter((e) => e.stage === "seen").length;
+  const vistas = entries.filter((e) => e.stage === "new" || e.stage === "seen").length;
   const enCamino = entries.filter(
-    (e) => e.stage === "recognised" || e.stage === "produced"
+    (e) => e.stage === "recognised" || e.stage === "recalled" || e.stage === "usable"
   ).length;
   const dominadas = entries.filter((e) => e.stage === "mastered").length;
   if (vistas + enCamino + dominadas === 0) return null;

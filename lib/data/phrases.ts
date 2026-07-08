@@ -20,8 +20,10 @@ import { phrases as gaming } from "@/lib/data/categories/gaming";
 import { phrases as fashionAndBeauty } from "@/lib/data/categories/fashion-and-beauty";
 import { phrases as historyAndTrueCrime } from "@/lib/data/categories/history-and-true-crime";
 import { phrases as meetingsAndLeadership } from "@/lib/data/categories/meetings-and-leadership";
+import { phrases as coreLifePhrases } from "@/lib/data/categories/core-life-phrases";
 
 export const phrases: Phrase[] = [
+  ...coreLifePhrases,
   ...carsAndMobility,
   ...homeAndRealEstate,
   ...techAndAi,

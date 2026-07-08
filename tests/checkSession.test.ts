@@ -26,7 +26,7 @@ function deckWith(stages: { mastered?: string[]; produced?: string[]; seen?: str
   for (const id of stages.mastered ?? [])
     deck[id] = makeDeckEntry({ phraseId: id, stage: "mastered", inDeck: true, timesSeen: 5 });
   for (const id of stages.produced ?? [])
-    deck[id] = makeDeckEntry({ phraseId: id, stage: "produced", inDeck: true, timesSeen: 4 });
+    deck[id] = makeDeckEntry({ phraseId: id, stage: "recalled", inDeck: true, timesSeen: 4 });
   for (const id of stages.seen ?? [])
     deck[id] = makeDeckEntry({ phraseId: id, stage: "seen", timesSeen: 1 });
   return deck;
