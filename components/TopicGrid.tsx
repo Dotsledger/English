@@ -122,21 +122,21 @@ export function TopicGrid() {
               type="button"
               onClick={() => setCapturing(true)}
               data-testid="open-capture"
-              aria-label="Capturar una frase que has oído"
+              aria-label="Capture a phrase you've heard"
               className="flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-base text-white/70 active:scale-90"
             >
               +
             </button>
             <Link
               href="/settings"
-              aria-label="Ajustes"
+              aria-label="Settings"
               className="flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-sm text-white/70 active:scale-90"
             >
               ⚙
             </Link>
           </div>
         </div>
-        <p className="mt-1 text-sm text-white/60">Un ratito de inglés, cuando quieras.</p>
+        <p className="mt-1 text-sm text-white/60">A little English, whenever you like.</p>
       </header>
 
       <DueCta />
@@ -149,19 +149,19 @@ export function TopicGrid() {
       <MissionCard />
 
       <div className="mb-3 mt-2 flex items-center justify-between px-1">
-        <h2 className="text-lg font-bold text-white">Explora</h2>
+        <h2 className="text-lg font-bold text-white">Explore</h2>
         <button
           type="button"
           onClick={handleRefresh}
           data-testid="refresh-topics"
-          aria-label="Ver otros temas"
+          aria-label="See other topics"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-lg text-white/70 active:scale-90"
         >
           <span className={spinning ? "inline-block animate-spin" : "inline-block"}>↻</span>
         </button>
       </div>
 
-      <div className="mb-3 flex gap-1.5 px-1" role="group" aria-label="Filtrar por nivel">
+      <div className="mb-3 flex gap-1.5 px-1" role="group" aria-label="Filter by level">
         {LEVELS.map((level) => {
           const active = selectedLevels.includes(level);
           return (
@@ -187,7 +187,7 @@ export function TopicGrid() {
       <div
         className="mb-5 -mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1"
         role="group"
-        aria-label="Filtrar por categoría"
+        aria-label="Filter by category"
       >
         {CATEGORIES.map((category) => {
           const active = selectedCategories.includes(category);
@@ -212,7 +212,7 @@ export function TopicGrid() {
 
       {shown.length === 0 ? (
         <p className="px-1 text-sm text-white/50">
-          Ningún tema con esos filtros — prueba a quitar alguno.
+          No topics match those filters — try removing one.
         </p>
       ) : (
         <div

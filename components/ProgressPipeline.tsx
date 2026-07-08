@@ -20,9 +20,9 @@ export function ProgressPipeline() {
   if (vistas + enCamino + dominadas === 0) return null;
 
   const cells = [
-    { n: vistas, label: "vistas" },
-    { n: enCamino, label: "en camino" },
-    { n: dominadas, label: "dominadas" },
+    { n: vistas, label: "seen" },
+    { n: enCamino, label: "in progress" },
+    { n: dominadas, label: "mastered" },
   ].filter((c) => c.n > 0);
 
   const week = datesOfWeek();
@@ -42,8 +42,8 @@ export function ProgressPipeline() {
         ))}
       </div>
       <div className="flex items-center gap-2 px-1">
-        <span className="text-[11px] text-white/50">Esta semana</span>
-        <div className="flex gap-1" role="img" aria-label={`${activeSet.size} días activos esta semana`}>
+        <span className="text-[11px] text-white/50">This week</span>
+        <div className="flex gap-1" role="img" aria-label={`${activeSet.size} active days this week`}>
           {week.map((d) => (
             <span
               key={d}

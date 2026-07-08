@@ -53,7 +53,7 @@ export function MasteryCard({
       className="flex h-full flex-col justify-center gap-5 px-6 pb-6"
     >
       <span className="text-xs font-semibold uppercase tracking-[0.22em] text-violet-300">
-        Úsala en una frase tuya
+        Use it in your own sentence
       </span>
       <p className="text-2xl font-bold leading-tight text-white">{phrase.text}</p>
 
@@ -63,7 +63,7 @@ export function MasteryCard({
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={3}
-            placeholder="Escribe una frase con esta expresión…"
+            placeholder="Write a sentence with this expression…"
             data-testid="mastery-input"
             autoCapitalize="sentences"
             className="rounded-2xl border border-white/12 bg-white/[0.06] px-4 py-3 text-lg text-white placeholder:text-white/30 focus:border-violet-400/60 focus:outline-none"
@@ -80,7 +80,7 @@ export function MasteryCard({
                     ? "border-violet-400/70 bg-violet-500/20"
                     : "border-white/12 bg-white/[0.06]"
                 }`}
-                aria-label="Dictar"
+                aria-label="Dictate"
               >
                 🎤
               </button>
@@ -92,7 +92,7 @@ export function MasteryCard({
               disabled={text.trim().length === 0}
               className="min-h-12 flex-1 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98] disabled:opacity-40"
             >
-              Ver modelo
+              See a model
             </button>
           </div>
         </div>
@@ -101,14 +101,14 @@ export function MasteryCard({
           {text.trim().length > 0 && (
             <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">
-                Tu frase
+                Your sentence
               </p>
               <p className="mt-1 text-base text-white/90">{text.trim()}</p>
             </div>
           )}
           <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06] px-4 py-3">
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-300/70">
-              Modelo
+              Model
             </p>
             {models.map((m, i) => (
               <p key={i} className="mt-1 text-base text-white/80">
@@ -119,7 +119,7 @@ export function MasteryCard({
 
           {!alreadyAnswered && (
             <div className="flex flex-col gap-2">
-              <p className="text-sm text-white/50">¿Cómo te salió?</p>
+              <p className="text-sm text-white/50">How did it go?</p>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -127,7 +127,7 @@ export function MasteryCard({
                   onClick={() => grade("me_salio")}
                   className="flex-1 rounded-2xl border border-emerald-400/40 bg-emerald-500/15 px-3 py-3 text-sm font-semibold text-emerald-200 active:scale-[0.98]"
                 >
-                  Me salió
+                  Nailed it
                 </button>
                 <button
                   type="button"
@@ -135,7 +135,7 @@ export function MasteryCard({
                   onClick={() => grade("regular")}
                   className="flex-1 rounded-2xl border border-white/15 bg-white/[0.06] px-3 py-3 text-sm font-medium text-white/80 active:scale-[0.98]"
                 >
-                  Regular
+                  So-so
                 </button>
                 <button
                   type="button"
@@ -143,7 +143,7 @@ export function MasteryCard({
                   onClick={() => grade("no_me_salio")}
                   className="flex-1 rounded-2xl border border-white/15 bg-white/[0.04] px-3 py-3 text-sm font-medium text-white/60 active:scale-[0.98]"
                 >
-                  No me salió
+                  Didn’t get it
                 </button>
               </div>
             </div>
@@ -154,7 +154,7 @@ export function MasteryCard({
       {pastSentences.length > 0 && (
         <div className="mt-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/30">
-            Tus frases anteriores
+            Your earlier sentences
           </p>
           <ul className="mt-1 flex flex-col gap-1">
             {pastSentences.slice(-3).map((s, i) => (

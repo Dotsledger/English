@@ -125,8 +125,8 @@ export function SceneRenderer({
               <span className="flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/40 bg-sky-500/15 text-3xl">
                 🔊
               </span>
-              <span className="text-lg font-semibold text-white">Escucha la frase</span>
-              <span className="text-sm text-white/60">Toca para ver el texto</span>
+              <span className="text-lg font-semibold text-white">Listen to the phrase</span>
+              <span className="text-sm text-white/60">Tap to see the text</span>
               <button
                 type="button"
                 onClick={(e) => {
@@ -135,7 +135,7 @@ export function SceneRenderer({
                 }}
                 className="mt-1 rounded-full border border-white/12 bg-white/[0.06] px-4 py-1.5 text-xs text-white/70"
               >
-                Repetir audio
+                Replay audio
               </button>
             </button>
           )}

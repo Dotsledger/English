@@ -40,13 +40,13 @@ export function CaptureSheet({ onClose }: { onClose: () => void }) {
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/60"
       onClick={onClose}
       role="dialog"
-      aria-label="Capturar una frase"
+      aria-label="Capture a phrase"
     >
       <div
         className="w-full max-w-lg rounded-t-3xl border-t border-white/10 bg-[#14141d] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-3 text-lg font-bold text-white">La has oído por ahí</h2>
+        <h2 className="mb-3 text-lg font-bold text-white">Heard it somewhere?</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -59,7 +59,7 @@ export function CaptureSheet({ onClose }: { onClose: () => void }) {
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="La frase en inglés…"
+            placeholder="The phrase in English…"
             data-testid="capture-text"
             autoComplete="off"
             className="min-h-12 rounded-2xl border border-white/12 bg-white/[0.06] px-4 py-3 text-base text-white placeholder:text-white/30 focus:border-sky-400/60 focus:outline-none"
@@ -68,7 +68,7 @@ export function CaptureSheet({ onClose }: { onClose: () => void }) {
             type="text"
             value={meaningEs}
             onChange={(e) => setMeaningEs(e.target.value)}
-            placeholder="Traducción (opcional)"
+            placeholder="Translation (optional)"
             data-testid="capture-meaning"
             autoComplete="off"
             className="min-h-12 rounded-2xl border border-white/12 bg-white/[0.06] px-4 py-3 text-base text-white placeholder:text-white/30 focus:border-sky-400/60 focus:outline-none"
@@ -77,7 +77,7 @@ export function CaptureSheet({ onClose }: { onClose: () => void }) {
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Nota — ¿dónde la oíste? (opcional)"
+            placeholder="Note — where did you hear it? (optional)"
             data-testid="capture-note"
             autoComplete="off"
             className="min-h-12 rounded-2xl border border-white/12 bg-white/[0.06] px-4 py-3 text-base text-white placeholder:text-white/30 focus:border-sky-400/60 focus:outline-none"
@@ -88,7 +88,7 @@ export function CaptureSheet({ onClose }: { onClose: () => void }) {
               onClick={onClose}
               className="flex-1 rounded-2xl border border-white/12 px-4 py-3 text-sm font-medium text-white/60"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
@@ -96,7 +96,7 @@ export function CaptureSheet({ onClose }: { onClose: () => void }) {
               disabled={text.trim().length === 0}
               className="flex-1 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-black disabled:opacity-40"
             >
-              Al mazo
+              To deck
             </button>
           </div>
         </form>

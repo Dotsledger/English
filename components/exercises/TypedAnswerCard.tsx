@@ -43,7 +43,7 @@ export function TypedAnswerCard({
       className="flex h-full flex-col justify-center gap-6 px-6 pb-6"
     >
       <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300">
-        {isCloze ? "Complétala" : "¿Cómo se decía?"}
+        {isCloze ? "Fill it in" : "How do you say it?"}
       </span>
 
       {isCloze ? (
@@ -72,7 +72,7 @@ export function TypedAnswerCard({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isCloze ? `Empieza por “${exercise.hint}”…` : "Escríbela en inglés…"}
+            placeholder={isCloze ? `Starts with “${exercise.hint}”…` : "Write it in English…"}
             autoComplete="off"
             autoCapitalize="none"
             spellCheck={false}
@@ -85,7 +85,7 @@ export function TypedAnswerCard({
             className="min-h-12 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98] disabled:opacity-40"
             disabled={input.trim().length === 0}
           >
-            Comprobar
+            Check
           </button>
         </form>
       )}
@@ -102,10 +102,10 @@ export function TypedAnswerCard({
                 : "text-emerald-300"
             }`}
           >
-            {result?.verdict === "correct" && "Eso es."}
-            {result?.verdict === "near" && `Casi — es «${result.matched}».`}
-            {result?.verdict === "wrong" && `Era «${canonical}». Volverá pronto.`}
-            {result === null && (previousCorrect ? "Eso es." : `Era «${canonical}». Volverá pronto.`)}
+            {result?.verdict === "correct" && "That's it."}
+            {result?.verdict === "near" && `Almost — it's «${result.matched}».`}
+            {result?.verdict === "wrong" && `It was «${canonical}». It'll be back soon.`}
+            {result === null && (previousCorrect ? "That's it." : `It was «${canonical}». It'll be back soon.`)}
           </p>
           {phrase && (
             <p className="text-sm text-white/50">

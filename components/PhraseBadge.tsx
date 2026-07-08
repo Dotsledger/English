@@ -92,7 +92,7 @@ export function PhraseBadge({
           data-testid="save-phrase"
           onClick={handleSave}
           aria-pressed={saved}
-          aria-label={saved ? "Guardada en tu mazo" : "Guardar en tu mazo"}
+          aria-label={saved ? "Saved to your deck" : "Save to your deck"}
           className="flex min-h-11 flex-1 items-center gap-2.5 text-left active:scale-[0.99]"
         >
           <span className="text-[1.65rem] font-bold leading-tight text-amber-300">
@@ -110,7 +110,7 @@ export function PhraseBadge({
             type="button"
             data-testid="speak-phrase"
             onClick={() => speak(phrase.example)}
-            aria-label="Escuchar el ejemplo"
+            aria-label="Play the example"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-base text-white/70 active:scale-90"
           >
             🔊
@@ -122,7 +122,7 @@ export function PhraseBadge({
         type="button"
         data-testid="reveal-meaning"
         onClick={reveal}
-        aria-label={revealed ? undefined : "Toca para comprobar el significado"}
+        aria-label={revealed ? undefined : "Tap to check the meaning"}
         className="relative mt-2 block min-h-11 w-full text-left"
       >
         <span
@@ -136,7 +136,7 @@ export function PhraseBadge({
         </span>
         {!revealed && (
           <span className="absolute inset-0 flex items-center text-sm font-medium text-white/60">
-            Toca para comprobar
+            Tap to check
           </span>
         )}
       </button>
@@ -146,7 +146,7 @@ export function PhraseBadge({
           data-testid="suppress-undo"
           className="badge-pop mt-2 flex items-center justify-between rounded-xl bg-white/[0.08] px-3 py-2 text-xs text-white/70"
         >
-          <span>No volverás a verla</span>
+          <span>You won’t see it again</span>
           <button
             type="button"
             data-testid="undo-suppress"
@@ -156,7 +156,7 @@ export function PhraseBadge({
             }}
             className="font-semibold text-white underline underline-offset-2 active:scale-95"
           >
-            Deshacer
+            Undo
           </button>
         </div>
       )}
@@ -167,7 +167,7 @@ export function PhraseBadge({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => setSheetOpen(false)}
           role="dialog"
-          aria-label="Acciones de la frase"
+          aria-label="Phrase actions"
         >
           <div
             className="w-full max-w-lg rounded-t-3xl border-t border-white/10 bg-[#14141d] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4"
@@ -181,14 +181,14 @@ export function PhraseBadge({
               onClick={confirmSuppress}
               className="min-h-12 w-full rounded-2xl border border-white/12 bg-white/[0.06] px-4 py-3 text-sm font-medium text-white active:scale-[0.99]"
             >
-              Ya la domino
+              I already know this
             </button>
             <button
               type="button"
               onClick={() => setSheetOpen(false)}
               className="mt-2 min-h-11 w-full px-4 py-2 text-sm text-white/45"
             >
-              Cancelar
+              Cancel
             </button>
           </div>
         </div>

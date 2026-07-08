@@ -54,7 +54,7 @@ export function CheckLoader() {
   if (!items) {
     return (
       <div className="flex h-dvh items-center justify-center bg-[#0b0b12]">
-        <span className="text-sm text-white/40">Preparando el chequeo…</span>
+        <span className="text-sm text-white/40">Getting your check ready…</span>
       </div>
     );
   }
@@ -62,9 +62,9 @@ export function CheckLoader() {
   if (items.length === 0) {
     return (
       <div className="flex h-dvh flex-col items-center justify-center gap-4 bg-[#0b0b12] px-6 text-center">
-        <p className="text-sm text-white/60">Aún no hay bastante material para un chequeo.</p>
+        <p className="text-sm text-white/60">Not enough material for a check yet.</p>
         <Link href="/" className="rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-black">
-          Volver
+          Back
         </Link>
       </div>
     );

@@ -111,7 +111,7 @@ describe("check offer gating (Fix 1)", () => {
     expect(shouldOfferCheck(base({ cardsSinceCheck: 3, checkThreshold: 55 }), NOW)).toBe(false);
   });
 
-  it("suppresses the offer for the rest of the same calendar day after 'Ahora no'", () => {
+  it("suppresses the offer for the rest of the same calendar day after 'Not now'", () => {
     const dismissed = dismissCheck(avail, NOW);
     expect(dismissed.lastDismissedAt).toBe(NOW);
     expect(shouldOfferCheck(dismissed, NOW + 6 * 60 * 60 * 1000)).toBe(false); // same day

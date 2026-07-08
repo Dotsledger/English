@@ -37,9 +37,9 @@ export function MissionCard() {
       className="mb-4 flex flex-col gap-2.5 rounded-2xl border border-violet-400/25 bg-violet-400/10 px-4 py-3.5"
     >
       <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-300/80">
-        Misión de la semana
+        Mission of the week
       </p>
-      <p className="text-sm text-white/70">Úsalas en una conversación real esta semana:</p>
+      <p className="text-sm text-white/70">Use them in a real conversation this week:</p>
       <div className="flex flex-col gap-1.5">
         {phrases.map((phrase) => {
           const done = active.done[phrase.id] === true;
@@ -66,7 +66,7 @@ export function MissionCard() {
               }`}
             >
               <span className="font-medium">{phrase.text}</span>
-              <span className="text-xs">{done ? "✓ usada" : "marcar"}</span>
+              <span className="text-xs">{done ? "✓ used" : "mark"}</span>
             </button>
           );
         })}

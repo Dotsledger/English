@@ -98,7 +98,7 @@ export function SpokenAnswerCard({
       className="flex h-full flex-col justify-center gap-6 px-6 pb-6"
     >
       <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300">
-        Dilo en voz alta
+        Say it out loud
       </span>
       <p className="text-[1.7rem] font-bold leading-[1.2] text-white">“{exercise.promptEs}”</p>
 
@@ -109,7 +109,7 @@ export function SpokenAnswerCard({
             data-testid="mic-button"
             onClick={listen}
             disabled={phase === "listening"}
-            aria-label="Hablar"
+            aria-label="Speak"
             className={`flex h-20 w-20 items-center justify-center rounded-full border text-3xl transition-colors ${
               phase === "listening"
                 ? "border-sky-400/70 bg-sky-500/20 text-sky-200"
@@ -120,20 +120,20 @@ export function SpokenAnswerCard({
           </button>
           {phase === "listening" ? (
             <>
-              <span className="text-sm text-sky-200/80">Escuchando…</span>
+              <span className="text-sm text-sky-200/80">Listening…</span>
               <div className="h-1 w-40 overflow-hidden rounded-full bg-white/10">
                 <div className="soft-timer h-full bg-sky-400/70" />
               </div>
             </>
           ) : (
-            <span className="text-sm text-white/40">Toca y dilo — sin prisa</span>
+            <span className="text-sm text-white/40">Tap and say it — no rush</span>
           )}
           <button
             type="button"
             onClick={() => setFallback(true)}
             className="text-[11px] text-white/30 underline-offset-2 active:underline"
           >
-            Prefiero escribirla
+            I’d rather type it
           </button>
         </div>
       )}
@@ -142,9 +142,9 @@ export function SpokenAnswerCard({
         <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
           {correct && <SparkBurst />}
           <p className={`text-base font-medium ${correct ? "text-emerald-300" : "text-white/80"}`}>
-            {correct ? "Eso es." : `Casi — era «${canonical}». Volverá pronto.`}
+            {correct ? "That's it." : `Almost — it was «${canonical}». It'll be back soon.`}
           </p>
-          {transcript && <p className="text-sm text-white/40">Te oí: “{transcript}”</p>}
+          {transcript && <p className="text-sm text-white/40">I heard: “{transcript}”</p>}
           {phrase && (
             <p className="text-sm text-white/50">
               {phrase.text} · {phrase.meaningEs}

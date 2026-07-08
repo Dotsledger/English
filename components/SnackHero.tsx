@@ -26,13 +26,13 @@ export function SnackHero() {
     setNow(Date.now());
   }, []);
 
-  let subtitle = "Repaso + algo nuevo · 2-3 min";
+  let subtitle = "Review + something new · 2-3 min";
   if (deck.ready && now !== null) {
     const { repasos, nuevas } = snackComposition(dueEntries(deck.value, now).length);
     subtitle =
       repasos === 0
-        ? `${nuevas} nuevas · 2-3 min`
-        : `${repasos} repaso${repasos === 1 ? "" : "s"} + ${nuevas} nuevas · 2-3 min`;
+        ? `${nuevas} new · 2-3 min`
+        : `${repasos} review${repasos === 1 ? "" : "s"} + ${nuevas} new · 2-3 min`;
   }
 
   return (

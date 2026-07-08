@@ -78,7 +78,7 @@ export function McqCard({
         <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
           {wasCorrect && <SparkBurst />}
           <p className={`text-base font-medium ${wasCorrect ? "text-emerald-300" : "text-white/80"}`}>
-            {wasCorrect ? "Eso es." : "Todo bien — volverá pronto."}
+            {wasCorrect ? "That's it." : "All good — it'll be back soon."}
           </p>
           {phrase && (
             <p className="text-sm text-white/50">
@@ -87,7 +87,7 @@ export function McqCard({
           )}
         </div>
       ) : (
-        <p className="text-sm text-white/40">Toca una para seguir — sin presión.</p>
+        <p className="text-sm text-white/40">Tap one to continue — no pressure.</p>
       )}
     </div>
   );

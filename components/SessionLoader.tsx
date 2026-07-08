@@ -95,7 +95,7 @@ export function SessionLoader({ mode, title }: { mode: SessionMode; title: strin
   if (!plan) {
     return (
       <div className="flex h-dvh items-center justify-center bg-[#0b0b12]">
-        <span className="text-sm text-white/40">Preparando la sesión…</span>
+        <span className="text-sm text-white/40">Getting your session ready…</span>
       </div>
     );
   }

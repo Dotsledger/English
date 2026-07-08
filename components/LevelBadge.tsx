@@ -18,7 +18,7 @@ export function LevelBadge() {
       >
         {formatLevel(level.value)}
       </span>
-      <span className="text-[11px] text-white/50">tu nivel en la app</span>
+      <span className="text-[11px] text-white/50">your level in the app</span>
 
       {showTooltip && (
         <div
@@ -26,7 +26,7 @@ export function LevelBadge() {
           className="badge-pop absolute left-1 top-full z-20 mt-1.5 max-w-xs rounded-2xl border border-white/12 bg-[#14141d] px-4 py-3 shadow-lg"
         >
           <p className="text-sm text-white/75">
-            Esto mide tu progreso en la app, no es una certificación oficial de inglés.
+            This tracks your progress in the app — it isn’t an official English certification.
           </p>
           <button
             type="button"
@@ -34,7 +34,7 @@ export function LevelBadge() {
             onClick={() => level.update(markTooltipSeen)}
             className="mt-2 text-xs font-semibold text-amber-300 active:scale-95"
           >
-            Entendido
+            Got it
           </button>
         </div>
       )}

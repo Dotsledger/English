@@ -13,9 +13,9 @@ export function SessionEnd({
   onAnotherRound: () => void;
 }) {
   const rows = [
-    { n: stats.vistas, label: stats.vistas === 1 ? "frase vista" : "frases vistas" },
-    { n: stats.guardadas, label: stats.guardadas === 1 ? "guardada" : "guardadas" },
-    { n: stats.recuperadas, label: stats.recuperadas === 1 ? "recuperada" : "recuperadas" },
+    { n: stats.vistas, label: stats.vistas === 1 ? "phrase seen" : "phrases seen" },
+    { n: stats.guardadas, label: stats.guardadas === 1 ? "saved" : "saved" },
+    { n: stats.recuperadas, label: stats.recuperadas === 1 ? "recalled" : "recalled" },
   ];
 
   return (
@@ -24,7 +24,7 @@ export function SessionEnd({
       className="scene-enter flex h-full flex-col justify-center gap-6 px-6 pb-10"
     >
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/40">{title}</p>
-      <h2 className="text-3xl font-bold leading-tight text-white">Sesión hecha ✓</h2>
+      <h2 className="text-3xl font-bold leading-tight text-white">Session done ✓</h2>
 
       <div className="flex gap-2.5">
         {rows.map((row) => (
@@ -44,10 +44,10 @@ export function SessionEnd({
         onClick={onAnotherRound}
         className="rounded-2xl bg-white px-6 py-4 text-center text-base font-semibold text-black active:scale-[0.98]"
       >
-        Otra ronda
+        Another round
       </button>
       <Link href="/" className="text-center text-sm text-white/50 underline-offset-4 active:underline">
-        Volver al inicio
+        Back to home
       </Link>
     </div>
   );

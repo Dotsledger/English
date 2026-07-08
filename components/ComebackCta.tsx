@@ -13,7 +13,7 @@ export function ComebackCta() {
       className="mb-3 flex items-center justify-between rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 active:scale-[0.99]"
     >
       <span className="text-sm font-medium text-emerald-200">
-        Bienvenido de vuelta — {COMEBACK_SIZE} frases en 90 segundos
+        Welcome back — {COMEBACK_SIZE} phrases in 90 seconds
       </span>
       <span aria-hidden className="shrink-0 text-emerald-300/70">
         →

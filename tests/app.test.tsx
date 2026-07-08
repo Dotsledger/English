@@ -65,7 +65,7 @@ describe("home / topic grid", () => {
   it("renders the topic grid with the first 4 default topic tiles", () => {
     renderHome();
     expect(screen.getByTestId("topic-grid")).toBeDefined();
-    expect(screen.getByText("Explora")).toBeDefined();
+    expect(screen.getByText("Explore")).toBeDefined();
     for (const id of DEFAULT_TOPIC_IDS.slice(0, 4)) {
       expect(screen.getByTestId(`topic-tile-${id}`)).toBeDefined();
     }
@@ -136,7 +136,7 @@ describe("home / topic grid", () => {
     renderHome();
     const cta = await screen.findByTestId("due-cta");
     expect(cta.getAttribute("href")).toBe("/snack");
-    expect(cta.textContent).toContain("lista para repasar");
+    expect(cta.textContent).toContain("ready to review");
   });
 
   it("switches to the comeback CTA after a long absence", async () => {
@@ -181,7 +181,7 @@ describe("level badge + first-time tooltip", () => {
     renderBadge();
     expect(screen.getByTestId("level-badge").textContent).toBe("B2.0");
     const tip = await screen.findByTestId("level-tooltip");
-    expect(tip.textContent).toContain("no es una certificación oficial");
+    expect(tip.textContent).toContain("official English certification");
   });
 
   it("dismissing the tooltip persists and hides it", async () => {
@@ -325,7 +325,7 @@ describe("session player interactions", () => {
     });
   });
 
-  it("long-pressing the phrase opens the action sheet and 'Ya la domino' suppresses it", async () => {
+  it("long-pressing the phrase opens the action sheet and 'I already know this' suppresses it", async () => {
     const plan = renderSession();
     const phraseId = plan.cards[0].kind === "content" ? plan.cards[0].scene.phraseId : "";
     // No visible suppress link next to the reveal button anymore.
@@ -368,7 +368,7 @@ describe("session player checkpoints", () => {
     const checkpoint = goToCheckpoint(plan);
     const wrongIndex = checkpoint.exercise.correctIndex === 0 ? 1 : 0;
     fireEvent.click(screen.getByText(checkpoint.exercise.options[wrongIndex]));
-    expect(screen.getByText("Todo bien — volverá pronto.")).toBeDefined();
+    expect(screen.getByText("All good — it'll be back soon.")).toBeDefined();
     await waitFor(async () => {
       await flushWrites();
       const deck = parseDeck(window.localStorage.getItem(KEY_DECK));
@@ -383,7 +383,7 @@ describe("session player checkpoints", () => {
     const plan = renderSession();
     const checkpoint = goToCheckpoint(plan);
     fireEvent.click(screen.getByText(checkpoint.exercise.options[checkpoint.exercise.correctIndex]));
-    expect(screen.getByText("Eso es.")).toBeDefined();
+    expect(screen.getByText("That's it.")).toBeDefined();
     await waitFor(async () => {
       await flushWrites();
       const deck = parseDeck(window.localStorage.getItem(KEY_DECK));
@@ -402,7 +402,7 @@ describe("session end", () => {
       fireEvent.keyDown(window, { key: "ArrowDown" });
     }
     expect(screen.getByTestId("session-end")).toBeDefined();
-    expect(screen.getByText("Sesión hecha ✓")).toBeDefined();
+    expect(screen.getByText("Session done ✓")).toBeDefined();
 
     const sessionTopicIds = new Set(
       plan.cards.flatMap((c) => (c.kind === "content" ? [c.scene.topicId] : []))

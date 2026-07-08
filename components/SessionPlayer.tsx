@@ -218,7 +218,7 @@ export function SessionPlayer({
       <div className="relative z-10 flex items-center gap-2">
         <Link
           href="/"
-          aria-label="Volver a los temas"
+          aria-label="Back to topics"
           className="ml-2 mt-[max(0.6rem,env(safe-area-inset-top))] flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white/60"
         >
           ←
@@ -244,7 +244,7 @@ export function SessionPlayer({
             <McqCard
               exercise={card.exercise}
               phrase={phraseById.get(card.exercise.phraseId) ?? null}
-              kicker="¿Te suena?"
+              kicker="Ring a bell?"
               selectedIndex={answered ? (state.answers[state.index].selectedIndex ?? null) : null}
               onSelect={(i, correct) => answerCheckpoint(card.exercise.phraseId, correct, i)}
             />
@@ -255,7 +255,7 @@ export function SessionPlayer({
               <McqCard
                 exercise={card.exercise}
                 phrase={phraseById.get(card.exercise.phraseId) ?? null}
-                kicker="Repaso rápido"
+                kicker="Quick review"
                 selectedIndex={answered ? (state.answers[state.index].selectedIndex ?? null) : null}
                 onSelect={(i, correct) => answerReview(card.exercise.phraseId, correct, false, i)}
               />
@@ -296,17 +296,17 @@ export function SessionPlayer({
           >
             <span className="text-4xl">✨</span>
             <h2 className="text-3xl font-bold leading-tight text-white">
-              Chequeo de nivel disponible
+              Level check available
             </h2>
             <p className="text-base text-white/65">
-              Un repaso rápido para ver cómo vas. 2 min, cuando quieras.
+              A quick check to see how you’re doing. 2 min, whenever you like.
             </p>
             <Link
               href="/check"
               data-testid="check-offer-start"
               className="mx-auto w-full max-w-xs rounded-2xl bg-white px-6 py-4 text-base font-semibold text-black active:scale-[0.98]"
             >
-              Hacer el chequeo
+              Take the check
             </Link>
             <button
               type="button"
@@ -317,7 +317,7 @@ export function SessionPlayer({
               }}
               className="text-sm text-white/45 active:scale-95"
             >
-              Ahora no
+              Not now
             </button>
           </div>
         ) : null}
@@ -326,14 +326,14 @@ export function SessionPlayer({
       {!finished && (
         <div className="relative z-10 flex items-center justify-center px-6 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">
           <span className="swipe-hint text-xs text-white/55">
-            {canGoNext ? "Desliza hacia arriba ↑" : "Responde para seguir"}
+            {canGoNext ? "Swipe up ↑" : "Answer to continue"}
           </span>
           {/* Arrow buttons are only useful with a mouse; on touch the swipe
               gesture is the interaction, so hide them there. */}
           <div className="fine-pointer-only absolute right-4 gap-1.5">
             <button
               type="button"
-              aria-label="Anterior"
+              aria-label="Previous"
               onClick={goPrev}
               disabled={state.index === 0}
               className="flex h-11 w-11 items-center justify-center rounded-full text-lg text-white/45 disabled:opacity-30"
@@ -342,7 +342,7 @@ export function SessionPlayer({
             </button>
             <button
               type="button"
-              aria-label="Siguiente"
+              aria-label="Next"
               onClick={goNext}
               disabled={!canGoNext}
               className="flex h-11 w-11 items-center justify-center rounded-full text-lg text-white/45 disabled:opacity-30"

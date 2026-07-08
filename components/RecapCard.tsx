@@ -28,14 +28,14 @@ export function RecapCard() {
 
   const lines: string[] = [];
   lines.push(
-    recap.activeDays === 1 ? "1 día activo la semana pasada" : `${recap.activeDays} días activos la semana pasada`
+    recap.activeDays === 1 ? "1 active day last week" : `${recap.activeDays} active days last week`
   );
   if (recap.produced > 0) {
     lines.push(
-      recap.produced === 1 ? "1 frase nueva que ya produces" : `${recap.produced} frases nuevas que ya produces`
+      recap.produced === 1 ? "1 new phrase you can now recall" : `${recap.produced} new phrases you can now recall`
     );
   }
-  if (recap.topCategory) lines.push(`Lo que más practicaste: ${recap.topCategory}`);
+  if (recap.topCategory) lines.push(`What you practised most: ${recap.topCategory}`);
 
   return (
     <div
@@ -44,7 +44,7 @@ export function RecapCard() {
     >
       <div className="flex items-center justify-between">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300/80">
-          Tu semana
+          Your week
         </p>
         <button
           type="button"
@@ -52,7 +52,7 @@ export function RecapCard() {
           onClick={() =>
             triage.update((prev) => ({ ...prev, recapAckedWeek: recap.weekKey }))
           }
-          aria-label="Cerrar resumen"
+          aria-label="Close recap"
           className="text-sm text-white/40 active:scale-90"
         >
           ✕

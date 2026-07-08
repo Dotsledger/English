@@ -44,7 +44,7 @@ export default function SettingsPage() {
   };
 
   const handleWipe = async () => {
-    if (!window.confirm("¿Borrar todo tu progreso? Esto no se puede deshacer.")) return;
+    if (!window.confirm("Erase all your progress? This can't be undone.")) return;
     const backend = await getBackend();
     for (const key of ALL_KEYS) await backend.remove(key);
     window.location.href = "/";
@@ -55,23 +55,23 @@ export default function SettingsPage() {
       <header className="flex items-center gap-2">
         <Link
           href="/"
-          aria-label="Volver al inicio"
+          aria-label="Back to home"
           className="flex h-11 w-11 items-center justify-center rounded-full text-white/60"
         >
           ←
         </Link>
-        <h1 className="text-2xl font-bold text-white">Ajustes</h1>
+        <h1 className="text-2xl font-bold text-white">Settings</h1>
       </header>
 
       <section className="rounded-2xl bg-white/[0.05] px-4 py-3.5">
         <p className="text-sm text-white/70">
           {deck.ready
-            ? `${phraseCount} frases con progreso · ${captureCount} capturadas`
-            : "Cargando…"}
+            ? `${phraseCount} phrases with progress · ${captureCount} captured`
+            : "Loading…"}
         </p>
         <p className="mt-1 text-xs text-white/40">
-          Tu progreso vive solo en este dispositivo. Exporta una copia si cambias de móvil o
-          limpias el navegador.
+          Your progress lives only on this device. Export a copy if you switch phones or clear
+          your browser.
         </p>
       </section>
 
@@ -82,7 +82,7 @@ export default function SettingsPage() {
           data-testid="export-progress"
           className="rounded-2xl bg-white px-5 py-4 text-base font-semibold text-black active:scale-[0.99]"
         >
-          Exportar mi progreso (JSON)
+          Export my progress (JSON)
         </button>
         <button
           type="button"
@@ -90,7 +90,7 @@ export default function SettingsPage() {
           data-testid="import-progress"
           className="rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-4 text-base font-medium text-white active:scale-[0.99]"
         >
-          Importar una copia
+          Import a copy
         </button>
         <input
           ref={fileInput}
@@ -107,7 +107,7 @@ export default function SettingsPage() {
 
       {sentenceEntries.length > 0 && (
         <section className="flex flex-col gap-2" data-testid="my-sentences">
-          <h2 className="px-1 text-sm font-semibold text-white/70">Tus frases</h2>
+          <h2 className="px-1 text-sm font-semibold text-white/70">Your sentences</h2>
           <div className="flex flex-col gap-2">
             {sentenceEntries.map(([phraseId, list]) => (
               <div key={phraseId} className="rounded-2xl bg-white/[0.05] px-4 py-3">
@@ -133,7 +133,7 @@ export default function SettingsPage() {
           onClick={handleWipe}
           className="w-full rounded-2xl border border-rose-400/25 px-5 py-3.5 text-sm font-medium text-rose-300/80 active:scale-[0.99]"
         >
-          Borrar todo
+          Erase everything
         </button>
       </section>
     </main>

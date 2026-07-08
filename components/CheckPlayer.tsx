@@ -59,7 +59,7 @@ export function CheckPlayer({
     <div data-testid="check-player" className="relative flex h-dvh flex-col overflow-hidden bg-[#0b0b12]">
       <div className="px-6 pt-[max(1rem,env(safe-area-inset-top))]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-300/80">
-          Chequeo de nivel
+          Level check
         </p>
         <div className="mt-2 flex gap-1" aria-hidden>
           {items.map((_, i) => (
@@ -79,7 +79,7 @@ export function CheckPlayer({
             <McqCard
               exercise={item.exercise}
               phrase={phrase}
-              kicker="¿Cuál es?"
+              kicker="Which one?"
               badge={item.source === "stretch" ? "🎯 Extra" : undefined}
               selectedIndex={answered ? (answers[index].selectedIndex ?? null) : null}
               onSelect={(i, correct) => record(correct, i)}
@@ -103,7 +103,7 @@ export function CheckPlayer({
           disabled={!answered}
           className="min-h-12 w-full rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.99] disabled:opacity-30"
         >
-          {isLast ? "Ver resultado" : "Siguiente"}
+          {isLast ? "See result" : "Next"}
         </button>
       </div>
     </div>
