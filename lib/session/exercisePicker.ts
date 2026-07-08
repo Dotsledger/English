@@ -5,6 +5,7 @@ import { generateRecognitionMcq } from "@/lib/exercises/mcq";
 import { generateCloze } from "@/lib/exercises/cloze";
 import { generateFreeType, generateCaptureFreeType } from "@/lib/exercises/freetype";
 import { pickExample } from "@/lib/exercises/examples";
+import { resolvePracticeType, type PracticeType } from "@/lib/session/exercisePolicy";
 
 export type ReviewDeps = {
   phrases: Phrase[];
@@ -57,26 +58,72 @@ export function buildReviewExercise(entry: DeckEntry, deps: ReviewDeps): Exercis
   }
 }
 
+/** Builds the {kind:"review"} card for a concrete exercise-type choice. */
+function reviewExerciseCard(
+  type: "recognition" | "cloze" | "reverse",
+  phrase: Phrase,
+  entry: DeckEntry,
+  deps: ReviewDeps
+): SessionCard {
+  let exercise: Exercise;
+  if (type === "recognition") {
+    exercise = generateRecognitionMcq(phrase, deps.phrases, deps.index, deps.rng);
+  } else if (type === "cloze") {
+    exercise =
+      generateCloze(phrase, pickExample(phrase, deps.rng)) ??
+      generateRecognitionMcq(phrase, deps.phrases, deps.index, deps.rng);
+  } else {
+    exercise = generateFreeType(phrase);
+  }
+  return { kind: "review", exercise, box: entry.box, stage: entry.stage };
+}
+
+/** Maps a resolved practice type to the session card that delivers it. */
+function practiceCard(
+  type: PracticeType,
+  phrase: Phrase,
+  entry: DeckEntry,
+  deps: ReviewDeps
+): SessionCard {
+  switch (type) {
+    case "situation":
+      return { kind: "situation", phraseId: entry.phraseId };
+    case "contrast":
+      return { kind: "contrast", phraseId: entry.phraseId };
+    case "production":
+      return { kind: "mastery", phraseId: entry.phraseId };
+    default:
+      return reviewExerciseCard(type, phrase, entry, deps);
+  }
+}
+
 /**
- * Wraps a deck entry into the session card it should review as. A catalog
- * phrase at box 5 that hasn't been mastered yet gets the free-production
- * mastery gate; everything else gets a normal review exercise. Null when
- * the entry can't be exercised.
+ * Wraps a deck entry into the session card it should review as.
+ *
+ * Strategy phrases (those with a vocabulary `category`) route by pedagogy —
+ * the practice type is chosen from the category's preference and the phrase's
+ * memory stage (see exercisePolicy). Plain catalog phrases and custom captures
+ * keep the original box-driven behaviour (box 5 → mastery gate, else MCQ/cloze/
+ * freetype). Null when the entry can't be exercised (deleted capture, unknown
+ * phrase).
  */
 export function reviewCardFor(entry: DeckEntry, deps: ReviewDeps): SessionCard | null {
-  // Rich "core" phrases route to the transfer/contrast cards; the 1,384 plain
-  // catalog phrases have neither field, so they fall straight through unchanged.
-  const phrase = entry.source === "catalog" ? deps.phraseById.get(entry.phraseId) : undefined;
-  if (phrase && entry.stage !== "mastered") {
-    if ((phrase.situations?.length ?? 0) > 0 && entry.box >= 4) {
-      // Production practice at the long boxes — the path to usable/mastered.
-      return { kind: "situation", phraseId: entry.phraseId };
-    }
-    if ((phrase.contrastWith?.length ?? 0) > 0 && entry.box <= 3 && deps.rng() < 0.4) {
-      return { kind: "contrast", phraseId: entry.phraseId };
-    }
+  if (entry.source === "custom") {
+    const exercise = buildReviewExercise(entry, deps);
+    return exercise ? { kind: "review", exercise, box: entry.box, stage: entry.stage } : null;
   }
-  if (entry.source === "catalog" && entry.box === 5 && entry.stage !== "mastered") {
+
+  const phrase = deps.phraseById.get(entry.phraseId);
+  if (!phrase) return null;
+
+  // Pedagogy-aware routing for strategy phrases.
+  if (phrase.category) {
+    const type = resolvePracticeType(phrase, entry.stage);
+    return practiceCard(type, phrase, entry, deps);
+  }
+
+  // Plain catalog phrases: unchanged box-driven behaviour.
+  if (entry.box === 5 && entry.stage !== "mastered") {
     return { kind: "mastery", phraseId: entry.phraseId };
   }
   const exercise = buildReviewExercise(entry, deps);

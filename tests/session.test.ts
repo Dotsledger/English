@@ -509,14 +509,14 @@ describe("Phase C — rich core phrases (context / situation / contrast)", () =>
     }
   });
 
-  it("a core phrase with situations routes to a situation card at box >= 4", () => {
+  it("a core phrase with situations routes to a situation card once recalled", () => {
     const entry = makeDeckEntry({ phraseId: "on-the-fence", inDeck: true, box: 4, stage: "recalled" });
     expect(reviewCardFor(entry, deps)?.kind).toBe("situation");
   });
 
-  it("a core phrase with contrastWith can route to a contrast card at low boxes", () => {
-    const entry = makeDeckEntry({ phraseId: "on-the-fence", inDeck: true, box: 2, stage: "recognised" });
-    expect(reviewCardFor(entry, { ...deps, rng: () => 0.1 })?.kind).toBe("contrast");
+  it("a Spanish-speaker trap routes to a contrast/correction card", () => {
+    const entry = makeDeckEntry({ phraseId: "depend-on", inDeck: true, box: 2, stage: "recognised" });
+    expect(reviewCardFor(entry, deps)?.kind).toBe("contrast");
   });
 
   it("a plain catalog phrase is unaffected — normal review card", () => {
@@ -524,9 +524,9 @@ describe("Phase C — rich core phrases (context / situation / contrast)", () =>
     expect(reviewCardFor(entry, { ...deps, rng: () => 0.1 })?.kind).toBe("review");
   });
 
-  it("a mastered core phrase no longer routes to situation/contrast", () => {
+  it("a mastered core phrase gets a maintenance situation card, not the mastery gate", () => {
     const entry = makeDeckEntry({ phraseId: "on-the-fence", inDeck: true, box: 5, stage: "mastered" });
-    expect(reviewCardFor(entry, deps)?.kind).toBe("review");
+    expect(reviewCardFor(entry, deps)?.kind).toBe("situation");
   });
 });
 
