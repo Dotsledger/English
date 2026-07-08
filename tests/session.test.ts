@@ -7,7 +7,7 @@ import {
   jumpBox,
   upcomingEntries,
 } from "@/lib/session/leitner";
-import { exerciseTypeFor, buildReviewExercise } from "@/lib/session/exercisePicker";
+import { exerciseTypeFor, buildReviewExercise, reviewCardFor } from "@/lib/session/exercisePicker";
 import { composeCategorySession, type ComposerContent } from "@/lib/session/composeCategorySession";
 import { composeSnackSession, orderTopicsByBand } from "@/lib/session/composeSnackSession";
 import { snackComposition } from "@/components/SnackHero";
@@ -288,6 +288,19 @@ describe("composeSnackSession", () => {
     now: NOW,
   };
 
+  // "Core" life phrases (rich metadata) surface as Context cards and route to
+  // situation/contrast in review. To test the plain review/content mechanics in
+  // isolation, mark every core phrase seen-but-not-in-deck so it stays inert.
+  const inertCore = (): DeckStore => {
+    const d: DeckStore = {};
+    for (const p of phrases) {
+      if (p.usageContext !== undefined) {
+        d[p.id] = deckEntry({ phraseId: p.id, inDeck: false, nextReviewAt: null, timesSeen: 1 });
+      }
+    }
+    return d;
+  };
+
   it("mixes ~60% due reviews with new content at the default target", () => {
     const plan = composeSnackSession({ ...base, deck: dueDeck(20), rng: seededRng(5) });
     const reviews = plan.cards.filter((c) => c.kind === "review");
@@ -313,8 +326,9 @@ describe("composeSnackSession", () => {
   });
 
   it("no unseen content → leans fully into reviews", () => {
-    const allSeen: DeckStore = {};
+    const allSeen: DeckStore = { ...inertCore() };
     for (const p of phrases) {
+      if (p.usageContext !== undefined) continue; // core stays inert
       allSeen[p.id] = deckEntry({ phraseId: p.id, timesSeen: 1, nextReviewAt: NOW - 1000 });
     }
     const plan = composeSnackSession({ ...base, deck: allSeen, rng: seededRng(5) });
@@ -323,9 +337,10 @@ describe("composeSnackSession", () => {
   });
 
   it("nothing due and nothing new → pulls almost-due to the floor", () => {
-    const deck: DeckStore = {};
+    const deck: DeckStore = { ...inertCore() };
     for (const p of phrases) {
-      deck[p.id] = deckEntry({ phraseId: p.id, timesSeen: 1, nextReviewAt: NOW + (deck ? Object.keys(deck).length + 1 : 1) * 1000 });
+      if (p.usageContext !== undefined) continue; // core stays inert
+      deck[p.id] = deckEntry({ phraseId: p.id, timesSeen: 1, nextReviewAt: NOW + (Object.keys(deck).length + 1) * 1000 });
     }
     const plan = composeSnackSession({ ...base, deck, rng: seededRng(5) });
     const reviews = plan.cards.filter((c) => c.kind === "review");
@@ -335,7 +350,7 @@ describe("composeSnackSession", () => {
   it("empty deck and every topic completed → end card only", () => {
     const plan = composeSnackSession({
       ...base,
-      deck: {},
+      deck: inertCore(), // core phrases already seen ⇒ no Context cards to add
       completedTopicIds: new Set(topics.map((t) => t.id)),
       rng: seededRng(5),
     });
@@ -470,5 +485,47 @@ describe("session run reducer", () => {
     let state = initSessionRun(miniPlan());
     state = sessionReducer(state, { type: "back" });
     expect(state.index).toBe(0);
+  });
+});
+
+describe("Phase C — rich core phrases (context / situation / contrast)", () => {
+  const NOW2 = 1_750_000_000_000;
+  const deps = {
+    phrases,
+    phraseById,
+    index: phraseCategoryIndex,
+    captures: {},
+    rng: () => 0.9,
+  };
+  const base = { captures: {}, content: CONTENT, completedTopicIds: new Set<string>(), now: NOW2 };
+  const plainCatalogId = phrases.find((p) => p.usageContext === undefined)!.id;
+
+  it("a fresh snack introduces unseen core phrases as Context cards", () => {
+    const plan = composeSnackSession({ ...base, deck: {}, rng: seededRng(3) });
+    const ctx = plan.cards.filter((c) => c.kind === "context");
+    expect(ctx.length).toBeGreaterThanOrEqual(1);
+    for (const c of ctx) {
+      if (c.kind === "context") expect(phraseById.get(c.phraseId)?.usageContext).toBeDefined();
+    }
+  });
+
+  it("a core phrase with situations routes to a situation card at box >= 4", () => {
+    const entry = makeDeckEntry({ phraseId: "on-the-fence", inDeck: true, box: 4, stage: "recalled" });
+    expect(reviewCardFor(entry, deps)?.kind).toBe("situation");
+  });
+
+  it("a core phrase with contrastWith can route to a contrast card at low boxes", () => {
+    const entry = makeDeckEntry({ phraseId: "on-the-fence", inDeck: true, box: 2, stage: "recognised" });
+    expect(reviewCardFor(entry, { ...deps, rng: () => 0.1 })?.kind).toBe("contrast");
+  });
+
+  it("a plain catalog phrase is unaffected — normal review card", () => {
+    const entry = makeDeckEntry({ phraseId: plainCatalogId, inDeck: true, box: 2, stage: "recognised" });
+    expect(reviewCardFor(entry, { ...deps, rng: () => 0.1 })?.kind).toBe("review");
+  });
+
+  it("a mastered core phrase no longer routes to situation/contrast", () => {
+    const entry = makeDeckEntry({ phraseId: "on-the-fence", inDeck: true, box: 5, stage: "mastered" });
+    expect(reviewCardFor(entry, deps)?.kind).toBe("review");
   });
 });

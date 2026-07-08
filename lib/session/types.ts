@@ -8,6 +8,12 @@ export type SessionCard =
   | { kind: "checkpoint"; exercise: McqExercise; authoredSceneId?: string }
   /** Leitner review drawn from the deck (Daily Snack). */
   | { kind: "review"; exercise: Exercise; box: Box; stage: PhraseStage }
+  /** Introduces a rich "core" phrase: meaning, when-to-use, examples, mistake. */
+  | { kind: "context"; phraseId: string }
+  /** Real-life transfer prompt for a rich phrase → self-assessed production. */
+  | { kind: "situation"; phraseId: string }
+  /** Distinguishes a rich phrase from a confusable one (recognition). */
+  | { kind: "contrast"; phraseId: string }
   /** Box-5 free-production gate with self-assessment (the path to MASTERED). */
   | { kind: "mastery"; phraseId: string }
   /** Opt-in level-check milestone offer (never auto-starts). */

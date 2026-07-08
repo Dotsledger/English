@@ -42,6 +42,9 @@ import { McqCard } from "@/components/exercises/McqCard";
 import { TypedAnswerCard } from "@/components/exercises/TypedAnswerCard";
 import { SpokenAnswerCard } from "@/components/exercises/SpokenAnswerCard";
 import { MasteryCard } from "@/components/exercises/MasteryCard";
+import { ContextCard } from "@/components/exercises/ContextCard";
+import { SituationCard } from "@/components/exercises/SituationCard";
+import { ContrastCard } from "@/components/exercises/ContrastCard";
 
 const SWIPE_THRESHOLD = 48;
 
@@ -70,7 +73,12 @@ export function SessionPlayer({
 
   const card = state.plan.cards[state.index];
   const finished = isFinished(state);
-  const needsAnswer = card?.kind === "checkpoint" || card?.kind === "review";
+  const needsAnswer =
+    card?.kind === "checkpoint" ||
+    card?.kind === "review" ||
+    card?.kind === "mastery" ||
+    card?.kind === "situation" ||
+    card?.kind === "contrast";
   const answered = state.answers[state.index] !== undefined;
   const canGoNext = !needsAnswer || answered;
 
@@ -82,6 +90,15 @@ export function SessionPlayer({
       const phraseId = card.scene.phraseId;
       deck.update((prev) => markSeen(prev, phraseId, Date.now()));
       level.update((prev) => bumpCardsSeen(prev)); // milestone counter
+    }
+    // Context cards introduce a core phrase — same "seen, not learned" mark.
+    if (card?.kind === "context") {
+      const key = `context:${card.phraseId}`;
+      if (!seenSceneIds.current.has(key)) {
+        seenSceneIds.current.add(key);
+        deck.update((prev) => markSeen(prev, card.phraseId, Date.now()));
+        level.update((prev) => bumpCardsSeen(prev));
+      }
     }
   }, [card, deck, level]);
 
@@ -176,6 +193,11 @@ export function SessionPlayer({
       selectedIndex,
     });
     deck.update((prev) => recordReviewResult(prev, phraseId, { correct, produced }, Date.now()));
+  };
+
+  const answerContrast = (phraseId: string, correct: boolean) => {
+    dispatch({ type: "answer", cardIndex: state.index, phraseId, correct, produced: false });
+    deck.update((prev) => recordReviewResult(prev, phraseId, { correct, produced: false }, Date.now()));
   };
 
   const gradeMastery = (phraseId: string, verdict: MasteryVerdict, sentence: string) => {
@@ -286,6 +308,44 @@ export function SessionPlayer({
               speechAvailable={useSpoken}
               alreadyAnswered={answered}
               onGrade={(verdict, sentence) => gradeMastery(card.phraseId, verdict, sentence)}
+            />
+          </div>
+        ) : card.kind === "context" ? (
+          <div key={`context-${state.index}`} className="scene-enter h-full">
+            <ContextCard
+              phrase={phraseById.get(card.phraseId)!}
+              saved={deck.value[card.phraseId]?.inDeck === true}
+              onSave={() => {
+                dispatch({ type: "save", phraseId: card.phraseId });
+                deck.update((prev) => saveToDeck(prev, card.phraseId, Date.now()));
+              }}
+              onDismiss={goNext}
+              onSuppress={() => {
+                deck.update((prev) => suppressPhrase(prev, card.phraseId, Date.now()));
+                goNext();
+              }}
+            />
+          </div>
+        ) : card.kind === "situation" ? (
+          <div key={`situation-${state.index}`} className="scene-enter h-full">
+            <SituationCard
+              phrase={phraseById.get(card.phraseId)!}
+              alreadyAnswered={answered}
+              onGrade={(verdict) => gradeMastery(card.phraseId, verdict, "")}
+            />
+          </div>
+        ) : card.kind === "contrast" ? (
+          <div key={`contrast-${state.index}`} className="scene-enter h-full">
+            <ContrastCard
+              phrase={phraseById.get(card.phraseId)!}
+              selectedText={
+                answered
+                  ? state.answers[state.index].correct
+                    ? phraseById.get(card.phraseId)!.text
+                    : (phraseById.get(card.phraseId)!.contrastWith?.[0]?.phrase ?? null)
+                  : null
+              }
+              onSelect={(correct) => answerContrast(card.phraseId, correct)}
             />
           </div>
         ) : card.kind === "check_offer" ? (

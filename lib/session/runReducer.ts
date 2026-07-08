@@ -34,7 +34,11 @@ function isGated(state: SessionRunState): boolean {
   const card = state.plan.cards[state.index];
   if (!card) return false;
   const needsAnswer =
-    card.kind === "checkpoint" || card.kind === "review" || card.kind === "mastery";
+    card.kind === "checkpoint" ||
+    card.kind === "review" ||
+    card.kind === "mastery" ||
+    card.kind === "situation" ||
+    card.kind === "contrast";
   return needsAnswer && state.answers[state.index] === undefined;
 }
 
@@ -78,7 +82,8 @@ export function isFinished(state: SessionRunState): boolean {
 export function computeStats(state: SessionRunState): SessionStats {
   let vistas = 0;
   for (let i = 0; i < state.index; i++) {
-    if (state.plan.cards[i].kind === "content") vistas += 1;
+    const kind = state.plan.cards[i].kind;
+    if (kind === "content" || kind === "context") vistas += 1;
   }
   const recuperadas = Object.values(state.answers).filter((a) => a.correct).length;
   return { vistas, guardadas: state.savedPhraseIds.length, recuperadas };

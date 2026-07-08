@@ -15,6 +15,8 @@ export const SNACK_DUE_SHARE = 0.6;
 const DEFAULT_TARGET = SNACK_TARGET_CARDS;
 const DUE_SHARE = SNACK_DUE_SHARE;
 const FLOOR = 6;
+/** How many unseen "core" life phrases to introduce (Context cards) per snack. */
+const CORE_PER_SNACK = 2;
 
 /**
  * Orders fresh topics to weight the Daily Snack's new content toward the
@@ -108,6 +110,22 @@ export function composeSnackSession(opts: {
   contentBudget -= checkpointBudget;
 
   const contentCards: SessionCard[] = [];
+
+  // Introduce a couple of unseen "core" life phrases (rich metadata) as Context
+  // cards — the entry point that lets them enter the deck. Capped per session so
+  // they trickle in rather than flood a snack. Shuffled by rng for variety.
+  const coreCandidates = content.phrases
+    .filter((p) => p.usageContext !== undefined && isNewScene(p.id))
+    .map((p) => p.id);
+  for (let i = coreCandidates.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [coreCandidates[i], coreCandidates[j]] = [coreCandidates[j], coreCandidates[i]];
+  }
+  for (const phraseId of coreCandidates.slice(0, CORE_PER_SNACK)) {
+    if (contentCards.length >= contentBudget) break;
+    contentCards.push({ kind: "context", phraseId });
+  }
+
   const freshTopics = content.topics.filter((t) => !opts.completedTopicIds.has(t.id));
   const orderedTopics = opts.band
     ? orderTopicsByBand(freshTopics, opts.band, rng)

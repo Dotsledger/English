@@ -64,6 +64,18 @@ export function buildReviewExercise(entry: DeckEntry, deps: ReviewDeps): Exercis
  * the entry can't be exercised.
  */
 export function reviewCardFor(entry: DeckEntry, deps: ReviewDeps): SessionCard | null {
+  // Rich "core" phrases route to the transfer/contrast cards; the 1,384 plain
+  // catalog phrases have neither field, so they fall straight through unchanged.
+  const phrase = entry.source === "catalog" ? deps.phraseById.get(entry.phraseId) : undefined;
+  if (phrase && entry.stage !== "mastered") {
+    if ((phrase.situations?.length ?? 0) > 0 && entry.box >= 4) {
+      // Production practice at the long boxes — the path to usable/mastered.
+      return { kind: "situation", phraseId: entry.phraseId };
+    }
+    if ((phrase.contrastWith?.length ?? 0) > 0 && entry.box <= 3 && deps.rng() < 0.4) {
+      return { kind: "contrast", phraseId: entry.phraseId };
+    }
+  }
   if (entry.source === "catalog" && entry.box === 5 && entry.stage !== "mastered") {
     return { kind: "mastery", phraseId: entry.phraseId };
   }

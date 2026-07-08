@@ -23,7 +23,6 @@ import { phrases as meetingsAndLeadership } from "@/lib/data/categories/meetings
 import { phrases as coreLifePhrases } from "@/lib/data/categories/core-life-phrases";
 
 export const phrases: Phrase[] = [
-  ...coreLifePhrases,
   ...carsAndMobility,
   ...homeAndRealEstate,
   ...techAndAi,
@@ -45,6 +44,8 @@ export const phrases: Phrase[] = [
   ...fashionAndBeauty,
   ...historyAndTrueCrime,
   ...meetingsAndLeadership,
+  // Core life phrases last so plain-catalog slicing in tests/tools stays stable.
+  ...coreLifePhrases,
 ];
 
 export const phraseById = new Map(phrases.map((p) => [p.id, p]));
