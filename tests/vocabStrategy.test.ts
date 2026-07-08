@@ -5,7 +5,9 @@ import {
   filterPhrasesForExplore,
   getCategoryLabel,
   getCategoryPriority,
+  getExploreChipLabel,
   getWhyThisMatters,
+  orderTrapsFirst,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
@@ -145,6 +147,51 @@ describe("getWhyThisMatters", () => {
 
   it("returns null when there is no strategy category", () => {
     expect(getWhyThisMatters(mk({}))).toBeNull();
+  });
+
+  it("has copy for the remaining categories (no strategy card left blank)", () => {
+    expect(getWhyThisMatters(mk({ category: "daily_life" }))).toMatch(/everyday/i);
+    expect(getWhyThisMatters(mk({ category: "emotion_opinion" }))).toMatch(/feelings and opinions/i);
+    expect(getWhyThisMatters(mk({ category: "travel_social" }))).toMatch(/travel and social/i);
+    expect(getWhyThisMatters(mk({ category: "advanced_expression" }))).toMatch(/nuance/i);
+    // Every strategy category now yields a non-null rationale.
+    for (const c of ALL_CATEGORIES) {
+      expect(getWhyThisMatters(mk({ category: c })), c).not.toBeNull();
+    }
+  });
+});
+
+describe("getExploreChipLabel + orderTrapsFirst", () => {
+  it("shows a trap chip for flagged items inside the Traps filter", () => {
+    const flaggedColloc = mk({ category: "collocation", isSpanishSpeakerTrap: true });
+    const flaggedMarker = mk({ category: "discourse_marker", isSpanishSpeakerTrap: true });
+    expect(getExploreChipLabel(flaggedColloc, "spanish_speaker_traps")).toBe("Spanish trap");
+    expect(getExploreChipLabel(flaggedMarker, "spanish_speaker_traps")).toBe("Spanish trap");
+    expect(getExploreChipLabel(mk({ category: "spanish_speaker_trap", isSpanishSpeakerTrap: true }), "spanish_speaker_traps")).toBe("Spanish trap");
+  });
+
+  it("keeps the normal category label in every other filter", () => {
+    const flaggedColloc = mk({ category: "collocation", isSpanishSpeakerTrap: true });
+    expect(getExploreChipLabel(flaggedColloc, "collocations")).toBe("Collocation");
+    expect(getExploreChipLabel(flaggedColloc, "all")).toBe("Collocation");
+    expect(getExploreChipLabel(mk({ category: "phrasal_verb" }), "phrasal_verbs")).toBe("Phrasal verb");
+  });
+
+  it("orders genuine traps/false friends before flagged cross-category items", () => {
+    const list = [
+      mk({ id: "flagged-colloc", category: "collocation", isSpanishSpeakerTrap: true }),
+      mk({ id: "pure-trap", category: "spanish_speaker_trap", isSpanishSpeakerTrap: true }),
+      mk({ id: "false-friend", category: "false_friend", isSpanishSpeakerTrap: true }),
+    ];
+    expect(orderTrapsFirst(list).map((p) => p.id)).toEqual(["pure-trap", "false-friend", "flagged-colloc"]);
+  });
+
+  it("orderTrapsFirst is stable within a group", () => {
+    const list = [
+      mk({ id: "trap-a", category: "spanish_speaker_trap" }),
+      mk({ id: "trap-b", category: "spanish_speaker_trap" }),
+    ];
+    expect(orderTrapsFirst(list).map((p) => p.id)).toEqual(["trap-a", "trap-b"]);
   });
 });
 

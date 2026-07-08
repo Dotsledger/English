@@ -132,6 +132,14 @@ export function getWhyThisMatters(item: Phrase): string | null {
       return "A high-frequency pattern you'll reuse a lot.";
     case "work_communication":
       return "Useful for clear communication at work.";
+    case "daily_life":
+      return "Useful in ordinary everyday situations.";
+    case "emotion_opinion":
+      return "Helps you express feelings and opinions naturally.";
+    case "travel_social":
+      return "Useful in travel and social interactions.";
+    case "advanced_expression":
+      return "Adds nuance — use it once the basic pattern is solid.";
     default:
       return null;
   }
@@ -161,6 +169,28 @@ const FILTER_MATCHERS: Record<ExploreFilter, (p: Phrase) => boolean> = {
 /** Returns the phrases matching an Explore filter ("all" returns everything). */
 export function filterPhrasesForExplore(phrases: Phrase[], filter: ExploreFilter): Phrase[] {
   return phrases.filter(FILTER_MATCHERS[filter]);
+}
+
+/**
+ * Chip label for an Explore card. Display-only override: inside the Traps
+ * filter, a flagged Spanish-speaker trap shows "Spanish trap" (so the learner
+ * sees why it's there) even when its primary category is, say, a collocation.
+ * Everywhere else the normal category label is used. Never mutates metadata.
+ */
+export function getExploreChipLabel(phrase: Phrase, filter: ExploreFilter): string {
+  if (filter === "spanish_speaker_traps" && phrase.isSpanishSpeakerTrap) return "Spanish trap";
+  return phrase.category ? getCategoryLabel(phrase.category) : "";
+}
+
+/**
+ * Orders a Traps-filter list so genuine trap/false-friend items lead, then
+ * flagged cross-category items. Stable — preserves the incoming rank order
+ * within each group. Only used inside the Traps filter.
+ */
+export function orderTrapsFirst(phrases: Phrase[]): Phrase[] {
+  const rank = (p: Phrase) =>
+    p.category === "spanish_speaker_trap" ? 0 : p.category === "false_friend" ? 1 : 2;
+  return [...phrases].sort((a, b) => rank(a) - rank(b));
 }
 
 /** Sorts a copy by category priority, then usefulness (highest first). Handy

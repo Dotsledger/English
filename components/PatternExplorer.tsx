@@ -6,8 +6,9 @@ import { phrases } from "@/lib/data/phrases";
 import {
   diversifyTop,
   filterPhrasesForExplore,
-  getCategoryLabel,
+  getExploreChipLabel,
   getWhyThisMatters,
+  orderTrapsFirst,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
@@ -41,7 +42,9 @@ export function PatternExplorer() {
 
   // "All" mixes many categories → cap per-category so it isn't all core chunks.
   // A specific filter is single-category, so just take the top ranked items.
-  const ranked = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter));
+  // In Traps, surface genuine traps/false friends ahead of flagged items.
+  let ranked = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter));
+  if (filter === "spanish_speaker_traps") ranked = orderTrapsFirst(ranked);
   const shown = filter === "all" ? diversifyTop(ranked, SHOWN, 2) : ranked.slice(0, SHOWN);
 
   return (
@@ -87,6 +90,7 @@ export function PatternExplorer() {
             <PatternCard
               key={phrase.id}
               phrase={phrase}
+              chipLabel={getExploreChipLabel(phrase, filter)}
               saved={deck.value[phrase.id]?.inDeck === true}
               onSave={() => deck.update((prev) => saveToDeck(prev, phrase.id, Date.now()))}
             />
@@ -99,10 +103,12 @@ export function PatternExplorer() {
 
 function PatternCard({
   phrase,
+  chipLabel,
   saved,
   onSave,
 }: {
   phrase: Phrase;
+  chipLabel: string;
   saved: boolean;
   onSave: () => void;
 }) {
@@ -113,9 +119,9 @@ function PatternCard({
       className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3"
     >
       <div className="flex items-start justify-between gap-2">
-        {phrase.category && (
+        {chipLabel && (
           <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/60">
-            {getCategoryLabel(phrase.category)}
+            {chipLabel}
           </span>
         )}
         <button
