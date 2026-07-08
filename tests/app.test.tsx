@@ -65,7 +65,7 @@ describe("home / topic grid", () => {
   it("renders the topic grid with the first 4 default topic tiles", () => {
     renderHome();
     expect(screen.getByTestId("topic-grid")).toBeDefined();
-    expect(screen.getByText("Explore")).toBeDefined();
+    expect(screen.getByText("Explore topics")).toBeDefined();
     for (const id of DEFAULT_TOPIC_IDS.slice(0, 4)) {
       expect(screen.getByTestId(`topic-tile-${id}`)).toBeDefined();
     }
@@ -112,6 +112,22 @@ describe("home / topic grid", () => {
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     fireEvent.click(screen.getByTestId("filter-level-C2"));
     expect(screen.getAllByTestId(/^topic-tile-/)).toHaveLength(4);
+  });
+
+  it("labels the three home sections clearly (IA)", () => {
+    renderHome();
+    expect(screen.getByText(/Today.s Practice/)).toBeDefined(); // was "Daily Snack"
+    expect(screen.getByText("Add patterns to learn")).toBeDefined(); // was "Useful patterns"
+    expect(screen.getByText("Explore topics")).toBeDefined(); // was "Explore"
+    // Today's Practice is the primary action with a clear CTA.
+    expect(screen.getByText("Start")).toBeDefined();
+    // Short filter labels render with accessible long names.
+    expect(screen.getByText("Phrasals")).toBeDefined();
+    expect(screen.getByText("Frames")).toBeDefined();
+    expect(screen.getByTestId("explore-filter-phrasal_verbs").getAttribute("aria-label")).toBe("Phrasal verbs");
+    // Pattern cards use clear Add labeling.
+    const add = document.querySelector('[data-testid^="pattern-save-"]');
+    expect(add?.getAttribute("aria-label")).toBe("Add to practice");
   });
 
   it("shows the Daily Snack button and no due CTA when nothing is due", async () => {

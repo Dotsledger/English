@@ -18,14 +18,15 @@ import { saveToDeck } from "@/lib/deckOps";
 /** Only phrases carrying strategy metadata are eligible for pattern discovery. */
 const STRATEGY_PHRASES: Phrase[] = phrases.filter((p) => p.category !== undefined);
 
-const FILTERS: { id: ExploreFilter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "daily_life", label: "Daily Life" },
-  { id: "work", label: "Work" },
-  { id: "phrasal_verbs", label: "Phrasal Verbs" },
-  { id: "collocations", label: "Collocations" },
-  { id: "sentence_frames", label: "Sentence Frames" },
-  { id: "spanish_speaker_traps", label: "Traps" },
+// Short visible labels (fit the scroll row); `long` is the accessible name.
+const FILTERS: { id: ExploreFilter; label: string; long: string }[] = [
+  { id: "all", label: "All", long: "All patterns" },
+  { id: "daily_life", label: "Daily", long: "Daily life" },
+  { id: "work", label: "Work", long: "Work" },
+  { id: "phrasal_verbs", label: "Phrasals", long: "Phrasal verbs" },
+  { id: "collocations", label: "Collocations", long: "Collocations" },
+  { id: "sentence_frames", label: "Frames", long: "Sentence frames" },
+  { id: "spanish_speaker_traps", label: "Traps", long: "Spanish-speaker traps" },
 ];
 
 const SHOWN = 8;
@@ -49,9 +50,11 @@ export function PatternExplorer() {
 
   return (
     <section data-testid="pattern-explorer" className="mb-6">
-      <div className="mb-2 flex items-baseline justify-between px-1">
-        <h2 className="text-lg font-bold text-white">Useful patterns</h2>
-        <span className="text-[11px] text-white/40">highest-value first</span>
+      <div className="mb-2 px-1">
+        <h2 className="text-lg font-bold text-white">Add patterns to learn</h2>
+        <p className="mt-0.5 text-xs text-white/55">
+          Pick 1–2 phrases to practice later — up to 2 a day.
+        </p>
       </div>
 
       <div
@@ -67,6 +70,8 @@ export function PatternExplorer() {
               type="button"
               onClick={() => setFilter(f.id)}
               aria-pressed={active}
+              aria-label={f.long}
+              title={f.long}
               data-testid={`explore-filter-${f.id}`}
               className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                 active
@@ -129,17 +134,24 @@ function PatternCard({
           data-testid={`pattern-save-${phrase.id}`}
           onClick={onSave}
           aria-pressed={saved}
-          aria-label={saved ? "Saved to your deck" : "Save to your deck"}
-          className={`shrink-0 text-lg leading-none transition-transform active:scale-90 ${
-            saved ? "text-rose-400" : "text-white/35"
+          aria-label={saved ? "Added to practice" : "Add to practice"}
+          title={
+            saved
+              ? "Added — this phrase will show up in your practice"
+              : "Add — this phrase will show up in future practice"
+          }
+          className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors active:scale-95 ${
+            saved
+              ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
+              : "border-white/20 bg-white/[0.06] text-white/80"
           }`}
         >
-          {saved ? "♥" : "＋"}
+          {saved ? "✓ Saved" : "+ Add"}
         </button>
       </div>
       <p className="mt-1.5 text-lg font-bold text-amber-300">{phrase.text}</p>
-      <p className="text-sm text-white/60">{phrase.meaningEs}</p>
-      {why && <p className="mt-1 text-xs text-white/40">{why}</p>}
+      <p className="text-sm text-white/70">{phrase.meaningEs}</p>
+      {why && <p className="mt-1 text-xs text-white/55">{why}</p>}
     </div>
   );
 }

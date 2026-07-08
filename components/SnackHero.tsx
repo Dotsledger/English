@@ -26,28 +26,33 @@ export function SnackHero() {
     setNow(Date.now());
   }, []);
 
-  let subtitle = "Review + something new · 2-3 min";
+  let subtitle = "Review and learn useful phrases · 3 min";
   if (deck.ready && now !== null) {
     const { repasos, nuevas } = snackComposition(dueEntries(deck.value, now).length);
     subtitle =
       repasos === 0
-        ? `${nuevas} new · 2-3 min`
-        : `${repasos} review${repasos === 1 ? "" : "s"} + ${nuevas} new · 2-3 min`;
+        ? `Learn ${nuevas} new pattern${nuevas === 1 ? "" : "s"} · 3 min`
+        : `Review ${repasos} due · learn ${nuevas} new · 3 min`;
   }
 
   return (
-    <Link
-      href="/snack"
-      data-testid="daily-snack"
-      className="mb-5 flex items-center justify-between rounded-3xl bg-white px-6 py-6 active:scale-[0.99]"
-    >
-      <div className="flex flex-col gap-1">
-        <span className="text-2xl font-extrabold leading-none text-black">Daily Snack</span>
-        <span className="text-sm text-black/60">{subtitle}</span>
-      </div>
-      <span aria-hidden className="text-2xl text-black/70">
-        →
-      </span>
-    </Link>
+    <div className="mb-2">
+      <Link
+        href="/snack"
+        data-testid="daily-snack"
+        className="flex items-center justify-between gap-4 rounded-3xl bg-white px-6 py-6 active:scale-[0.99]"
+      >
+        <div className="flex flex-col gap-1">
+          <span className="text-2xl font-extrabold leading-none text-black">Today&rsquo;s Practice</span>
+          <span className="text-sm text-black/70">{subtitle}</span>
+        </div>
+        <span className="shrink-0 rounded-full bg-black px-5 py-2.5 text-sm font-bold text-white">
+          Start
+        </span>
+      </Link>
+      <p className="mt-1.5 px-1 text-xs text-white/55">
+        Start here — this reviews what&rsquo;s due today.
+      </p>
+    </div>
   );
 }
