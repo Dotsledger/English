@@ -116,28 +116,30 @@ export function SceneRenderer({
           {showBody ? (
             sceneBody(scene, phrase)
           ) : (
-            <button
-              type="button"
-              data-testid="audio-first-reveal"
-              onClick={() => setTextRevealed(true)}
-              className="flex flex-col items-center justify-center gap-4 py-10 text-center active:scale-[0.99]"
-            >
-              <span className="flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/40 bg-sky-500/15 text-3xl">
-                🔊
-              </span>
-              <span className="text-lg font-semibold text-white">Listen to the phrase</span>
-              <span className="text-sm text-white/60">Tap to see the text</span>
+            // Reveal and Replay are independent actions, so they must be
+            // sibling buttons — a <button> can't legally nest inside another.
+            <div className="flex flex-col items-center justify-center gap-4 py-10 text-center">
               <button
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  speak(phrase.example);
-                }}
+                data-testid="audio-first-reveal"
+                onClick={() => setTextRevealed(true)}
+                className="flex w-full flex-col items-center gap-4 active:scale-[0.99]"
+              >
+                <span className="flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/40 bg-sky-500/15 text-3xl">
+                  🔊
+                </span>
+                <span className="text-lg font-semibold text-white">Listen to the phrase</span>
+                <span className="text-sm text-white/60">Tap to see the text</span>
+              </button>
+              <button
+                type="button"
+                data-testid="audio-first-replay"
+                onClick={() => speak(phrase.example)}
                 className="mt-1 rounded-full border border-white/12 bg-white/[0.06] px-4 py-1.5 text-xs text-white/70"
               >
                 Replay audio
               </button>
-            </button>
+            </div>
           )}
         </div>
 

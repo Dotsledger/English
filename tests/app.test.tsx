@@ -256,6 +256,56 @@ describe("scene rendering", () => {
     fireEvent.click(screen.getByTestId("reveal-meaning"));
     expect(screen.getByTestId("phrase-meaning").getAttribute("data-revealed")).toBe("true");
   });
+
+  describe("audio-first scene", () => {
+    // Force TTS-available so the audio-first reveal gate engages in jsdom.
+    let speakCount = 0;
+    let originalSynth: PropertyDescriptor | undefined;
+    let originalUtterance: PropertyDescriptor | undefined;
+    beforeEach(() => {
+      speakCount = 0;
+      originalSynth = Object.getOwnPropertyDescriptor(window, "speechSynthesis");
+      originalUtterance = Object.getOwnPropertyDescriptor(window, "SpeechSynthesisUtterance");
+      Object.defineProperty(window, "speechSynthesis", {
+        configurable: true,
+        value: { speak: () => { speakCount++; }, cancel: () => {}, getVoices: () => [] },
+      });
+      Object.defineProperty(window, "SpeechSynthesisUtterance", {
+        configurable: true,
+        value: class { constructor(public text: string) {} },
+      });
+    });
+    afterEach(() => {
+      if (originalSynth) Object.defineProperty(window, "speechSynthesis", originalSynth);
+      else delete (window as unknown as Record<string, unknown>).speechSynthesis;
+      if (originalUtterance) Object.defineProperty(window, "SpeechSynthesisUtterance", originalUtterance);
+      else delete (window as unknown as Record<string, unknown>).SpeechSynthesisUtterance;
+    });
+
+    it("renders reveal + replay with no nested interactive buttons", () => {
+      const { container } = render(
+        <SceneRenderer scene={contentScenes[0]} saved={false} audioFirst />
+      );
+      expect(screen.getByTestId("audio-first-reveal")).toBeDefined();
+      expect(screen.getByTestId("audio-first-replay")).toBeDefined();
+      // Valid HTML: no <button> may contain another <button>.
+      for (const button of Array.from(container.querySelectorAll("button"))) {
+        expect(button.querySelector("button")).toBeNull();
+      }
+    });
+
+    it("replay plays audio without revealing the text; reveal shows the body", () => {
+      render(<SceneRenderer scene={contentScenes[0]} saved={false} audioFirst />);
+      // Text stays hidden until the reveal button is tapped.
+      expect(screen.queryByTestId("phrase-badge")).toBeNull();
+      const speaksAfterMount = speakCount;
+      fireEvent.click(screen.getByTestId("audio-first-replay"));
+      expect(speakCount).toBe(speaksAfterMount + 1);
+      expect(screen.queryByTestId("phrase-badge")).toBeNull(); // replay does not reveal
+      fireEvent.click(screen.getByTestId("audio-first-reveal"));
+      expect(screen.getByTestId("phrase-badge")).toBeDefined();
+    });
+  });
 });
 
 function renderSession(seed = 3) {
