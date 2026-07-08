@@ -22,8 +22,12 @@ import { phrases as historyAndTrueCrime } from "@/lib/data/categories/history-an
 import { phrases as meetingsAndLeadership } from "@/lib/data/categories/meetings-and-leadership";
 import { phrases as coreLifePhrases } from "@/lib/data/categories/core-life-phrases";
 import { phrases as vocabSeed } from "@/lib/data/categories/vocab-seed";
+import {
+  phrases as vocabBackfill,
+  STRATEGY_ANNOTATIONS,
+} from "@/lib/data/categories/vocab-backfill";
 
-export const phrases: Phrase[] = [
+const rawPhrases: Phrase[] = [
   ...carsAndMobility,
   ...homeAndRealEstate,
   ...techAndAi,
@@ -45,10 +49,19 @@ export const phrases: Phrase[] = [
   ...fashionAndBeauty,
   ...historyAndTrueCrime,
   ...meetingsAndLeadership,
-  // Core life phrases + strategy seed last so plain-catalog slicing stays stable.
+  // Core life phrases + strategy seed/backfill last so plain-catalog slicing stays stable.
   ...coreLifePhrases,
   ...vocabSeed,
+  ...vocabBackfill,
 ];
+
+/**
+ * Apply strategy-metadata annotations to existing phrases by id (non-mutating:
+ * builds new objects). Preserves ids and examples — see vocab-backfill.ts.
+ */
+export const phrases: Phrase[] = rawPhrases.map((p) =>
+  STRATEGY_ANNOTATIONS[p.id] ? { ...p, ...STRATEGY_ANNOTATIONS[p.id] } : p
+);
 
 export const phraseById = new Map(phrases.map((p) => [p.id, p]));
 

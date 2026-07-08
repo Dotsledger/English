@@ -168,3 +168,31 @@ export function rankForExplore(phrases: Phrase[]): Phrase[] {
     return ub - ua;
   });
 }
+
+/**
+ * Picks the top `limit` from an already-ranked list while capping how many
+ * come from any one category, so a broad ("All") view can't be dominated by
+ * one bucket (e.g. all core chunks). Overflow fills the tail if the diverse
+ * pass leaves gaps, preserving rank order throughout. Deterministic.
+ */
+export function diversifyTop(ranked: Phrase[], limit: number, maxPerCategory = 2): Phrase[] {
+  const counts = new Map<string, number>();
+  const picked: Phrase[] = [];
+  const overflow: Phrase[] = [];
+  for (const p of ranked) {
+    const key = p.category ?? "_";
+    const n = counts.get(key) ?? 0;
+    if (n < maxPerCategory) {
+      picked.push(p);
+      counts.set(key, n + 1);
+    } else {
+      overflow.push(p);
+    }
+    if (picked.length >= limit) return picked;
+  }
+  for (const p of overflow) {
+    if (picked.length >= limit) break;
+    picked.push(p);
+  }
+  return picked.slice(0, limit);
+}

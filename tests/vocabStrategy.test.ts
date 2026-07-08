@@ -10,6 +10,7 @@ import {
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
 import { phrases as vocabSeed } from "@/lib/data/categories/vocab-seed";
+import { phrases as allPhrases } from "@/lib/data/phrases";
 import { generateCloze } from "@/lib/exercises/cloze";
 import { dueEntries } from "@/lib/session/leitner";
 import type { DeckStore } from "@/lib/types";
@@ -227,5 +228,55 @@ describe("vocab seed validity", () => {
     ] as const) {
       expect(cats.has(c), `missing category ${c}`).toBe(true);
     }
+  });
+});
+
+describe("strategy inventory (seed + core + backfill)", () => {
+  // Same pool the PatternExplorer uses: any phrase carrying a strategy category.
+  const strategy = allPhrases.filter((p) => p.category !== undefined);
+  const inFilter = (f: ExploreFilter) => filterPhrasesForExplore(strategy, f).length;
+
+  it("has 80–120 strategy-annotated phrases", () => {
+    expect(strategy.length).toBeGreaterThanOrEqual(80);
+    expect(strategy.length).toBeLessThanOrEqual(120);
+  });
+
+  it("every strategy phrase has complete, in-range metadata", () => {
+    for (const p of strategy) {
+      expect(p.category, `${p.id} category`).toBeDefined();
+      expect(p.frequencyBand, `${p.id} frequencyBand`).toBeDefined();
+      expect(p.usefulnessScore ?? 0, `${p.id} usefulnessScore`).toBeGreaterThanOrEqual(1);
+      expect(p.usefulnessScore ?? 0, `${p.id} usefulnessScore`).toBeLessThanOrEqual(100);
+      expect(p.productivePriority ?? 0, `${p.id} productivePriority`).toBeGreaterThanOrEqual(1);
+      expect(p.productivePriority ?? 0, `${p.id} productivePriority`).toBeLessThanOrEqual(100);
+    }
+  });
+
+  it("every isPhrasalVerb phrase is categorised as phrasal_verb", () => {
+    for (const p of strategy) {
+      if (p.isPhrasalVerb) expect(p.category, `${p.id}`).toBe("phrasal_verb");
+    }
+  });
+
+  it("strategy phrase ids are unique", () => {
+    const ids = strategy.map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("every Explore filter now meets its minimum inventory", () => {
+    expect(inFilter("daily_life")).toBeGreaterThanOrEqual(8);
+    expect(inFilter("work")).toBeGreaterThanOrEqual(8);
+    expect(inFilter("phrasal_verbs")).toBeGreaterThanOrEqual(15);
+    expect(inFilter("collocations")).toBeGreaterThanOrEqual(12);
+    expect(inFilter("sentence_frames")).toBeGreaterThanOrEqual(12);
+    expect(inFilter("spanish_speaker_traps")).toBeGreaterThanOrEqual(10);
+  });
+
+  it("Spanish-speaker traps (category or flag) appear in the traps filter", () => {
+    const trapIds = new Set(filterPhrasesForExplore(strategy, "spanish_speaker_traps").map((p) => p.id));
+    // a pure trap, a flagged collocation, and a false friend all show up
+    expect(trapIds.has("depend-on")).toBe(true);
+    expect(trapIds.has("make-a-decision")).toBe(true);
+    expect(trapIds.has("eventually")).toBe(true);
   });
 });

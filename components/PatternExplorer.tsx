@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Phrase } from "@/lib/types";
 import { phrases } from "@/lib/data/phrases";
 import {
+  diversifyTop,
   filterPhrasesForExplore,
   getCategoryLabel,
   getWhyThisMatters,
@@ -38,7 +39,10 @@ export function PatternExplorer() {
   const deck = useDeck();
   const [filter, setFilter] = useState<ExploreFilter>("all");
 
-  const shown = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter)).slice(0, SHOWN);
+  // "All" mixes many categories → cap per-category so it isn't all core chunks.
+  // A specific filter is single-category, so just take the top ranked items.
+  const ranked = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter));
+  const shown = filter === "all" ? diversifyTop(ranked, SHOWN, 2) : ranked.slice(0, SHOWN);
 
   return (
     <section data-testid="pattern-explorer" className="mb-6">
