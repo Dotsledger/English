@@ -8,6 +8,32 @@ export type PhraseDifficulty = "easy" | "medium" | "hard";
 /** A confusable phrase and how it differs, for Contrast cards. */
 export type PhraseContrast = { phrase: string; explanationEs: string };
 
+// ─── Vocabulary strategy layer ───
+// Classifies what *kind* of usable English an item teaches, so the app can
+// prioritise reusable patterns (chunks, frames, phrasal verbs) over isolated
+// words. See lib/vocabStrategy.ts for scoring, priority and filtering.
+
+export type VocabularyCategory =
+  | "core_chunk"
+  | "phrasal_verb"
+  | "collocation"
+  | "sentence_frame"
+  | "discourse_marker"
+  | "high_frequency_verb_pattern"
+  | "work_communication"
+  | "daily_life"
+  | "emotion_opinion"
+  | "travel_social"
+  | "false_friend"
+  | "spanish_speaker_trap"
+  | "advanced_expression";
+
+/** Full CEFR scale for the strategy layer (distinct from the app's internal
+ * B2/C1/C2 `Level`, which drives level-weighting and stays unchanged). */
+export type CefrLevel = "A1" | "A2" | "B1" | "B2" | "C1";
+
+export type FrequencyBand = "very_high" | "high" | "medium" | "low";
+
 export type Phrase = {
   id: string;
   text: string;
@@ -35,6 +61,20 @@ export type Phrase = {
   contrastWith?: PhraseContrast[];
   /** Authoring difficulty, independent of CEFR `level`. */
   difficulty?: PhraseDifficulty;
+  // ── Strategy layer (optional; present on curated seed items) ──
+  /** What kind of usable English this item teaches. */
+  category?: VocabularyCategory;
+  /** Full-scale CEFR estimate for ranking (separate from internal `level`). */
+  cefrLevel?: CefrLevel;
+  frequencyBand?: FrequencyBand;
+  /** Authored usefulness 1–100 (see calculateUsefulnessScore for the model). */
+  usefulnessScore?: number;
+  /** How much this pays off for *production* (speaking) 1–100. */
+  productivePriority?: number;
+  isPhrasalVerb?: boolean;
+  isHighFrequencyPattern?: boolean;
+  /** A common error Spanish speakers make — worth extra teaching weight. */
+  isSpanishSpeakerTrap?: boolean;
 };
 
 export type TopicTile = {

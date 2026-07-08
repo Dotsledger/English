@@ -21,6 +21,7 @@ import { phrases as fashionAndBeauty } from "@/lib/data/categories/fashion-and-b
 import { phrases as historyAndTrueCrime } from "@/lib/data/categories/history-and-true-crime";
 import { phrases as meetingsAndLeadership } from "@/lib/data/categories/meetings-and-leadership";
 import { phrases as coreLifePhrases } from "@/lib/data/categories/core-life-phrases";
+import { phrases as vocabSeed } from "@/lib/data/categories/vocab-seed";
 
 export const phrases: Phrase[] = [
   ...carsAndMobility,
@@ -44,8 +45,9 @@ export const phrases: Phrase[] = [
   ...fashionAndBeauty,
   ...historyAndTrueCrime,
   ...meetingsAndLeadership,
-  // Core life phrases last so plain-catalog slicing in tests/tools stays stable.
+  // Core life phrases + strategy seed last so plain-catalog slicing stays stable.
   ...coreLifePhrases,
+  ...vocabSeed,
 ];
 
 export const phraseById = new Map(phrases.map((p) => [p.id, p]));
