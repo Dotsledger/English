@@ -265,7 +265,7 @@ export const phrases: Phrase[] = [
     usageContext: "Para señalar urgencia con educación, o justificar acortar algo.",
     situations: [
       "Una reunión se alarga y tienes otra cosa después.",
-      "Se acerca una fecha límite.",
+      "Se acerca la fecha de entrega y aún queda trabajo por hacer.",
     ],
     collocations: ["running out of time", "running low on time"],
     level: "B2",
@@ -413,7 +413,7 @@ export const phrases: Phrase[] = [
     ],
     usageContext: "Para aceptar una propuesta que consideras equilibrada.",
     situations: [
-      "Negociáis cómo repartir algo.",
+      "Negociáis cómo repartir los gastos de un viaje entre amigos.",
       "Alguien propone un acuerdo razonable.",
     ],
     collocations: ["that sounds fair enough", "fair enough"],

@@ -10,7 +10,7 @@ import {
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
 import { phrases as vocabSeed } from "@/lib/data/categories/vocab-seed";
-import { phrases as allPhrases } from "@/lib/data/phrases";
+import { phrases as allPhrases, phraseById } from "@/lib/data/phrases";
 import { generateCloze } from "@/lib/exercises/cloze";
 import { dueEntries } from "@/lib/session/leitner";
 import type { DeckStore } from "@/lib/types";
@@ -278,5 +278,67 @@ describe("strategy inventory (seed + core + backfill)", () => {
     expect(trapIds.has("depend-on")).toBe(true);
     expect(trapIds.has("make-a-decision")).toBe(true);
     expect(trapIds.has("eventually")).toBe(true);
+  });
+});
+
+describe("strategy learning depth", () => {
+  const strategy = allPhrases.filter((p) => p.category !== undefined);
+  const byCat = (c: string) => strategy.filter((p) => p.category === c);
+  const sitCount = (p: (typeof strategy)[number]) => p.situations?.length ?? 0;
+  const hasAvoidOrContrast = (p: (typeof strategy)[number]) =>
+    Boolean(p.avoid) || (p.contrastWith?.length ?? 0) > 0;
+
+  it("every phrasal verb has at least 2 realistic situations", () => {
+    for (const p of byCat("phrasal_verb")) expect(sitCount(p), p.id).toBeGreaterThanOrEqual(2);
+  });
+
+  it("every sentence frame has at least 2 production situations", () => {
+    for (const p of byCat("sentence_frame")) expect(sitCount(p), p.id).toBeGreaterThanOrEqual(2);
+  });
+
+  it("every work_communication item has at least 1 situation", () => {
+    for (const p of byCat("work_communication")) expect(sitCount(p), p.id).toBeGreaterThanOrEqual(1);
+  });
+
+  it("every daily_life item has at least 1 situation", () => {
+    for (const p of byCat("daily_life")) expect(sitCount(p), p.id).toBeGreaterThanOrEqual(1);
+  });
+
+  it("every collocation has an avoid or contrastWith", () => {
+    for (const p of byCat("collocation")) expect(hasAvoidOrContrast(p), p.id).toBe(true);
+  });
+
+  it("every Spanish-speaker trap (category or flag) has avoid or contrastWith", () => {
+    const traps = strategy.filter((p) => p.category === "spanish_speaker_trap" || p.isSpanishSpeakerTrap);
+    for (const p of traps) expect(hasAvoidOrContrast(p), p.id).toBe(true);
+  });
+
+  it("every false friend has a contrastWith", () => {
+    for (const p of byCat("false_friend")) expect((p.contrastWith?.length ?? 0), p.id).toBeGreaterThanOrEqual(1);
+  });
+
+  it("every situation is a non-trivial scenario (> 30 chars)", () => {
+    for (const p of strategy) {
+      for (const sit of p.situations ?? []) {
+        expect(sit.length, `${p.id}: "${sit}"`).toBeGreaterThan(30);
+      }
+    }
+  });
+
+  it("strategy phrase texts are unique", () => {
+    const texts = strategy.map((p) => p.text.toLowerCase());
+    expect(new Set(texts).size).toBe(texts.length);
+  });
+
+  it("strategy phrase ids are unique", () => {
+    const ids = strategy.map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe("global phrase-id uniqueness", () => {
+  it("no two phrases share an id (topic ids are a separate namespace)", () => {
+    // phraseById is built from phrases; equal sizes ⇒ no duplicate phrase ids.
+    expect(phraseById.size).toBe(allPhrases.length);
   });
 });
