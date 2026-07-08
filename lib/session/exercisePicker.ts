@@ -5,7 +5,11 @@ import { generateRecognitionMcq } from "@/lib/exercises/mcq";
 import { generateCloze } from "@/lib/exercises/cloze";
 import { generateFreeType, generateCaptureFreeType } from "@/lib/exercises/freetype";
 import { pickExample } from "@/lib/exercises/examples";
-import { resolvePracticeType, type PracticeType } from "@/lib/session/exercisePolicy";
+import {
+  getCorrectionWrongForms,
+  resolvePracticeType,
+  type PracticeType,
+} from "@/lib/session/exercisePolicy";
 
 export type ReviewDeps = {
   phrases: Phrase[];
@@ -92,6 +96,12 @@ function practiceCard(
       return { kind: "contrast", phraseId: entry.phraseId };
     case "correction":
       return { kind: "correction", phraseId: entry.phraseId };
+    case "typed_correction":
+      return {
+        kind: "typed_correction",
+        phraseId: entry.phraseId,
+        wrongForm: getCorrectionWrongForms(phrase)[0] ?? "",
+      };
     case "production":
       return { kind: "mastery", phraseId: entry.phraseId };
     default:

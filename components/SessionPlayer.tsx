@@ -60,6 +60,7 @@ import { MasteryCard } from "@/components/exercises/MasteryCard";
 import { ContextCard } from "@/components/exercises/ContextCard";
 import { SituationCard } from "@/components/exercises/SituationCard";
 import { ContrastCard } from "@/components/exercises/ContrastCard";
+import { TypedCorrectionCard } from "@/components/exercises/TypedCorrectionCard";
 import { correctionWrongForm } from "@/lib/session/exercisePolicy";
 
 const SWIPE_THRESHOLD = 48;
@@ -99,7 +100,8 @@ export function SessionPlayer({
     card?.kind === "mastery" ||
     card?.kind === "situation" ||
     card?.kind === "contrast" ||
-    card?.kind === "correction";
+    card?.kind === "correction" ||
+    card?.kind === "typed_correction";
   const answered = state.answers[state.index] !== undefined;
   const canGoNext = !needsAnswer || answered;
 
@@ -382,6 +384,15 @@ export function SessionPlayer({
                   : null
               }
               onSelect={(correct) => answerContrast(card.phraseId, correct)}
+            />
+          </div>
+        ) : card.kind === "typed_correction" ? (
+          <div key={`typed-correction-${state.index}`} className="scene-enter h-full">
+            <TypedCorrectionCard
+              phrase={phraseById.get(card.phraseId)!}
+              wrongForm={card.wrongForm}
+              previousCorrect={answered ? state.answers[state.index].correct : null}
+              onResult={(correct) => answerReview(card.phraseId, correct, true)}
             />
           </div>
         ) : card.kind === "check_offer" ? (

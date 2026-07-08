@@ -18,7 +18,8 @@ export type PracticeType =
   | "situation"
   | "production"
   | "contrast"
-  | "correction";
+  | "correction"
+  | "typed_correction";
 
 /** Ordered preference by category — most valuable retrieval first. */
 export function getPreferredExerciseTypesForPhrase(phrase: Phrase): PracticeType[] {
@@ -28,11 +29,13 @@ export function getPreferredExerciseTypesForPhrase(phrase: Phrase): PracticeType
     case "phrasal_verb":
       return ["situation", "reverse", "cloze", "recognition"];
     case "collocation":
-      // The real learning problem is the wrong Spanish-style form → correction.
-      return ["correction", "contrast", "cloze", "reverse", "recognition"];
+      // The real learning problem is the wrong Spanish-style form. Choice
+      // correction early; type the fix once past recognition (stage-gated).
+      return ["typed_correction", "correction", "cloze", "reverse", "recognition"];
     case "spanish_speaker_trap":
-      return ["correction", "contrast", "cloze", "reverse", "recognition"];
+      return ["typed_correction", "correction", "contrast", "cloze", "reverse", "recognition"];
     case "false_friend":
+      // Meaning distinction is the goal → contrast stays primary.
       return ["contrast", "correction", "cloze", "reverse", "recognition"];
     case "discourse_marker":
       return ["situation", "cloze", "reverse", "recognition"];
@@ -72,18 +75,30 @@ export function stageAllowsPractice(type: PracticeType, stage: PhraseStage): boo
       return true; // recognition-grade correction is useful from the start
     case "reverse":
     case "situation":
+    case "typed_correction":
+      // Producing the fix (typing) is recall-level — unlock past recognition.
       return r >= STAGE_RANK.recognised;
     case "production":
       return r >= STAGE_RANK.recalled;
   }
 }
 
-/** A clean wrong form for correction/contrast: the confusable phrase, or an
- * explicit wrong form listed as an `avoid` array (never an explanation string). */
+/**
+ * Clean wrong forms suitable for ACTIVE correction (typing the fix): the
+ * confusable phrase(s) in `contrastWith`, plus any `avoid` entries given as a
+ * list. An `avoid` explanation *string* is never a clean form, so it's
+ * excluded — we never ask the learner to "correct" an explanation sentence.
+ */
+export function getCorrectionWrongForms(phrase: Phrase): string[] {
+  const forms: string[] = [];
+  for (const c of phrase.contrastWith ?? []) if (c.phrase) forms.push(c.phrase);
+  if (Array.isArray(phrase.avoid)) forms.push(...phrase.avoid.filter(Boolean));
+  return [...new Set(forms)];
+}
+
+/** The primary clean wrong form for correction/contrast (first of the list). */
 export function correctionWrongForm(phrase: Phrase): string | null {
-  if (phrase.contrastWith?.[0]?.phrase) return phrase.contrastWith[0].phrase;
-  if (Array.isArray(phrase.avoid) && phrase.avoid[0]) return phrase.avoid[0];
-  return null;
+  return getCorrectionWrongForms(phrase)[0] ?? null;
 }
 
 /** Whether the required metadata exists to generate this practice type. */
@@ -100,7 +115,8 @@ export function canGeneratePractice(type: PracticeType, phrase: Phrase): boolean
     case "contrast":
       return (phrase.contrastWith?.length ?? 0) > 0;
     case "correction":
-      return correctionWrongForm(phrase) !== null;
+    case "typed_correction":
+      return getCorrectionWrongForms(phrase).length > 0;
   }
 }
 

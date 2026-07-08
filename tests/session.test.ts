@@ -514,9 +514,11 @@ describe("Phase C — rich core phrases (context / situation / contrast)", () =>
     expect(reviewCardFor(entry, deps)?.kind).toBe("situation");
   });
 
-  it("a Spanish-speaker trap routes to a correction card", () => {
-    const entry = makeDeckEntry({ phraseId: "depend-on", inDeck: true, box: 2, stage: "recognised" });
-    expect(reviewCardFor(entry, deps)?.kind).toBe("correction");
+  it("a Spanish-speaker trap routes to correction early, typed correction once recognised", () => {
+    const early = makeDeckEntry({ phraseId: "depend-on", inDeck: true, box: 1, stage: "seen" });
+    expect(reviewCardFor(early, deps)?.kind).toBe("correction");
+    const recognised = makeDeckEntry({ phraseId: "depend-on", inDeck: true, box: 2, stage: "recognised" });
+    expect(reviewCardFor(recognised, deps)?.kind).toBe("typed_correction");
   });
 
   it("a plain catalog phrase is unaffected — normal review card", () => {

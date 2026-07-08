@@ -129,21 +129,29 @@ describe("recordMasteryResult", () => {
     expect(recordMasteryResult(at(5, "recalled"), "p", "me_salio", NOW).p.box).toBe(5);
   });
 
-  it("a single low-box success reaches 'usable' but NOT 'mastered'", () => {
-    const after = recordMasteryResult(at(1, "recognised"), "p", "me_salio", NOW);
-    expect(after.p.stage).toBe("usable");
-    expect(after.p.stage).not.toBe("mastered");
-    expect(after.p.producedCorrectAtLongBoxes).toBe(0); // no mastery credit below box 4
-    expect(after.p.nextReviewAt).toBe(NOW + 3 * DAY); // box-2 interval, not 35 days
+  it("a low-box (1–2) success reaches only 'recalled', not 'usable'", () => {
+    const b1 = recordMasteryResult(at(1, "recognised"), "p", "me_salio", NOW);
+    expect(b1.p.stage).toBe("recalled"); // one production ≠ reliably usable
+    expect(b1.p.producedCorrectAtLongBoxes).toBe(0);
+    expect(b1.p.nextReviewAt).toBe(NOW + 3 * DAY); // box-2 interval, not 35 days
+    const b2 = recordMasteryResult(at(2, "recognised"), "p", "me_salio", NOW);
+    expect(b2.p.stage).toBe("recalled");
   });
 
-  it("mastery credit only accrues at long boxes (≥ 4)", () => {
-    // box 3 → 4: first credit; box 4 → 5: second credit → mastered
-    let after = recordMasteryResult(at(3, "recalled"), "p", "me_salio", NOW);
-    expect(after.p.producedCorrectAtLongBoxes).toBe(1);
+  it("box 3 success can become 'usable' (enough retrieval history)", () => {
+    const after = recordMasteryResult(at(3, "recalled"), "p", "me_salio", NOW);
+    expect(after.p.box).toBe(4);
     expect(after.p.stage).toBe("usable");
-    after = recordMasteryResult(after, "p", "me_salio", NOW + 16 * DAY);
+    expect(after.p.producedCorrectAtLongBoxes).toBe(0); // credit only at box ≥ 4
+    expect(after.p.nextReviewAt).toBe(NOW + 16 * DAY); // medium review
+  });
+
+  it("mastery credit only accrues from long-box (≥ 4) successes; 'fluent' needs two", () => {
+    let after = recordMasteryResult(at(4, "recalled"), "p", "me_salio", NOW);
     expect(after.p.box).toBe(5);
+    expect(after.p.producedCorrectAtLongBoxes).toBe(1);
+    expect(after.p.stage).toBe("usable"); // not yet mastered
+    after = recordMasteryResult(after, "p", "me_salio", NOW + 35 * DAY);
     expect(after.p.producedCorrectAtLongBoxes).toBe(2);
     expect(after.p.stage).toBe("mastered");
   });

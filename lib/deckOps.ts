@@ -178,13 +178,20 @@ export function recordMasteryResult(
 ): DeckStore {
   const entry = { ...entryOf(deck, phraseId), lastAttemptAt: now };
   if (verdict === "me_salio") {
-    entry.box = Math.min(entry.box + 1, 5) as Box;
+    const startBox = entry.box;
+    entry.box = Math.min(startBox + 1, 5) as Box;
     entry.correctCount += 1;
-    // Mastery credit only accrues once the phrase is already near mastery.
-    if (entry.box >= 4) entry.producedCorrectAtLongBoxes += 1;
-    entry.stage = advanceStage(entry.stage, "usable");
-    if (entry.producedCorrectAtLongBoxes >= 2) {
-      entry.stage = advanceStage(entry.stage, "mastered");
+    // One production success is evidence, not proof. From a low box (1–2) it
+    // only shows recall, not reliable use → stage caps at `recalled`. `usable`
+    // needs prior retrieval history (box 3+). Long-box mastery credit accrues
+    // only when the success happened while ALREADY at a long box (≥ 4), so
+    // "fluent" still requires repeated spaced production.
+    entry.stage = advanceStage(entry.stage, startBox <= 2 ? "recalled" : "usable");
+    if (startBox >= 4) {
+      entry.producedCorrectAtLongBoxes += 1;
+      if (entry.producedCorrectAtLongBoxes >= 2) {
+        entry.stage = advanceStage(entry.stage, "mastered");
+      }
     }
     entry.producedAt = entry.producedAt ?? now;
     entry.nextReviewAt = now + intervalForBox(entry.box);

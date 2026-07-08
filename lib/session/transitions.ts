@@ -30,6 +30,8 @@ export function planPhraseIds(cards: SessionCard[]): string[] {
       case "context":
       case "situation":
       case "contrast":
+      case "correction":
+      case "typed_correction":
       case "mastery":
         ids.add(card.phraseId);
         break;

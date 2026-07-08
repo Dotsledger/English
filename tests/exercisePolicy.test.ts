@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import type { Phrase, PhraseStage } from "@/lib/types";
 import {
+  canGeneratePractice,
+  getCorrectionWrongForms,
   getPreferredExerciseTypesForPhrase,
   resolvePracticeType,
   type PracticeType,
@@ -28,9 +30,11 @@ describe("getPreferredExerciseTypesForPhrase", () => {
   it("puts situation first for phrasal verbs", () => {
     expect(getPreferredExerciseTypesForPhrase(mk({ category: "phrasal_verb" }))[0]).toBe("situation");
   });
-  it("puts correction first for collocations and traps, contrast first for false friends", () => {
+  it("prefers typed correction for collocations and traps, contrast for false friends", () => {
     for (const c of ["collocation", "spanish_speaker_trap"] as const) {
-      expect(getPreferredExerciseTypesForPhrase(mk({ category: c }))[0]).toBe("correction");
+      const order = getPreferredExerciseTypesForPhrase(mk({ category: c }));
+      expect(order[0]).toBe("typed_correction");
+      expect(order).toContain("correction"); // choice correction remains as the earlier-stage fallback
     }
     expect(getPreferredExerciseTypesForPhrase(mk({ category: "false_friend" }))[0]).toBe("contrast");
   });
@@ -92,6 +96,41 @@ describe("resolvePracticeType — category × stage × metadata", () => {
       contrastWith: [{ phrase: "actualmente", explanationEs: "..." }],
     });
     expect(resolvePracticeType(ff, "recognised")).toBe("contrast");
+  });
+
+  it("upgrades to TYPED correction once past recognition (collocation & trap)", () => {
+    const colloc = mk({
+      category: "collocation",
+      contrastWith: [{ phrase: "do a decision", explanationEs: "..." }],
+    });
+    // early → choice correction; recognised/recalled → typed correction
+    expect(resolvePracticeType(colloc, "seen")).toBe("correction");
+    expect(resolvePracticeType(colloc, "recognised")).toBe("typed_correction");
+    expect(resolvePracticeType(colloc, "recalled")).toBe("typed_correction");
+
+    const trap = mk({
+      category: "spanish_speaker_trap",
+      contrastWith: [{ phrase: "depend of", explanationEs: "..." }],
+    });
+    expect(resolvePracticeType(trap, "recognised")).toBe("typed_correction");
+  });
+
+  it("getCorrectionWrongForms returns clean forms only (contrastWith + avoid array, not explanation)", () => {
+    expect(getCorrectionWrongForms(mk({ contrastWith: [{ phrase: "do a decision", explanationEs: "" }] }))).toEqual(["do a decision"]);
+    expect(getCorrectionWrongForms(mk({ avoid: ["win time"] }))).toEqual(["win time"]);
+    expect(getCorrectionWrongForms(mk({ avoid: "Se dice save time, no win time." }))).toEqual([]);
+    expect(getCorrectionWrongForms(mk({}))).toEqual([]);
+  });
+
+  it("typed correction needs a clean wrong form — not an explanation-only avoid", () => {
+    const clean = mk({ category: "collocation", contrastWith: [{ phrase: "do progress", explanationEs: "" }] });
+    expect(canGeneratePractice("typed_correction", clean)).toBe(true);
+    const arr = mk({ category: "collocation", avoid: ["do progress"] });
+    expect(canGeneratePractice("typed_correction", arr)).toBe(true);
+    const explanationOnly = mk({ category: "collocation", avoid: "Se dice make progress, no do progress." });
+    expect(canGeneratePractice("typed_correction", explanationOnly)).toBe(false);
+    // …so a recognised collocation with only an explanation avoid falls to cloze, not typed correction
+    expect(resolvePracticeType(explanationOnly, "recognised")).toBe("cloze");
   });
 
   it("work items reach situation/production; daily items prefer situation", () => {

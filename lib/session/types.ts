@@ -16,6 +16,8 @@ export type SessionCard =
   | { kind: "contrast"; phraseId: string }
   /** Correction: pick the natural English form over the Spanish-style error. */
   | { kind: "correction"; phraseId: string }
+  /** Typed correction: type the natural English form to fix a wrong one. */
+  | { kind: "typed_correction"; phraseId: string; wrongForm: string }
   /** Box-5 free-production gate with self-assessment (the path to MASTERED). */
   | { kind: "mastery"; phraseId: string }
   /** Opt-in level-check milestone offer (never auto-starts). */
