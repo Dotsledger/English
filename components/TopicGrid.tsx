@@ -16,6 +16,7 @@ import { ProgressPipeline } from "@/components/ProgressPipeline";
 import { MissionCard } from "@/components/MissionCard";
 import { RecapCard } from "@/components/RecapCard";
 import { CaptureSheet } from "@/components/CaptureSheet";
+import { PatternExplorer } from "@/components/PatternExplorer";
 
 const SHOWN_COUNT = 4;
 const DEFAULT_TOPICS = DEFAULT_TOPIC_IDS.slice(0, SHOWN_COUNT).map((id) => topicById.get(id)!);
@@ -147,6 +148,8 @@ export function TopicGrid() {
       <ProgressPipeline />
       <RecapCard />
       <MissionCard />
+
+      <PatternExplorer />
 
       <div className="mb-3 mt-2 flex items-center justify-between px-1">
         <h2 className="text-lg font-bold text-white">Explore</h2>

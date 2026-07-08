@@ -77,6 +77,59 @@ export function calculateUsefulnessScore(item: Phrase): number {
   return Math.max(1, Math.min(100, Math.round(score)));
 }
 
+// ─── Human-readable labels & rationale ───
+
+const CATEGORY_LABEL: Record<VocabularyCategory, string> = {
+  core_chunk: "Core chunk",
+  phrasal_verb: "Phrasal verb",
+  collocation: "Collocation",
+  sentence_frame: "Sentence frame",
+  discourse_marker: "Discourse marker",
+  high_frequency_verb_pattern: "Verb pattern",
+  work_communication: "Work",
+  daily_life: "Daily life",
+  emotion_opinion: "Emotion & opinion",
+  travel_social: "Travel & social",
+  false_friend: "False friend",
+  spanish_speaker_trap: "Spanish-speaker trap",
+  advanced_expression: "Advanced",
+};
+
+/** Short, readable label for an Explore card chip. */
+export function getCategoryLabel(category: VocabularyCategory): string {
+  return CATEGORY_LABEL[category];
+}
+
+/**
+ * One concise line explaining why an item is worth learning, driven by its
+ * strategy metadata. Null when the item has no strategy category (so plain
+ * catalog phrases show nothing extra).
+ */
+export function getWhyThisMatters(item: Phrase): string | null {
+  // Error-prevention framing wins even when the item is also a collocation.
+  if (item.isSpanishSpeakerTrap || item.category === "spanish_speaker_trap" || item.category === "false_friend") {
+    return "Prevents a common Spanish-to-English mistake.";
+  }
+  switch (item.category) {
+    case "phrasal_verb":
+      return "Common in natural spoken English.";
+    case "collocation":
+      return "Helps you avoid literal Spanish-style English.";
+    case "sentence_frame":
+      return "A reusable structure you can speak with.";
+    case "discourse_marker":
+      return "Helps your conversation flow naturally.";
+    case "core_chunk":
+      return "A ready-made phrase for everyday situations.";
+    case "high_frequency_verb_pattern":
+      return "A high-frequency pattern you'll reuse a lot.";
+    case "work_communication":
+      return "Useful for clear communication at work.";
+    default:
+      return null;
+  }
+}
+
 // ─── Explore filtering ───
 
 export type ExploreFilter =

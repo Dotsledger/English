@@ -3,12 +3,17 @@ import type { Phrase, VocabularyCategory } from "@/lib/types";
 import {
   calculateUsefulnessScore,
   filterPhrasesForExplore,
+  getCategoryLabel,
   getCategoryPriority,
+  getWhyThisMatters,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
 import { phrases as vocabSeed } from "@/lib/data/categories/vocab-seed";
 import { generateCloze } from "@/lib/exercises/cloze";
+import { dueEntries } from "@/lib/session/leitner";
+import type { DeckStore } from "@/lib/types";
+import { makeDeckEntry } from "./storage.test";
 
 const ALL_CATEGORIES: VocabularyCategory[] = [
   "core_chunk",
@@ -109,6 +114,62 @@ describe("filterPhrasesForExplore", () => {
     expect(ids("sentence_frames")).toEqual(["e"]);
     // trap filter catches both the category and the flag-on-collocation
     expect(ids("spanish_speaker_traps").sort()).toEqual(["f", "g"]);
+  });
+});
+
+describe("getCategoryLabel", () => {
+  it("returns readable labels for the key categories", () => {
+    expect(getCategoryLabel("phrasal_verb")).toBe("Phrasal verb");
+    expect(getCategoryLabel("collocation")).toBe("Collocation");
+    expect(getCategoryLabel("sentence_frame")).toBe("Sentence frame");
+    expect(getCategoryLabel("core_chunk")).toBe("Core chunk");
+    expect(getCategoryLabel("discourse_marker")).toBe("Discourse marker");
+    expect(getCategoryLabel("spanish_speaker_trap")).toBe("Spanish-speaker trap");
+  });
+});
+
+describe("getWhyThisMatters", () => {
+  it("returns rationale copy per category", () => {
+    expect(getWhyThisMatters(mk({ category: "phrasal_verb" }))).toMatch(/spoken English/i);
+    expect(getWhyThisMatters(mk({ category: "collocation" }))).toMatch(/literal Spanish/i);
+    expect(getWhyThisMatters(mk({ category: "sentence_frame" }))).toMatch(/reusable structure/i);
+    expect(getWhyThisMatters(mk({ category: "discourse_marker" }))).toMatch(/flow naturally/i);
+  });
+
+  it("prioritises the error-prevention message for traps (even on a collocation)", () => {
+    const trapColloc = mk({ category: "collocation", isSpanishSpeakerTrap: true });
+    expect(getWhyThisMatters(trapColloc)).toMatch(/Spanish-to-English mistake/i);
+    expect(getWhyThisMatters(mk({ category: "spanish_speaker_trap" }))).toMatch(/mistake/i);
+  });
+
+  it("returns null when there is no strategy category", () => {
+    expect(getWhyThisMatters(mk({}))).toBeNull();
+  });
+});
+
+describe("Explore does not affect Review", () => {
+  it("filtering the Explore list leaves due-phrase selection unchanged", () => {
+    const now = 1_750_000_000_000;
+    const deck: DeckStore = {
+      "make-a-decision": makeDeckEntry({
+        phraseId: "make-a-decision",
+        inDeck: true,
+        nextReviewAt: now - 1000,
+      }),
+      "look-into": makeDeckEntry({ phraseId: "look-into", inDeck: true, nextReviewAt: now - 500 }),
+    };
+    const before = dueEntries(deck, now).map((e) => e.phraseId);
+    // Applying any Explore filter must not change what's due (they're unrelated).
+    for (const f of ["all", "phrasal_verbs", "collocations", "daily_life"] as ExploreFilter[]) {
+      filterPhrasesForExplore(vocabSeed, f);
+      expect(dueEntries(deck, now).map((e) => e.phraseId)).toEqual(before);
+    }
+  });
+
+  it("an empty filter result does not crash and ranks to an empty list", () => {
+    const empty = filterPhrasesForExplore(vocabSeed, "daily_life"); // no daily_life in seed
+    expect(empty).toEqual([]);
+    expect(rankForExplore(empty)).toEqual([]);
   });
 });
 
