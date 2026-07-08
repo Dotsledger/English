@@ -60,6 +60,7 @@ import { MasteryCard } from "@/components/exercises/MasteryCard";
 import { ContextCard } from "@/components/exercises/ContextCard";
 import { SituationCard } from "@/components/exercises/SituationCard";
 import { ContrastCard } from "@/components/exercises/ContrastCard";
+import { correctionWrongForm } from "@/lib/session/exercisePolicy";
 
 const SWIPE_THRESHOLD = 48;
 
@@ -97,7 +98,8 @@ export function SessionPlayer({
     card?.kind === "review" ||
     card?.kind === "mastery" ||
     card?.kind === "situation" ||
-    card?.kind === "contrast";
+    card?.kind === "contrast" ||
+    card?.kind === "correction";
   const answered = state.answers[state.index] !== undefined;
   const canGoNext = !needsAnswer || answered;
 
@@ -367,15 +369,16 @@ export function SessionPlayer({
               onGrade={(verdict) => gradeMastery(card.phraseId, verdict, "")}
             />
           </div>
-        ) : card.kind === "contrast" ? (
-          <div key={`contrast-${state.index}`} className="scene-enter h-full">
+        ) : card.kind === "contrast" || card.kind === "correction" ? (
+          <div key={`${card.kind}-${state.index}`} className="scene-enter h-full">
             <ContrastCard
               phrase={phraseById.get(card.phraseId)!}
+              mode={card.kind === "correction" ? "correction" : "contrast"}
               selectedText={
                 answered
                   ? state.answers[state.index].correct
                     ? phraseById.get(card.phraseId)!.text
-                    : (phraseById.get(card.phraseId)!.contrastWith?.[0]?.phrase ?? null)
+                    : (correctionWrongForm(phraseById.get(card.phraseId)!) ?? null)
                   : null
               }
               onSelect={(correct) => answerContrast(card.phraseId, correct)}

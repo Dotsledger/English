@@ -55,8 +55,8 @@ export type Phrase = {
   situations?: string[];
   /** Words this phrase commonly combines with. */
   collocations?: string[];
-  /** A common mistake or misuse to avoid. */
-  avoid?: string;
+  /** A common mistake or misuse to avoid (explanation, or list of wrong forms). */
+  avoid?: string | string[];
   /** Confusable phrases + how they differ — powers Contrast cards. */
   contrastWith?: PhraseContrast[];
   /** Authoring difficulty, independent of CEFR `level`. */

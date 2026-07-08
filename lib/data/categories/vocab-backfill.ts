@@ -94,6 +94,9 @@ export const STRATEGY_ANNOTATIONS: Record<string, Annotation> = {
   "take-your-time": {
     ...s("collocation", "A2", "high", 82, 78),
     avoid: "«Take your time» = sin prisa; no lo confundas con «have time» (tener tiempo).",
+    contrastWith: [
+      { phrase: "have time", explanationEs: "«Take your time» = sin prisa; «have time» = tener tiempo." },
+    ],
   },
   // ── seed phrasal verbs: top up 1 → 2 realistic situations ──
   "look-into": {
@@ -175,19 +178,31 @@ export const STRATEGY_ANNOTATIONS: Record<string, Annotation> = {
   // ── seed collocations: add the avoid they lacked ──
   "meet-a-deadline": {
     ...s("collocation", "B2", "high", 80, 78),
-    avoid: "Se dice «meet a deadline» (cumplir un plazo), no «complete/comply a deadline».",
+    avoid: "Se dice «meet a deadline» (cumplir un plazo), no «complete a deadline».",
+    contrastWith: [
+      { phrase: "complete a deadline", explanationEs: "Un plazo se «meets» (cumple), no se «completes»." },
+    ],
   },
   "raise-a-concern": {
     ...s("collocation", "B2", "medium", 74, 76),
     avoid: "Se dice «raise a concern» (plantear una duda), no «say a concern».",
+    contrastWith: [
+      { phrase: "say a concern", explanationEs: "Una preocupación se «raises» (plantea), no se «says»." },
+    ],
   },
   "take-responsibility": {
     ...s("collocation", "B2", "medium", 76, 74),
     avoid: "Para «asumir», es «take responsibility», no «have responsibility».",
+    contrastWith: [
+      { phrase: "have responsibility", explanationEs: "Para «asumir» es «take responsibility»; «have» solo indica tenerla." },
+    ],
   },
   "waste-time": {
     ...s("collocation", "B1", "high", 82, 80),
     avoid: "Se dice «waste time» (perder el tiempo), no «lose time» en este sentido.",
+    contrastWith: [
+      { phrase: "lose time", explanationEs: "«Perder el tiempo» (malgastarlo) es «waste time», no «lose time»." },
+    ],
   },
 };
 
@@ -255,32 +270,32 @@ export const phrases: Phrase[] = [
   co("make-progress", "make progress", "avanzar / hacer progresos", "B1", "high", 82, 80,
     ["We're starting to make progress.", "It's hard to make progress without help."],
     "Avanzar hacia un objetivo.",
-    "Se dice «make progress», no «do progress»."),
+    "Se dice «make progress», no «do progress».", "do progress"),
   co("make-an-effort", "make an effort", "hacer un esfuerzo", "B1", "high", 80, 80,
     ["Please make an effort to be on time.", "I'll make an effort to reply faster."],
     "Esforzarse por algo.",
-    "Se dice «make an effort», no «do an effort»."),
+    "Se dice «make an effort», no «do an effort».", "do an effort"),
   co("do-your-best", "do your best", "hacer lo posible", "A2", "high", 82, 80,
     ["Just do your best.", "You should do your best and see how it goes."],
     "Dar lo mejor de uno mismo.",
-    "Se dice «do your best» (con DO), aunque una decisión sea «make a decision» (con MAKE)."),
+    "Se dice «do your best» (con DO), aunque una decisión sea «make a decision» (con MAKE).", "make your best"),
   co("take-a-look", "take a look", "echar un vistazo", "A2", "very_high", 86, 82,
     ["Let me take a look.", "Can you take a look at this for me?"],
     "Mirar algo brevemente.",
-    "Se dice «take a look», no «give a look» en este sentido.",
+    "Se dice «take a look», no «give a look» en este sentido.", "give a look",
     { highFreq: true }),
   co("take-it-seriously", "take it seriously", "tomárselo en serio", "B2", "high", 78, 78,
     ["You should take it seriously.", "They didn't take it seriously enough."],
     "Dar a algo la importancia que merece.",
-    "Se dice «take it seriously», no «take it in serious»."),
+    "Se dice «take it seriously», no «take it in serious».", "take it in serious"),
   co("solve-a-problem", "solve a problem", "resolver un problema", "B1", "high", 80, 78,
     ["We need to solve a problem quickly.", "It's hard to solve a problem like this alone."],
     "Encontrar solución a algo.",
-    "El verbo natural es «solve a problem» (o «fix»), no «make a problem» para 'resolver'."),
+    "El verbo natural es «solve a problem» (o «fix»), no «make a problem» para 'resolver'.", "make a problem"),
   co("save-time", "save time", "ahorrar tiempo", "B1", "high", 82, 80,
     ["This will save time later.", "We can save time if we automate it."],
     "Ganar/ahorrar tiempo.",
-    "Se dice «save time», no «win time» (calco de 'ganar tiempo')."),
+    "Se dice «save time», no «win time» (calco de 'ganar tiempo').", "win time"),
 
   // ── Sentence frames (≥2 production-oriented situations) ──
   sf("dont-think-worth", "I don't think it's worth", "no creo que valga la pena", "B2", "high", 78, 80,
@@ -466,11 +481,13 @@ function pv(
 function co(
   id: string, text: string, meaningEs: string, cefr: CefrLevel, freq: FrequencyBand,
   useful: number, prod: number, examples: string[], usageContext: string, avoid: string,
-  opts: { highFreq?: boolean } = {}
+  wrongForm: string, opts: { highFreq?: boolean } = {}
 ): Phrase {
   return {
     ...base(id, text, meaningEs, cefr, freq, useful, prod, examples, usageContext, "collocation", ["collocation"]),
     avoid,
+    // Clean wrong form → drives the correction card (natural vs Spanish-style).
+    contrastWith: [{ phrase: wrongForm, explanationEs: avoid }],
     ...(opts.highFreq ? { isHighFrequencyPattern: true } : {}),
   };
 }

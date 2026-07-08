@@ -14,6 +14,8 @@ export type SessionCard =
   | { kind: "situation"; phraseId: string }
   /** Distinguishes a rich phrase from a confusable one (recognition). */
   | { kind: "contrast"; phraseId: string }
+  /** Correction: pick the natural English form over the Spanish-style error. */
+  | { kind: "correction"; phraseId: string }
   /** Box-5 free-production gate with self-assessment (the path to MASTERED). */
   | { kind: "mastery"; phraseId: string }
   /** Opt-in level-check milestone offer (never auto-starts). */

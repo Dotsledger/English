@@ -1,25 +1,33 @@
 "use client";
 
 import type { Phrase } from "@/lib/types";
+import { correctionWrongForm } from "@/lib/session/exercisePolicy";
+import { getAvoidForms } from "@/lib/vocabStrategy";
 import { SparkBurst } from "@/components/SparkBurst";
 
 /**
- * Contrast card (avoid confusion): the phrase against a confusable one. The
- * learner picks which one expresses the target meaning; the explanation of
- * the difference is revealed afterward. A recognition-grade result.
+ * Contrast / correction card. Two framings over the same interaction — pick
+ * the right English form over a confusable/wrong one:
+ *  - "contrast"  (false friends): "To say «meaning», which one?" — meaning-led.
+ *  - "correction" (collocations/traps): "Which is natural English?" — form-led,
+ *    attacking the Spanish-style error the learner is likely to make.
+ * The wrong option comes from `contrastWith` or an `avoid` wrong-form list.
+ * Recognition-grade result.
  */
 export function ContrastCard({
   phrase,
+  mode = "contrast",
   selectedText,
   onSelect,
 }: {
   phrase: Phrase;
+  mode?: "contrast" | "correction";
   /** The option text already chosen (back-navigation), or null. */
   selectedText: string | null;
   onSelect: (correct: boolean) => void;
 }) {
-  const contrast = phrase.contrastWith?.[0];
-  const other = contrast?.phrase ?? "";
+  const other = correctionWrongForm(phrase) ?? "";
+  const explanation = phrase.contrastWith?.[0]?.explanationEs ?? getAvoidForms(phrase).join(" ");
   // Deterministic option order (phrase id parity) so it's stable across renders.
   const phraseFirst = phrase.id.charCodeAt(0) % 2 === 0;
   const options = phraseFirst ? [phrase.text, other] : [other, phrase.text];
@@ -27,14 +35,16 @@ export function ContrastCard({
 
   return (
     <div
-      data-testid={`contrast-${phrase.id}`}
+      data-testid={`${mode}-${phrase.id}`}
       className="flex h-full flex-col justify-center gap-6 px-6 pb-6"
     >
       <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300">
-        Easy to mix up
+        {mode === "correction" ? "Common mistake" : "Easy to mix up"}
       </span>
       <p className="text-[1.5rem] font-bold leading-snug text-white">
-        To say “{phrase.meaningEs}”, which one?
+        {mode === "correction"
+          ? "Which is natural English?"
+          : `To say “${phrase.meaningEs}”, which one?`}
       </p>
 
       <div className="flex flex-col gap-2.5" role="group">
@@ -73,10 +83,19 @@ export function ContrastCard({
           >
             {selectedText === phrase.text ? "That's it." : `It's “${phrase.text}”.`}
           </p>
-          {contrast && <p className="text-sm text-white/55">{contrast.explanationEs}</p>}
+          {mode === "correction" && (
+            <p className="text-sm text-white/60">
+              {phrase.text} · {phrase.meaningEs}
+            </p>
+          )}
+          {explanation && <p className="text-sm text-white/55">{explanation}</p>}
         </div>
       ) : (
-        <p className="text-sm text-white/40">One expresses that meaning — the other is close.</p>
+        <p className="text-sm text-white/40">
+          {mode === "correction"
+            ? "One is natural English — the other is a Spanish-style slip."
+            : "One expresses that meaning — the other is close."}
+        </p>
       )}
     </div>
   );

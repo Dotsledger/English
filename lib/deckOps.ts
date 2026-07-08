@@ -162,11 +162,13 @@ export function recordReviewResult(
 }
 
 /**
- * The mastery-gate self-assessment (Feature 3) — a self-generated *production*
- * attempt. "Me salió" first counts as production → `usable`; a second spaced
- * "Me salió" (two production successes at the long box) → `mastered`, the
- * "fluent" tier. "Regular" → stays put, back in 3 days; "No me salió" → down
- * one box. Stages never regress on a wrong self-grade — only the box drops.
+ * Self-assessed production/situation attempt (mastery gate, Situation card).
+ * Calibrated so a single success can't manufacture false mastery from a low
+ * box: "Me salió" advances ONE box (cap 5) and reschedules at that box's
+ * interval — not a jump to box 5. A production success moves the stage to
+ * `usable`; only two production successes at a long box (≥ 4) reach `mastered`
+ * ("fluent"). "Regular" → stays put, back in 3 days; "No me salió" → down one
+ * box. Stages never regress on a wrong self-grade — only the box drops.
  */
 export function recordMasteryResult(
   deck: DeckStore,
@@ -176,15 +178,16 @@ export function recordMasteryResult(
 ): DeckStore {
   const entry = { ...entryOf(deck, phraseId), lastAttemptAt: now };
   if (verdict === "me_salio") {
-    entry.box = 5;
+    entry.box = Math.min(entry.box + 1, 5) as Box;
     entry.correctCount += 1;
-    entry.producedCorrectAtLongBoxes += 1;
+    // Mastery credit only accrues once the phrase is already near mastery.
+    if (entry.box >= 4) entry.producedCorrectAtLongBoxes += 1;
     entry.stage = advanceStage(entry.stage, "usable");
     if (entry.producedCorrectAtLongBoxes >= 2) {
       entry.stage = advanceStage(entry.stage, "mastered");
     }
     entry.producedAt = entry.producedAt ?? now;
-    entry.nextReviewAt = now + intervalForBox(5);
+    entry.nextReviewAt = now + intervalForBox(entry.box);
   } else if (verdict === "regular") {
     entry.nextReviewAt = now + 3 * DAY;
   } else {

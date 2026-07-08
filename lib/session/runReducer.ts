@@ -38,7 +38,8 @@ function isGated(state: SessionRunState): boolean {
     card.kind === "review" ||
     card.kind === "mastery" ||
     card.kind === "situation" ||
-    card.kind === "contrast";
+    card.kind === "contrast" ||
+    card.kind === "correction";
   return needsAnswer && state.answers[state.index] === undefined;
 }
 

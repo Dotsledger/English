@@ -90,6 +90,8 @@ function practiceCard(
       return { kind: "situation", phraseId: entry.phraseId };
     case "contrast":
       return { kind: "contrast", phraseId: entry.phraseId };
+    case "correction":
+      return { kind: "correction", phraseId: entry.phraseId };
     case "production":
       return { kind: "mastery", phraseId: entry.phraseId };
     default:

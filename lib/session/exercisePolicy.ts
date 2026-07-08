@@ -17,7 +17,8 @@ export type PracticeType =
   | "reverse"
   | "situation"
   | "production"
-  | "contrast";
+  | "contrast"
+  | "correction";
 
 /** Ordered preference by category — most valuable retrieval first. */
 export function getPreferredExerciseTypesForPhrase(phrase: Phrase): PracticeType[] {
@@ -27,10 +28,12 @@ export function getPreferredExerciseTypesForPhrase(phrase: Phrase): PracticeType
     case "phrasal_verb":
       return ["situation", "reverse", "cloze", "recognition"];
     case "collocation":
-      return ["contrast", "cloze", "reverse", "recognition"];
+      // The real learning problem is the wrong Spanish-style form → correction.
+      return ["correction", "contrast", "cloze", "reverse", "recognition"];
     case "spanish_speaker_trap":
+      return ["correction", "contrast", "cloze", "reverse", "recognition"];
     case "false_friend":
-      return ["contrast", "cloze", "reverse", "recognition"];
+      return ["contrast", "correction", "cloze", "reverse", "recognition"];
     case "discourse_marker":
       return ["situation", "cloze", "reverse", "recognition"];
     case "work_communication":
@@ -65,13 +68,22 @@ export function stageAllowsPractice(type: PracticeType, stage: PhraseStage): boo
     case "recognition":
     case "cloze":
     case "contrast":
-      return true;
+    case "correction":
+      return true; // recognition-grade correction is useful from the start
     case "reverse":
     case "situation":
       return r >= STAGE_RANK.recognised;
     case "production":
       return r >= STAGE_RANK.recalled;
   }
+}
+
+/** A clean wrong form for correction/contrast: the confusable phrase, or an
+ * explicit wrong form listed as an `avoid` array (never an explanation string). */
+export function correctionWrongForm(phrase: Phrase): string | null {
+  if (phrase.contrastWith?.[0]?.phrase) return phrase.contrastWith[0].phrase;
+  if (Array.isArray(phrase.avoid) && phrase.avoid[0]) return phrase.avoid[0];
+  return null;
 }
 
 /** Whether the required metadata exists to generate this practice type. */
@@ -87,6 +99,8 @@ export function canGeneratePractice(type: PracticeType, phrase: Phrase): boolean
       return (phrase.situations?.length ?? 0) > 0;
     case "contrast":
       return (phrase.contrastWith?.length ?? 0) > 0;
+    case "correction":
+      return correctionWrongForm(phrase) !== null;
   }
 }
 

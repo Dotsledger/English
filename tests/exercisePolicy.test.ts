@@ -28,10 +28,11 @@ describe("getPreferredExerciseTypesForPhrase", () => {
   it("puts situation first for phrasal verbs", () => {
     expect(getPreferredExerciseTypesForPhrase(mk({ category: "phrasal_verb" }))[0]).toBe("situation");
   });
-  it("puts contrast first for collocations and traps and false friends", () => {
-    for (const c of ["collocation", "spanish_speaker_trap", "false_friend"] as const) {
-      expect(getPreferredExerciseTypesForPhrase(mk({ category: c }))[0]).toBe("contrast");
+  it("puts correction first for collocations and traps, contrast first for false friends", () => {
+    for (const c of ["collocation", "spanish_speaker_trap"] as const) {
+      expect(getPreferredExerciseTypesForPhrase(mk({ category: c }))[0]).toBe("correction");
     }
+    expect(getPreferredExerciseTypesForPhrase(mk({ category: "false_friend" }))[0]).toBe("contrast");
   });
   it("puts situation first for discourse markers, work, daily, core chunks", () => {
     for (const c of ["discourse_marker", "work_communication", "daily_life", "core_chunk"] as const) {
@@ -65,23 +66,27 @@ describe("resolvePracticeType — category × stage × metadata", () => {
     expect(resolvePracticeType(pvNoSit, "recognised")).toBe("reverse");
   });
 
-  it("collocations prefer contrast, else cloze — never MCQ", () => {
+  it("collocations get correction (wrong form) from contrastWith or an avoid list, else cloze — never MCQ", () => {
     const withContrast = mk({
       category: "collocation",
       contrastWith: [{ phrase: "do a decision", explanationEs: "..." }],
     });
-    expect(resolvePracticeType(withContrast, "seen")).toBe("contrast");
-    const avoidOnly = mk({ category: "collocation", avoid: "no 'do progress'" });
-    notMcq(resolvePracticeType(avoidOnly, "seen")); // → cloze
-    expect(resolvePracticeType(avoidOnly, "seen")).toBe("cloze");
+    expect(resolvePracticeType(withContrast, "seen")).toBe("correction");
+    // avoid as an explicit wrong-form array also drives correction
+    const avoidArray = mk({ category: "collocation", avoid: ["do progress"] });
+    expect(resolvePracticeType(avoidArray, "seen")).toBe("correction");
+    // avoid as an explanation string (no clean form, no contrastWith) → cloze, not MCQ
+    const avoidExplanation = mk({ category: "collocation", avoid: "Se dice make progress, no do progress." });
+    notMcq(resolvePracticeType(avoidExplanation, "seen"));
+    expect(resolvePracticeType(avoidExplanation, "seen")).toBe("cloze");
   });
 
-  it("traps and false friends attack the error with contrast/correction first", () => {
+  it("traps attack the error with correction first; false friends with contrast first", () => {
     const trap = mk({
       category: "spanish_speaker_trap",
       contrastWith: [{ phrase: "depend of", explanationEs: "..." }],
     });
-    expect(resolvePracticeType(trap, "seen")).toBe("contrast");
+    expect(resolvePracticeType(trap, "seen")).toBe("correction");
     const ff = mk({
       category: "false_friend",
       contrastWith: [{ phrase: "actualmente", explanationEs: "..." }],

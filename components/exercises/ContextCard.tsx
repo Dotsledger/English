@@ -1,6 +1,7 @@
 "use client";
 
 import type { Phrase } from "@/lib/types";
+import { getAvoidForms } from "@/lib/vocabStrategy";
 
 /**
  * Context card (introduce a rich "core" phrase): the phrase, its natural
@@ -55,12 +56,12 @@ export function ContextCard({
         ))}
       </div>
 
-      {phrase.avoid && (
+      {getAvoidForms(phrase).length > 0 && (
         <div className="rounded-2xl border border-rose-400/20 bg-rose-400/[0.06] px-4 py-2.5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-rose-300/70">
             Common mistake
           </p>
-          <p className="mt-1 text-sm text-white/70">{phrase.avoid}</p>
+          <p className="mt-1 text-sm text-white/70">{getAvoidForms(phrase).join(" · ")}</p>
         </div>
       )}
 

@@ -100,6 +100,13 @@ export function getCategoryLabel(category: VocabularyCategory): string {
   return CATEGORY_LABEL[category];
 }
 
+/** `avoid` normalised to a list, defensively (string | string[] | undefined). */
+export function getAvoidForms(phrase: Phrase): string[] {
+  const a = phrase.avoid;
+  if (!a) return [];
+  return Array.isArray(a) ? a.filter(Boolean) : [a];
+}
+
 /**
  * One concise line explaining why an item is worth learning, driven by its
  * strategy metadata. Null when the item has no strategy category (so plain

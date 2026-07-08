@@ -342,3 +342,23 @@ describe("global phrase-id uniqueness", () => {
     expect(phraseById.size).toBe(allPhrases.length);
   });
 });
+
+describe("getAvoidForms + correction eligibility", () => {
+  it("normalises avoid defensively (string | string[] | undefined)", async () => {
+    const { getAvoidForms } = await import("@/lib/vocabStrategy");
+    expect(getAvoidForms(mk({}))).toEqual([]);
+    expect(getAvoidForms(mk({ avoid: "one" }))).toEqual(["one"]);
+    expect(getAvoidForms(mk({ avoid: ["a", "b"] }))).toEqual(["a", "b"]);
+  });
+
+  it("every collocation and trap exposes a clean wrong form for correction", async () => {
+    const { correctionWrongForm } = await import("@/lib/session/exercisePolicy");
+    const eligible = allPhrases.filter(
+      (p) => p.category === "collocation" || p.category === "spanish_speaker_trap"
+    );
+    expect(eligible.length).toBeGreaterThan(0);
+    for (const p of eligible) {
+      expect(correctionWrongForm(p), `${p.id}`).not.toBeNull();
+    }
+  });
+});

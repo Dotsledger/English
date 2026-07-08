@@ -115,6 +115,38 @@ describe("recordMasteryResult", () => {
     expect(after.p.stage).toBe("recalled");
     expect(after.p.nextReviewAt).toBe(NOW + 16 * DAY);
   });
+
+  // ── Memory calibration: one self-assessed success ≠ instant mastery ──
+  const at = (box: 1 | 2 | 3 | 4 | 5, stage: "seen" | "recognised" | "recalled") => ({
+    p: makeDeckEntry({ phraseId: "p", inDeck: true, box, stage }),
+  });
+
+  it("'me salió' advances only ONE box, never jumping a low box straight to 5", () => {
+    expect(recordMasteryResult(at(1, "recognised"), "p", "me_salio", NOW).p.box).toBe(2);
+    expect(recordMasteryResult(at(2, "recognised"), "p", "me_salio", NOW).p.box).toBe(3);
+    expect(recordMasteryResult(at(3, "recalled"), "p", "me_salio", NOW).p.box).toBe(4);
+    expect(recordMasteryResult(at(4, "recalled"), "p", "me_salio", NOW).p.box).toBe(5);
+    expect(recordMasteryResult(at(5, "recalled"), "p", "me_salio", NOW).p.box).toBe(5);
+  });
+
+  it("a single low-box success reaches 'usable' but NOT 'mastered'", () => {
+    const after = recordMasteryResult(at(1, "recognised"), "p", "me_salio", NOW);
+    expect(after.p.stage).toBe("usable");
+    expect(after.p.stage).not.toBe("mastered");
+    expect(after.p.producedCorrectAtLongBoxes).toBe(0); // no mastery credit below box 4
+    expect(after.p.nextReviewAt).toBe(NOW + 3 * DAY); // box-2 interval, not 35 days
+  });
+
+  it("mastery credit only accrues at long boxes (≥ 4)", () => {
+    // box 3 → 4: first credit; box 4 → 5: second credit → mastered
+    let after = recordMasteryResult(at(3, "recalled"), "p", "me_salio", NOW);
+    expect(after.p.producedCorrectAtLongBoxes).toBe(1);
+    expect(after.p.stage).toBe("usable");
+    after = recordMasteryResult(after, "p", "me_salio", NOW + 16 * DAY);
+    expect(after.p.box).toBe(5);
+    expect(after.p.producedCorrectAtLongBoxes).toBe(2);
+    expect(after.p.stage).toBe("mastered");
+  });
 });
 
 describe("appendSentence", () => {
