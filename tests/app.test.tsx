@@ -490,6 +490,8 @@ describe("session end", () => {
     // The recap answers "which phrases did I practise today?".
     expect(screen.getByTestId("practiced-today")).toBeDefined();
     expect(screen.getByText("Today you practised")).toBeDefined();
+    // …and links onward to the full notebook so practised vocab is findable.
+    expect(screen.getByTestId("session-end-notebook").getAttribute("href")).toBe("/notebook");
 
     const sessionTopicIds = new Set(
       plan.cards.flatMap((c) => (c.kind === "content" ? [c.scene.topicId] : []))
@@ -568,6 +570,27 @@ describe("My phrases (notebook)", () => {
     await waitFor(() => {
       expect(screen.getByTestId("notebook-empty")).toBeDefined();
     });
+  });
+
+  it("shows a phrase seen in Today's Practice (not manually added)", async () => {
+    // markSeen from a content card: timesSeen>0, stage seen, but not inDeck.
+    const seen = phrases[0];
+    window.localStorage.setItem(KEY_META, JSON.stringify({ schemaVersion: 2 }));
+    window.localStorage.setItem(
+      KEY_DECK,
+      JSON.stringify({
+        [seen.id]: { ...freshEntry(seen.id, "catalog"), inDeck: false, stage: "seen", timesSeen: 1 },
+      })
+    );
+    render(
+      <AppStateProvider>
+        <Notebook />
+      </AppStateProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId(`notebook-phrase-${seen.id}`)).toBeDefined();
+    });
+    expect(screen.getByTestId("notebook-stage-seen")).toBeDefined();
   });
 
   it("shows added/deck phrases but not merely-skipped suggestions", async () => {

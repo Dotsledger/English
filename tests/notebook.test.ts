@@ -26,6 +26,21 @@ describe("notebookGroups", () => {
     expect(groups.find((g) => g.stage === "seen")!.items[0].phraseId).toBe("c");
   });
 
+  it("includes a phrase practised in Today's Practice even if never added or seen", () => {
+    // A checkpoint answer stamps lastAttemptAt (and stage) without inDeck or timesSeen.
+    const deck: DeckStore = {
+      answered: entry("answered", {
+        inDeck: false,
+        stage: "recognised",
+        timesSeen: 0,
+        correctCount: 1,
+        lastAttemptAt: NOW - 1000,
+      }),
+    };
+    const ids = notebookGroups(deck, NOW).flatMap((g) => g.items.map((i) => i.phraseId));
+    expect(ids).toEqual(["answered"]);
+  });
+
   it("excludes suppressed phrases and phrases never seen and not in deck", () => {
     const deck: DeckStore = {
       sup: entry("sup", { inDeck: true, stage: "usable", timesSeen: 4, suppressed: true }),

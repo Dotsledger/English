@@ -100,6 +100,15 @@ export function SessionEnd({
         </div>
       )}
 
+      {/* Close the loop: practised vocabulary lives in the notebook. */}
+      <Link
+        href="/notebook"
+        data-testid="session-end-notebook"
+        className="text-center text-sm text-sky-300 underline-offset-4 active:underline"
+      >
+        See all my phrases →
+      </Link>
+
       <button
         type="button"
         data-testid="another-round"

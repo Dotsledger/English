@@ -65,8 +65,8 @@ function reviewInfo(
 /**
  * Groups the deck into notebook sections by stage, newest-progress order as
  * declared in NOTEBOOK_STAGES. Includes any phrase the user has actually
- * engaged with — saved to the deck OR seen at least once — and excludes
- * suppressed ("ya la domino") phrases, which the user has explicitly retired.
+ * engaged with — saved to the deck, seen in a card, or answered in Today's
+ * Practice — and excludes suppressed ("ya la domino") phrases they retired.
  * Within a stage, due phrases lead, then the rest by phraseId for stability.
  * Empty groups are omitted.
  */
@@ -74,7 +74,11 @@ export function notebookGroups(deck: DeckStore, now: number): NotebookGroup[] {
   const byStage = new Map<PhraseStage, NotebookItem[]>();
   for (const entry of Object.values(deck)) {
     if (entry.suppressed) continue;
-    if (!entry.inDeck && entry.timesSeen === 0) continue;
+    // Anything the user has actually engaged with belongs in the notebook:
+    // saved to the deck, seen in a card, or answered in Today's Practice
+    // (a checkpoint answer stamps lastAttemptAt without incrementing timesSeen).
+    const engaged = entry.inDeck || entry.timesSeen > 0 || entry.lastAttemptAt !== null;
+    if (!engaged) continue;
     const { state, label } = reviewInfo(entry.inDeck, entry.nextReviewAt, now);
     const item: NotebookItem = {
       phraseId: entry.phraseId,
