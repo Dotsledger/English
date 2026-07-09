@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Phrase } from "@/lib/types";
 import { phrases } from "@/lib/data/phrases";
 import {
@@ -9,11 +9,16 @@ import {
   getExploreChipLabel,
   getWhyThisMatters,
   orderTrapsFirst,
+  orderUnsavedFirst,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
 import { useDeck } from "@/components/AppStateProvider";
 import { saveToDeck } from "@/lib/deckOps";
+import { addedOnCount } from "@/lib/notebook";
+import { localIsoDate } from "@/lib/dates";
+
+const ADD_PER_DAY = 2;
 
 /** Only phrases carrying strategy metadata are eligible for pattern discovery. */
 const STRATEGY_PHRASES: Phrase[] = phrases.filter((p) => p.category !== undefined);
@@ -40,20 +45,43 @@ const SHOWN = 8;
 export function PatternExplorer() {
   const deck = useDeck();
   const [filter, setFilter] = useState<ExploreFilter>("all");
+  // Read the clock only after mount so the "added today" count is hydration-safe.
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time mount clock read
+    setNow(Date.now());
+  }, []);
 
-  // "All" mixes many categories → cap per-category so it isn't all core chunks.
-  // A specific filter is single-category, so just take the top ranked items.
-  // In Traps, surface genuine traps/false friends ahead of flagged items.
-  let ranked = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter));
-  if (filter === "spanish_speaker_traps") ranked = orderTrapsFirst(ranked);
-  const shown = filter === "all" ? diversifyTop(ranked, SHOWN, 2) : ranked.slice(0, SHOWN);
+  // The visible set is computed once per filter (and once when saved state
+  // first loads) — NOT on every save. So tapping "Add" leaves the card in
+  // place showing "Added" (clear feedback), while each fresh visit or filter
+  // switch re-floats not-yet-added phrases to the top: you get new suggestions
+  // over time instead of staring at the same saved 8 forever. `deck.ready` in
+  // the deps recomputes once persisted saves have loaded.
+  const shown = useMemo(() => {
+    const isSaved = (id: string) => deck.value[id]?.inDeck === true;
+    let ranked = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter));
+    if (filter === "spanish_speaker_traps") ranked = orderTrapsFirst(ranked);
+    ranked = orderUnsavedFirst(ranked, isSaved);
+    return filter === "all" ? diversifyTop(ranked, SHOWN, 2) : ranked.slice(0, SHOWN);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally NOT keyed on deck.value so saving doesn't reshuffle mid-view
+  }, [filter, deck.ready]);
+
+  const addedToday = now !== null && deck.ready ? addedOnCount(deck.value, localIsoDate(new Date(now))) : null;
+  const stateLine =
+    addedToday === null
+      ? "Recommended: add 1–2 a day."
+      : `${addedToday}/${ADD_PER_DAY} added today${addedToday >= ADD_PER_DAY ? " — nice, that's plenty" : ""}`;
 
   return (
     <section data-testid="pattern-explorer" className="mb-6">
       <div className="mb-2 px-1">
         <h2 className="text-lg font-bold text-white">Add patterns to learn</h2>
-        <p className="mt-0.5 text-xs text-white/55">
-          Pick 1–2 phrases to practice later — up to 2 a day.
+        <p className="mt-0.5 text-xs text-white/60">
+          Pick 1–2 phrases. They&rsquo;ll appear in future practice.
+        </p>
+        <p data-testid="add-state-line" className="mt-0.5 text-xs text-white/45">
+          {stateLine}
         </p>
       </div>
 
@@ -146,7 +174,7 @@ function PatternCard({
               : "border-white/20 bg-white/[0.06] text-white/80"
           }`}
         >
-          {saved ? "✓ Saved" : "+ Add"}
+          {saved ? "✓ Added" : "Add"}
         </button>
       </div>
       <p className="mt-1.5 text-lg font-bold text-amber-300">{phrase.text}</p>

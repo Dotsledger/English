@@ -152,12 +152,30 @@ export function TopicGrid() {
       <RecapCard />
       <MissionCard />
 
+      <Link
+        href="/notebook"
+        data-testid="notebook-link"
+        className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 active:scale-[0.99]"
+      >
+        <div>
+          <p className="text-sm font-semibold text-white">My phrases</p>
+          <p className="mt-0.5 text-xs text-white/55">
+            See what you&rsquo;ve saved and what&rsquo;s coming back.
+          </p>
+        </div>
+        <span aria-hidden className="shrink-0 text-white/40">
+          →
+        </span>
+      </Link>
+
       <PatternExplorer />
 
       <div className="mb-3 mt-2 flex items-start justify-between px-1">
         <div>
           <h2 className="text-lg font-bold text-white">Explore topics</h2>
-          <p className="mt-0.5 text-xs text-white/55">Discover phrases through short topic cards.</p>
+          <p className="mt-0.5 text-xs text-white/55">
+            Optional: discover phrases through short topic cards.
+          </p>
         </div>
         <button
           type="button"

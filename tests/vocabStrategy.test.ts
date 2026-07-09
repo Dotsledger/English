@@ -8,6 +8,7 @@ import {
   getExploreChipLabel,
   getWhyThisMatters,
   orderTrapsFirst,
+  orderUnsavedFirst,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
@@ -45,6 +46,24 @@ function mk(over: Partial<Phrase>): Phrase {
     ...over,
   };
 }
+
+describe("orderUnsavedFirst", () => {
+  it("floats not-yet-saved phrases above saved ones, preserving order within each group", () => {
+    const list = [mk({ id: "a" }), mk({ id: "b" }), mk({ id: "c" }), mk({ id: "d" })];
+    const saved = new Set(["a", "c"]);
+    const ordered = orderUnsavedFirst(list, (id) => saved.has(id)).map((p) => p.id);
+    expect(ordered).toEqual(["b", "d", "a", "c"]);
+  });
+
+  it("stops the same saved cards from dominating the visible top", () => {
+    const ranked = [mk({ id: "a" }), mk({ id: "b" }), mk({ id: "c" })];
+    // Once "a" is saved it sinks below the unsaved "b"/"c".
+    const before = orderUnsavedFirst(ranked, () => false).map((p) => p.id);
+    const after = orderUnsavedFirst(ranked, (id) => id === "a").map((p) => p.id);
+    expect(before).toEqual(["a", "b", "c"]);
+    expect(after).toEqual(["b", "c", "a"]);
+  });
+});
 
 describe("getCategoryPriority", () => {
   it("ranks productive patterns highest, advanced_expression lowest", () => {

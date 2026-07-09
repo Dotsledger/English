@@ -13,13 +13,18 @@ export function SessionEnd({
   title,
   recap,
   saved,
+  practiced = [],
   onAnotherRound,
 }: {
   title: string;
   recap: SessionRecap;
   saved: number;
+  /** Phrases practised this session + how, for the "Today you practised" list. */
+  practiced?: { text: string; label: string }[];
   onAnotherRound: () => void;
 }) {
+  const PRACTICED_SHOWN = 8;
+  const practicedShown = practiced.slice(0, PRACTICED_SHOWN);
   const lines: string[] = [];
   if (recap.toMastered > 0)
     lines.push(recap.toMastered === 1 ? "1 phrase mastered 🎉" : `${recap.toMastered} phrases mastered 🎉`);
@@ -69,6 +74,30 @@ export function SessionEnd({
             ? "1 phrase coming back tomorrow"
             : `${recap.dueTomorrow} phrases coming back tomorrow`}
         </p>
+      )}
+
+      {practicedShown.length > 0 && (
+        <div data-testid="practiced-today">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
+            Today you practised
+          </p>
+          <ul className="flex flex-col gap-1.5">
+            {practicedShown.map((p, i) => (
+              <li
+                key={`${p.text}-${i}`}
+                className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.04] px-3.5 py-2 text-sm"
+              >
+                <span className="text-white/85">{p.text}</span>
+                <span className="shrink-0 text-xs text-white/45">{p.label}</span>
+              </li>
+            ))}
+          </ul>
+          {practiced.length > practicedShown.length && (
+            <p className="mt-1.5 text-xs text-white/40">
+              +{practiced.length - practicedShown.length} more
+            </p>
+          )}
+        </div>
       )}
 
       <button

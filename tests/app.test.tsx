@@ -4,7 +4,9 @@ import Home from "@/app/page";
 import { AppStateProvider, resetMigrationForTests } from "@/components/AppStateProvider";
 import { SessionPlayer } from "@/components/SessionPlayer";
 import { SceneRenderer } from "@/components/SceneRenderer";
+import { Notebook } from "@/components/Notebook";
 import { TopicTile } from "@/components/TopicTile";
+import { freshEntry } from "@/lib/deckOps";
 import { contentScenes, checkpointScenes } from "@/lib/data/scenes";
 import { DEFAULT_TOPIC_IDS, topicById, topics } from "@/lib/data/topics";
 import { phrases, phraseById } from "@/lib/data/phrases";
@@ -20,7 +22,7 @@ import { initialLevel } from "@/lib/level";
 import { resetBackendForTests } from "@/lib/storage/backend";
 import { flushWrites } from "@/lib/storage/writeQueue";
 import { parseActivity, parseDeck, parseLevel, parseTopics } from "@/lib/storage/docs";
-import { KEY_ACTIVITY, KEY_DECK, KEY_LEVEL, KEY_TOPICS } from "@/lib/storage/keys";
+import { KEY_ACTIVITY, KEY_DECK, KEY_LEVEL, KEY_META, KEY_TOPICS } from "@/lib/storage/keys";
 
 beforeEach(() => {
   cleanup();
@@ -128,6 +130,17 @@ describe("home / topic grid", () => {
     // Pattern cards use clear Add labeling.
     const add = document.querySelector('[data-testid^="pattern-save-"]');
     expect(add?.getAttribute("aria-label")).toBe("Add to practice");
+    expect(add?.textContent).toBe("Add");
+  });
+
+  it("explains what Add patterns and Explore are for (product clarity)", () => {
+    renderHome();
+    // Add patterns: subtitle makes the action + destination clear.
+    expect(screen.getByText(/They.ll appear in future practice/)).toBeDefined();
+    // Explore: framed as optional discovery, not required.
+    expect(screen.getByText(/Optional: discover phrases/)).toBeDefined();
+    // A visible way into the vocabulary notebook.
+    expect(screen.getByTestId("notebook-link").getAttribute("href")).toBe("/notebook");
   });
 
   it("shows the practice button and no due CTA when nothing is due", async () => {
@@ -472,6 +485,9 @@ describe("session end", () => {
     expect(screen.getByText("Today's Practice")).toBeDefined();
     // Learning-framed recap: headline reflects whether anything advanced.
     expect(screen.getByText(/Nice progress ✓|Session done ✓/)).toBeDefined();
+    // The recap answers "which phrases did I practise today?".
+    expect(screen.getByTestId("practiced-today")).toBeDefined();
+    expect(screen.getByText("Today you practised")).toBeDefined();
 
     const sessionTopicIds = new Set(
       plan.cards.flatMap((c) => (c.kind === "content" ? [c.scene.topicId] : []))
@@ -489,5 +505,66 @@ describe("session end", () => {
     window.localStorage.setItem(STORAGE_KEY, "{{{corrupted");
     const plan = renderSession();
     expect(screen.getByTestId(`scene-${sceneIdAt(plan, 0)}`)).toBeDefined();
+  });
+});
+
+describe("My phrases (notebook)", () => {
+  const DAY = 24 * 60 * 60 * 1000;
+
+  it("renders saved phrases grouped by stage, with status and review state", async () => {
+    const withCategory = phrases.find((p) => p.category !== undefined)!;
+    const other = phrases.find((p) => p.id !== withCategory.id)!;
+    const now = Date.now();
+    const deck = {
+      // In deck, due now → appears under its stage with a "Due today" chip.
+      [withCategory.id]: {
+        ...freshEntry(withCategory.id, "catalog"),
+        inDeck: true,
+        stage: "recognised" as const,
+        timesSeen: 3,
+        nextReviewAt: now - 1000,
+        addedToDeckAt: now - DAY,
+      },
+      // In deck, scheduled ahead → a non-due review label.
+      [other.id]: {
+        ...freshEntry(other.id, "catalog"),
+        inDeck: true,
+        stage: "recalled" as const,
+        timesSeen: 5,
+        nextReviewAt: now + 5 * DAY,
+        addedToDeckAt: now - DAY,
+      },
+    };
+    // Seed a v2 deck directly — mark schema v2 so migration doesn't clobber it.
+    window.localStorage.setItem(KEY_META, JSON.stringify({ schemaVersion: 2 }));
+    window.localStorage.setItem(KEY_DECK, JSON.stringify(deck));
+
+    render(
+      <AppStateProvider>
+        <Notebook />
+      </AppStateProvider>
+    );
+
+    // Both phrases show, under their stage groups, with meaning + review state.
+    await waitFor(() => {
+      expect(screen.getByTestId(`notebook-phrase-${withCategory.id}`)).toBeDefined();
+    });
+    expect(screen.getByTestId("notebook-stage-recognised")).toBeDefined();
+    expect(screen.getByTestId("notebook-stage-recalled")).toBeDefined();
+    expect(screen.getByText(withCategory.meaningEs)).toBeDefined();
+    // Due-now phrase is labelled "Due today"; scheduled one is not.
+    expect(screen.getByTestId(`notebook-review-${withCategory.id}`).textContent).toBe("Due today");
+    expect(screen.getByTestId(`notebook-review-${other.id}`).textContent).not.toBe("Due today");
+  });
+
+  it("shows an empty state when nothing is saved yet", async () => {
+    render(
+      <AppStateProvider>
+        <Notebook />
+      </AppStateProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId("notebook-empty")).toBeDefined();
+    });
   });
 });

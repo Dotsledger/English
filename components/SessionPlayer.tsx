@@ -35,6 +35,7 @@ import {
 import {
   computeSessionRecap,
   planPhraseIds,
+  practicedInSession,
   snapshotStages,
   type SessionRecap,
   type StageSnapshot,
@@ -288,6 +289,9 @@ export function SessionPlayer({
             title={title}
             recap={recap ?? EMPTY_RECAP}
             saved={state.savedPhraseIds.length}
+            practiced={practicedInSession(state.plan.cards)
+              .map((p) => ({ text: phraseById.get(p.phraseId)?.text ?? null, label: p.label }))
+              .filter((p): p is { text: string; label: string } => p.text !== null)}
             onAnotherRound={onAnotherRound}
           />
         ) : card.kind === "content" ? (

@@ -10,6 +10,8 @@ import {
 import { exerciseTypeFor, buildReviewExercise, reviewCardFor } from "@/lib/session/exercisePicker";
 import { composeCategorySession, type ComposerContent } from "@/lib/session/composeCategorySession";
 import { composeSnackSession, orderTopicsByBand } from "@/lib/session/composeSnackSession";
+import { practicedInSession } from "@/lib/session/transitions";
+import type { SessionCard } from "@/lib/session/types";
 import { snackComposition } from "@/components/SnackHero";
 import {
   computeStats,
@@ -567,5 +569,32 @@ describe("Phase D — Context cards in Explore feeds", () => {
     const ctxIds = plan.cards.flatMap((c) => (c.kind === "context" ? [c.phraseId] : []));
     expect(ctxIds).not.toContain(coreId);
     expect(ctxIds).toHaveLength(0);
+  });
+});
+
+describe("practicedInSession", () => {
+  const c = (o: Record<string, unknown>) => o as unknown as SessionCard;
+
+  it("lists distinct phrases with the most demanding practice label, in first-seen order", () => {
+    const cards: SessionCard[] = [
+      c({ kind: "content", scene: { phraseId: "p1" } }),
+      c({ kind: "checkpoint", exercise: { phraseId: "p1" } }), // recognition > new for p1... but production later wins
+      c({ kind: "mastery", phraseId: "p1" }),
+      c({ kind: "situation", phraseId: "p2" }),
+      c({ kind: "typed_correction", phraseId: "p3", wrongForm: "x" }),
+      c({ kind: "review", exercise: { phraseId: "p4" } }),
+      c({ kind: "end" }),
+    ];
+    const practised = practicedInSession(cards);
+    expect(practised.map((p) => p.phraseId)).toEqual(["p1", "p2", "p3", "p4"]);
+    const byId = Object.fromEntries(practised.map((p) => [p.phraseId, p.label]));
+    expect(byId.p1).toBe("production"); // most demanding wins over content/checkpoint
+    expect(byId.p2).toBe("situation");
+    expect(byId.p3).toBe("typed correction");
+    expect(byId.p4).toBe("review");
+  });
+
+  it("ignores the end card and returns nothing for an empty session", () => {
+    expect(practicedInSession([{ kind: "end" } as unknown as SessionCard])).toEqual([]);
   });
 });

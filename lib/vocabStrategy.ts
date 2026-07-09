@@ -193,6 +193,20 @@ export function orderTrapsFirst(phrases: Phrase[]): Phrase[] {
   return [...phrases].sort((a, b) => rank(a) - rank(b));
 }
 
+/**
+ * Stable-orders a ranked list so phrases the user hasn't saved yet lead, and
+ * already-saved ones follow. Keeps saved phrases visible (less prominent, at
+ * the tail) while stopping the same saved cards from occupying the top of the
+ * suggestions forever — as one is added it sinks and the next-best unsaved
+ * phrase surfaces. Preserves the incoming rank order within each group.
+ */
+export function orderUnsavedFirst(phrases: Phrase[], isSaved: (id: string) => boolean): Phrase[] {
+  const unsaved: Phrase[] = [];
+  const saved: Phrase[] = [];
+  for (const p of phrases) (isSaved(p.id) ? saved : unsaved).push(p);
+  return [...unsaved, ...saved];
+}
+
 /** Sorts a copy by category priority, then usefulness (highest first). Handy
  * for an Explore feed that should surface high-leverage patterns first. */
 export function rankForExplore(phrases: Phrase[]): Phrase[] {

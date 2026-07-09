@@ -40,6 +40,65 @@ export function planPhraseIds(cards: SessionCard[]): string[] {
   return [...ids];
 }
 
+/** How a phrase was practised in a session, for the completion recap. Higher
+ * rank = more effortful retrieval; when a phrase appears in several card kinds
+ * we surface the most demanding one. */
+const PRACTICE_LABELS: { kinds: SessionCard["kind"][]; label: string }[] = [
+  { kinds: ["mastery"], label: "production" },
+  { kinds: ["typed_correction"], label: "typed correction" },
+  { kinds: ["correction"], label: "correction" },
+  { kinds: ["situation"], label: "situation" },
+  { kinds: ["contrast"], label: "contrast" },
+  { kinds: ["review"], label: "review" },
+  { kinds: ["checkpoint"], label: "recognition" },
+  { kinds: ["context", "content"], label: "new" },
+];
+
+function practiceRank(kind: SessionCard["kind"]): number {
+  const i = PRACTICE_LABELS.findIndex((p) => p.kinds.includes(kind));
+  return i === -1 ? PRACTICE_LABELS.length : i;
+}
+
+function cardPhraseId(card: SessionCard): string | null {
+  switch (card.kind) {
+    case "content":
+      return card.scene.phraseId;
+    case "checkpoint":
+    case "review":
+      return card.exercise.phraseId;
+    case "context":
+    case "situation":
+    case "contrast":
+    case "correction":
+    case "typed_correction":
+    case "mastery":
+      return card.phraseId;
+    default:
+      return null;
+  }
+}
+
+export type PracticedPhrase = { phraseId: string; label: string };
+
+/**
+ * The distinct phrases a session practised, each tagged with how it was
+ * practised (the most demanding card kind that touched it). Preserves first-
+ * appearance order. Powers the "Today you practised…" completion list.
+ */
+export function practicedInSession(cards: SessionCard[]): PracticedPhrase[] {
+  const best = new Map<string, number>();
+  const order: string[] = [];
+  for (const card of cards) {
+    const id = cardPhraseId(card);
+    if (id === null) continue;
+    const rank = practiceRank(card.kind);
+    if (!best.has(id)) order.push(id);
+    const prev = best.get(id);
+    if (prev === undefined || rank < prev) best.set(id, rank);
+  }
+  return order.map((id) => ({ phraseId: id, label: PRACTICE_LABELS[best.get(id)!].label }));
+}
+
 /** Stage of each phrase before the session (no deck entry ⇒ "new"). */
 export function snapshotStages(deck: DeckStore, ids: Iterable<string>): StageSnapshot {
   const snap: StageSnapshot = {};
