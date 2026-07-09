@@ -4,6 +4,7 @@ import {
   KEY_ACTIVITY,
   KEY_CAPTURES,
   KEY_DECK,
+  KEY_DISMISSED,
   KEY_LEVEL,
   KEY_META,
   KEY_MISSION,
@@ -14,6 +15,7 @@ import {
   parseActivity,
   parseCaptures,
   parseDeck,
+  parseDismissed,
   parseLevel,
   parseMeta,
   parseMission,
@@ -29,6 +31,7 @@ const EXPORTED_KEYS = [
   KEY_MISSION,
   KEY_SENTENCES,
   KEY_LEVEL,
+  KEY_DISMISSED,
 ];
 
 export type ExportBundle = {
@@ -100,6 +103,8 @@ export async function importAll(
         return JSON.stringify(parseSentences(raw));
       case KEY_LEVEL:
         return JSON.stringify(parseLevel(raw));
+      case KEY_DISMISSED:
+        return JSON.stringify(parseDismissed(raw));
       default:
         return null;
     }

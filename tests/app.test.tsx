@@ -5,8 +5,10 @@ import { AppStateProvider, resetMigrationForTests } from "@/components/AppStateP
 import { SessionPlayer } from "@/components/SessionPlayer";
 import { SceneRenderer } from "@/components/SceneRenderer";
 import { Notebook } from "@/components/Notebook";
+import { PatternExplorer } from "@/components/PatternExplorer";
 import { TopicTile } from "@/components/TopicTile";
 import { freshEntry } from "@/lib/deckOps";
+import { KEY_DISMISSED } from "@/lib/storage/keys";
 import { contentScenes, checkpointScenes } from "@/lib/data/scenes";
 import { DEFAULT_TOPIC_IDS, topicById, topics } from "@/lib/data/topics";
 import { phrases, phraseById } from "@/lib/data/phrases";
@@ -135,8 +137,8 @@ describe("home / topic grid", () => {
 
   it("explains what Add patterns and Explore are for (product clarity)", () => {
     renderHome();
-    // Add patterns: subtitle makes the action + destination clear.
-    expect(screen.getByText(/They.ll appear in future practice/)).toBeDefined();
+    // Add patterns: subtitle makes both the add and skip actions clear.
+    expect(screen.getByText(/Pick 1.2 phrases to add\. Skip the ones you don.t want\./)).toBeDefined();
     // Explore: framed as optional discovery, not required.
     expect(screen.getByText(/Optional: discover phrases/)).toBeDefined();
     // A visible way into the vocabulary notebook.
@@ -566,5 +568,157 @@ describe("My phrases (notebook)", () => {
     await waitFor(() => {
       expect(screen.getByTestId("notebook-empty")).toBeDefined();
     });
+  });
+
+  it("shows added/deck phrases but not merely-skipped suggestions", async () => {
+    const added = phrases[0];
+    const skippedOnly = phrases[1];
+    window.localStorage.setItem(KEY_META, JSON.stringify({ schemaVersion: 2 }));
+    window.localStorage.setItem(
+      KEY_DECK,
+      JSON.stringify({
+        [added.id]: { ...freshEntry(added.id, "catalog"), inDeck: true, stage: "seen", timesSeen: 1, nextReviewAt: (Date.now() + DAY) },
+      })
+    );
+    // Skipping only records a UI dismissal — it never creates a deck entry.
+    window.localStorage.setItem(KEY_DISMISSED, JSON.stringify({ [skippedOnly.id]: true }));
+
+    render(
+      <AppStateProvider>
+        <Notebook />
+      </AppStateProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId(`notebook-phrase-${added.id}`)).toBeDefined();
+    });
+    expect(screen.queryByTestId(`notebook-phrase-${skippedOnly.id}`)).toBeNull();
+  });
+
+  it("Remove takes a phrase out of the queue but keeps its history", async () => {
+    const p = phrases[0];
+    window.localStorage.setItem(KEY_META, JSON.stringify({ schemaVersion: 2 }));
+    window.localStorage.setItem(
+      KEY_DECK,
+      JSON.stringify({
+        [p.id]: {
+          ...freshEntry(p.id, "catalog"),
+          inDeck: true,
+          stage: "recognised",
+          box: 2,
+          timesSeen: 4,
+          correctCount: 2,
+          nextReviewAt: (Date.now() + DAY),
+          addedToDeckAt: (Date.now() + DAY) - 2 * 24 * 60 * 60 * 1000,
+        },
+      })
+    );
+    render(
+      <AppStateProvider>
+        <Notebook />
+      </AppStateProvider>
+    );
+    const remove = await waitFor(() => {
+      const b = document.querySelector(`[data-testid="notebook-remove-${p.id}"]`);
+      if (!b) throw new Error("no remove button");
+      return b as HTMLElement;
+    });
+    fireEvent.click(remove);
+    await flushWrites();
+    const deck = parseDeck(window.localStorage.getItem(KEY_DECK));
+    expect(deck[p.id].inDeck).toBe(false);
+    expect(deck[p.id].nextReviewAt).toBeNull();
+    // History preserved.
+    expect(deck[p.id].stage).toBe("recognised");
+    expect(deck[p.id].box).toBe(2);
+    expect(deck[p.id].timesSeen).toBe(4);
+    expect(deck[p.id].correctCount).toBe(2);
+  });
+});
+
+describe("Add patterns — add / skip / show more", () => {
+  const idOf = (sel: string, prefix: string) =>
+    document.querySelector(sel)?.getAttribute("data-testid")?.replace(prefix, "") ?? "";
+  const visiblePatternIds = () =>
+    [...document.querySelectorAll('[data-testid^="pattern-card-"]')].map((e) =>
+      e.getAttribute("data-testid")!.replace("pattern-card-", "")
+    );
+
+  const renderExplorer = () =>
+    render(
+      <AppStateProvider>
+        <PatternExplorer />
+      </AppStateProvider>
+    );
+
+  it("Add puts the phrase into the deck for future practice", async () => {
+    renderExplorer();
+    const btn = await waitFor(() => {
+      const b = document.querySelector('[data-testid^="pattern-save-"]');
+      if (!b) throw new Error("no card yet");
+      return b as HTMLElement;
+    });
+    const id = btn.getAttribute("data-testid")!.replace("pattern-save-", "");
+    fireEvent.click(btn);
+    expect(document.querySelector(`[data-testid="pattern-save-${id}"]`)?.textContent).toBe("✓ Added");
+    await flushWrites();
+    const deck = parseDeck(window.localStorage.getItem(KEY_DECK));
+    expect(deck[id]?.inDeck).toBe(true);
+  });
+
+  it("Skip hides the suggestion without adding it or touching memory", async () => {
+    renderExplorer();
+    const skip = await waitFor(() => {
+      const s = document.querySelector('[data-testid^="pattern-skip-"]');
+      if (!s) throw new Error("no skip yet");
+      return s as HTMLElement;
+    });
+    const id = skip.getAttribute("data-testid")!.replace("pattern-skip-", "");
+    fireEvent.click(skip);
+    // Removed from the suggestions immediately.
+    expect(screen.queryByTestId(`pattern-card-${id}`)).toBeNull();
+    await flushWrites();
+    // Not added to the deck; no memory/scheduling entry created.
+    expect(parseDeck(window.localStorage.getItem(KEY_DECK))[id]).toBeUndefined();
+    // Recorded only as a UI dismissal.
+    expect(JSON.parse(window.localStorage.getItem(KEY_DISMISSED)!)[id]).toBe(true);
+  });
+
+  it("Show more rotates to a different batch, excluding skipped and added", async () => {
+    renderExplorer();
+    await waitFor(() => {
+      if (!document.querySelector('[data-testid^="pattern-card-"]')) throw new Error("wait");
+    });
+    const batch1 = visiblePatternIds();
+    const addedId = idOf('[data-testid^="pattern-save-"]', "pattern-save-");
+    fireEvent.click(document.querySelector(`[data-testid="pattern-save-${addedId}"]`)!);
+    const skipId = visiblePatternIds().find((x) => x !== addedId)!;
+    fireEvent.click(document.querySelector(`[data-testid="pattern-skip-${skipId}"]`)!);
+    fireEvent.click(screen.getByTestId("show-more-patterns"));
+    const batch2 = visiblePatternIds();
+    expect(batch2).not.toEqual(batch1);
+    expect(batch2).not.toContain(addedId);
+    expect(batch2).not.toContain(skipId);
+  });
+
+  it("added and skipped state persist across a reload", async () => {
+    const first = renderExplorer();
+    await waitFor(() => {
+      if (!document.querySelector('[data-testid^="pattern-card-"]')) throw new Error("wait");
+    });
+    const addedId = idOf('[data-testid^="pattern-save-"]', "pattern-save-");
+    fireEvent.click(document.querySelector(`[data-testid="pattern-save-${addedId}"]`)!);
+    const skipId = visiblePatternIds().find((x) => x !== addedId)!;
+    fireEvent.click(document.querySelector(`[data-testid="pattern-skip-${skipId}"]`)!);
+    await flushWrites();
+    first.unmount();
+
+    renderExplorer(); // fresh mount re-hydrates from storage
+    await waitFor(() => {
+      if (!document.querySelector('[data-testid^="pattern-card-"]')) throw new Error("wait");
+    });
+    // Skipped phrase stays hidden; added phrase persisted in the deck.
+    expect(screen.queryByTestId(`pattern-card-${skipId}`)).toBeNull();
+    expect(parseDeck(window.localStorage.getItem(KEY_DECK))[addedId]?.inDeck).toBe(true);
+    expect(JSON.parse(window.localStorage.getItem(KEY_DISMISSED)!)[skipId]).toBe(true);
   });
 });

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDeck } from "@/components/AppStateProvider";
 import { getPhrase } from "@/lib/data/phrases";
 import { getCategoryLabel } from "@/lib/vocabStrategy";
+import { removeFromDeck } from "@/lib/deckOps";
 import { notebookGroups, type NotebookItem } from "@/lib/notebook";
 
 /**
@@ -61,7 +62,11 @@ export function Notebook() {
               </div>
               <div className="flex flex-col gap-2">
                 {group.items.map((item) => (
-                  <NotebookRow key={item.phraseId} item={item} />
+                  <NotebookRow
+                    key={item.phraseId}
+                    item={item}
+                    onRemove={() => deck.update((prev) => removeFromDeck(prev, item.phraseId))}
+                  />
                 ))}
               </div>
             </section>
@@ -72,7 +77,7 @@ export function Notebook() {
   );
 }
 
-function NotebookRow({ item }: { item: NotebookItem }) {
+function NotebookRow({ item, onRemove }: { item: NotebookItem; onRemove: () => void }) {
   const phrase = getPhrase(item.phraseId);
   const category = phrase.category ? getCategoryLabel(phrase.category) : null;
   return (
@@ -96,11 +101,29 @@ function NotebookRow({ item }: { item: NotebookItem }) {
         )}
       </div>
       <p className="mt-0.5 text-sm text-white/70">{phrase.meaningEs}</p>
-      {category && (
-        <span className="mt-1.5 inline-flex rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/55">
-          {category}
-        </span>
-      )}
+      <div className="mt-1.5 flex items-center justify-between gap-3">
+        {category ? (
+          <span className="inline-flex rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/55">
+            {category}
+          </span>
+        ) : (
+          <span />
+        )}
+        {/* Undo an "Add": drops it from the review queue but keeps its history,
+            so re-adding later resumes where it left off. */}
+        {item.inDeck && (
+          <button
+            type="button"
+            data-testid={`notebook-remove-${item.phraseId}`}
+            onClick={onRemove}
+            aria-label={`Remove ${phrase.text} from practice`}
+            title="Remove from practice (keeps your progress; you can add it again)"
+            className="shrink-0 text-xs text-white/40 underline-offset-4 active:underline"
+          >
+            Remove
+          </button>
+        )}
+      </div>
     </div>
   );
 }

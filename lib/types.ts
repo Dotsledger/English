@@ -329,6 +329,11 @@ export type CaptureStore = Record<string, CapturedPhrase>;
 /** ISO date (YYYY-MM-DD) → true, for the weekly "días activos" count. */
 export type ActivityStore = Record<string, true>;
 
+/** Phrase IDs the user skipped in "Add patterns" ("not for now"). A UI-only
+ * preference: never added to the deck, never scheduled, never a learning
+ * attempt — it only hides a suggestion. */
+export type DismissedPatternStore = Record<string, true>;
+
 export type MissionStore = {
   /** ISO Monday of the mission week, e.g. "2026-07-06". */
   weekKey: string;

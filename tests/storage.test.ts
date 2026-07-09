@@ -8,6 +8,7 @@ import {
   parseActivity,
   parseCaptures,
   parseDeck,
+  parseDismissed,
   parseMeta,
   parseMission,
   parseTopics,
@@ -149,6 +150,13 @@ describe("other document parsers", () => {
   it("parseMeta reads the schema version", () => {
     expect(parseMeta(JSON.stringify({ schemaVersion: 2 }))).toEqual({ schemaVersion: 2 });
     expect(parseMeta(JSON.stringify({ other: true }))).toBeNull();
+  });
+
+  it("parseDismissed keeps only true-valued IDs and survives garbage", () => {
+    const raw = JSON.stringify({ a: true, b: false, c: 1 });
+    expect(parseDismissed(raw)).toEqual({ a: true });
+    expect(parseDismissed("{oops")).toEqual({});
+    expect(parseDismissed(null)).toEqual({});
   });
 });
 

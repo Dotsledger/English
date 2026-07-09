@@ -207,6 +207,21 @@ export function orderUnsavedFirst(phrases: Phrase[], isSaved: (id: string) => bo
   return [...unsaved, ...saved];
 }
 
+/**
+ * A `size`-length window into `list` at page `batchIndex`, wrapping around when
+ * it runs off the end so a "Show more" control cycles through the ranking
+ * instead of dead-ending. Deterministic; empty for an empty list; never longer
+ * than the list itself.
+ */
+export function batchOf<T>(list: T[], batchIndex: number, size: number): T[] {
+  if (list.length === 0 || size <= 0) return [];
+  const start = ((batchIndex * size) % list.length + list.length) % list.length;
+  const take = Math.min(size, list.length);
+  const out: T[] = [];
+  for (let i = 0; i < take; i++) out.push(list[(start + i) % list.length]);
+  return out;
+}
+
 /** Sorts a copy by category priority, then usefulness (highest first). Handy
  * for an Explore feed that should surface high-leverage patterns first. */
 export function rankForExplore(phrases: Phrase[]): Phrase[] {

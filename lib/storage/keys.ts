@@ -7,6 +7,9 @@ export const KEY_META = "sticky-english.meta.v2";
 export const KEY_TRIAGE = "sticky-english.triage.v3";
 export const KEY_SENTENCES = "sticky-english.sentences.v3";
 export const KEY_LEVEL = "sticky-english.level.v3";
+/** Pattern suggestions the user skipped ("not for now") — a UI-only preference,
+ * never part of the learning deck or memory scheduling. */
+export const KEY_DISMISSED = "sticky-english.dismissed.v1";
 
 export const ALL_KEYS = [
   KEY_DECK,
@@ -18,4 +21,5 @@ export const ALL_KEYS = [
   KEY_TRIAGE,
   KEY_SENTENCES,
   KEY_LEVEL,
+  KEY_DISMISSED,
 ] as const;

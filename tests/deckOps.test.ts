@@ -6,6 +6,7 @@ import {
   recordMasteryResult,
   recordPeek,
   recordReviewResult,
+  removeFromDeck,
   saveToDeck,
   suppressPhrase,
 } from "@/lib/deckOps";
@@ -22,6 +23,22 @@ describe("deck operations", () => {
     expect(deck.p.inDeck).toBe(false);
     deck = markSeen(deck, "p", NOW + 1);
     expect(deck.p.timesSeen).toBe(2);
+  });
+
+  it("removeFromDeck drops the phrase from the queue but preserves its history", () => {
+    const deck = saveToDeck(markSeen({}, "p", NOW), "p", NOW);
+    const advanced = recordReviewResult(deck, "p", { correct: true, produced: false }, NOW);
+    const before = advanced.p;
+    const removed = removeFromDeck(advanced, "p");
+    expect(removed.p.inDeck).toBe(false);
+    expect(removed.p.nextReviewAt).toBeNull();
+    // History untouched — stage, box, counts, timesSeen all preserved.
+    expect(removed.p.stage).toBe(before.stage);
+    expect(removed.p.box).toBe(before.box);
+    expect(removed.p.correctCount).toBe(before.correctCount);
+    expect(removed.p.timesSeen).toBe(before.timesSeen);
+    // No-op when the phrase isn't in the deck.
+    expect(removeFromDeck({}, "missing")).toEqual({});
   });
 
   it("saveToDeck queues the phrase at its box interval and is idempotent", () => {

@@ -116,6 +116,17 @@ export function parseCaptures(raw: string | null): CaptureStore {
   return store;
 }
 
+/** Skipped-suggestion IDs. Any non-string key / non-true value is dropped. */
+export function parseDismissed(raw: string | null): Record<string, true> {
+  const parsed = safeParse(raw);
+  if (!parsed) return {};
+  const store: Record<string, true> = {};
+  for (const [key, value] of Object.entries(parsed)) {
+    if (value === true) store[key] = true;
+  }
+  return store;
+}
+
 export function parseActivity(raw: string | null): ActivityStore {
   const parsed = safeParse(raw);
   if (!parsed) return {};

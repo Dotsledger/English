@@ -9,6 +9,7 @@ import {
   getWhyThisMatters,
   orderTrapsFirst,
   orderUnsavedFirst,
+  batchOf,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
@@ -62,6 +63,27 @@ describe("orderUnsavedFirst", () => {
     const after = orderUnsavedFirst(ranked, (id) => id === "a").map((p) => p.id);
     expect(before).toEqual(["a", "b", "c"]);
     expect(after).toEqual(["b", "c", "a"]);
+  });
+});
+
+describe("batchOf", () => {
+  const list = Array.from({ length: 20 }, (_, i) => i);
+
+  it("returns sequential pages that differ between batches", () => {
+    expect(batchOf(list, 0, 8)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+    expect(batchOf(list, 1, 8)).toEqual([8, 9, 10, 11, 12, 13, 14, 15]);
+    // Batch 1 shows a different set than batch 0 ("Show more" rotates).
+    expect(batchOf(list, 1, 8)).not.toEqual(batchOf(list, 0, 8));
+  });
+
+  it("wraps around so paging never dead-ends", () => {
+    // start = (2*8)%20 = 16 → 16,17,18,19, then wrap to 0,1,2,3
+    expect(batchOf(list, 2, 8)).toEqual([16, 17, 18, 19, 0, 1, 2, 3]);
+  });
+
+  it("is safe for empty lists and never exceeds the list length", () => {
+    expect(batchOf([], 3, 8)).toEqual([]);
+    expect(batchOf([1, 2, 3], 0, 8)).toEqual([1, 2, 3]);
   });
 });
 

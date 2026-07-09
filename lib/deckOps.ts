@@ -71,6 +71,19 @@ export function saveToDeck(
   };
 }
 
+/**
+ * Undo an "Add": take the phrase out of the active review queue without
+ * destroying its history. Only `inDeck`/`nextReviewAt` change — stage, box,
+ * counts and timestamps are preserved, so re-adding later resumes where it
+ * left off and nothing in the memory record is corrupted. No-op if the phrase
+ * isn't in the deck.
+ */
+export function removeFromDeck(deck: DeckStore, phraseId: string): DeckStore {
+  const entry = deck[phraseId];
+  if (!entry || !entry.inDeck) return deck;
+  return { ...deck, [phraseId]: { ...entry, inDeck: false, nextReviewAt: null } };
+}
+
 /** "Ya la domino" — out of feeds, out of the queue. Wins over deck entry. */
 export function suppressPhrase(deck: DeckStore, phraseId: string, now: number): DeckStore {
   const entry = entryOf(deck, phraseId);

@@ -4,16 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import type { Phrase } from "@/lib/types";
 import { phrases } from "@/lib/data/phrases";
 import {
+  batchOf,
   diversifyTop,
   filterPhrasesForExplore,
   getExploreChipLabel,
   getWhyThisMatters,
   orderTrapsFirst,
-  orderUnsavedFirst,
   rankForExplore,
   type ExploreFilter,
 } from "@/lib/vocabStrategy";
-import { useDeck } from "@/components/AppStateProvider";
+import { useDeck, useDismissedPatterns } from "@/components/AppStateProvider";
 import { saveToDeck } from "@/lib/deckOps";
 import { addedOnCount } from "@/lib/notebook";
 import { localIsoDate } from "@/lib/dates";
@@ -44,7 +44,9 @@ const SHOWN = 8;
  */
 export function PatternExplorer() {
   const deck = useDeck();
+  const dismissed = useDismissedPatterns();
   const [filter, setFilter] = useState<ExploreFilter>("all");
+  const [batchIndex, setBatchIndex] = useState(0);
   // Read the clock only after mount so the "added today" count is hydration-safe.
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
@@ -52,20 +54,27 @@ export function PatternExplorer() {
     setNow(Date.now());
   }, []);
 
-  // The visible set is computed once per filter (and once when saved state
-  // first loads) — NOT on every save. So tapping "Add" leaves the card in
-  // place showing "Added" (clear feedback), while each fresh visit or filter
-  // switch re-floats not-yet-added phrases to the top: you get new suggestions
-  // over time instead of staring at the same saved 8 forever. `deck.ready` in
-  // the deps recomputes once persisted saves have loaded.
-  const shown = useMemo(() => {
-    const isSaved = (id: string) => deck.value[id]?.inDeck === true;
+  // The candidate pool: ranked useful patterns for this filter, minus the ones
+  // the user already added (they're in practice — no action left) and minus the
+  // ones they skipped ("not for now"). Recomputed only when the filter or those
+  // sets change — NOT on every keystroke of deck.value — so tapping "Add" keeps
+  // the just-added card in place showing "✓ Added" until the next batch. `Skip`
+  // updates `dismissed`, which IS a dep, so a skipped card drops immediately.
+  const pool = useMemo(() => {
+    const skipped = dismissed.value;
+    const isAdded = (id: string) => deck.value[id]?.inDeck === true;
     let ranked = rankForExplore(filterPhrasesForExplore(STRATEGY_PHRASES, filter));
     if (filter === "spanish_speaker_traps") ranked = orderTrapsFirst(ranked);
-    ranked = orderUnsavedFirst(ranked, isSaved);
-    return filter === "all" ? diversifyTop(ranked, SHOWN, 2) : ranked.slice(0, SHOWN);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally NOT keyed on deck.value so saving doesn't reshuffle mid-view
-  }, [filter, deck.ready]);
+    ranked = ranked.filter((p) => !skipped[p.id] && !isAdded(p.id));
+    // "All" spreads categories so one bucket can't dominate; the full list is
+    // reordered (not capped) so "Show more" can page through everything.
+    return filter === "all" ? diversifyTop(ranked, ranked.length, 2) : ranked;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- deck.value read intentionally omitted so an Add doesn't reshuffle the current batch
+  }, [filter, dismissed.value, dismissed.ready, deck.ready]);
+
+  const shown = useMemo(() => batchOf(pool, batchIndex, SHOWN), [pool, batchIndex]);
+  const hasMore = pool.length > SHOWN;
+  const skippedCount = Object.keys(dismissed.value).length;
 
   const addedToday = now !== null && deck.ready ? addedOnCount(deck.value, localIsoDate(new Date(now))) : null;
   const stateLine =
@@ -73,12 +82,23 @@ export function PatternExplorer() {
       ? "Recommended: add 1–2 a day."
       : `${addedToday}/${ADD_PER_DAY} added today${addedToday >= ADD_PER_DAY ? " — nice, that's plenty" : ""}`;
 
+  const selectFilter = (id: ExploreFilter) => {
+    setFilter(id);
+    setBatchIndex(0);
+  };
+  const skipPhrase = (id: string) =>
+    dismissed.update((prev) => ({ ...prev, [id]: true as const }));
+  const resetSkipped = () => {
+    dismissed.update(() => ({}));
+    setBatchIndex(0);
+  };
+
   return (
     <section data-testid="pattern-explorer" className="mb-6">
       <div className="mb-2 px-1">
         <h2 className="text-lg font-bold text-white">Add patterns to learn</h2>
         <p className="mt-0.5 text-xs text-white/60">
-          Pick 1–2 phrases. They&rsquo;ll appear in future practice.
+          Pick 1–2 phrases to add. Skip the ones you don&rsquo;t want.
         </p>
         <p data-testid="add-state-line" className="mt-0.5 text-xs text-white/45">
           {stateLine}
@@ -96,7 +116,7 @@ export function PatternExplorer() {
             <button
               key={f.id}
               type="button"
-              onClick={() => setFilter(f.id)}
+              onClick={() => selectFilter(f.id)}
               aria-pressed={active}
               aria-label={f.long}
               title={f.long}
@@ -114,21 +134,63 @@ export function PatternExplorer() {
       </div>
 
       {shown.length === 0 ? (
-        <p data-testid="pattern-empty" className="px-1 text-sm text-white/50">
-          No phrases in this category yet.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {shown.map((phrase) => (
-            <PatternCard
-              key={phrase.id}
-              phrase={phrase}
-              chipLabel={getExploreChipLabel(phrase, filter)}
-              saved={deck.value[phrase.id]?.inDeck === true}
-              onSave={() => deck.update((prev) => saveToDeck(prev, phrase.id, Date.now()))}
-            />
-          ))}
+        <div data-testid="pattern-empty" className="rounded-2xl bg-white/[0.05] px-4 py-5 text-center">
+          <p className="text-sm text-white/70">
+            {skippedCount > 0
+              ? "You've gone through the suggestions here."
+              : "No phrases in this category yet."}
+          </p>
+          {skippedCount > 0 && (
+            <button
+              type="button"
+              data-testid="reset-skipped"
+              onClick={resetSkipped}
+              className="mt-2 text-xs font-medium text-sky-300 underline-offset-4 active:underline"
+            >
+              Show skipped again ({skippedCount})
+            </button>
+          )}
         </div>
+      ) : (
+        <>
+          <div className="flex flex-col gap-2">
+            {shown.map((phrase) => (
+              <PatternCard
+                key={phrase.id}
+                phrase={phrase}
+                chipLabel={getExploreChipLabel(phrase, filter)}
+                saved={deck.value[phrase.id]?.inDeck === true}
+                onSave={() => deck.update((prev) => saveToDeck(prev, phrase.id, Date.now()))}
+                onSkip={() => skipPhrase(phrase.id)}
+              />
+            ))}
+          </div>
+
+          <div className="mt-3 flex items-center justify-between px-1">
+            {hasMore ? (
+              <button
+                type="button"
+                data-testid="show-more-patterns"
+                onClick={() => setBatchIndex((i) => i + 1)}
+                className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-xs font-medium text-white/80 active:scale-95"
+              >
+                Show more
+              </button>
+            ) : (
+              <span />
+            )}
+            {skippedCount > 0 && (
+              <button
+                type="button"
+                data-testid="reset-skipped"
+                onClick={resetSkipped}
+                className="text-xs text-white/40 underline-offset-4 active:underline"
+              >
+                Reset skipped ({skippedCount})
+              </button>
+            )}
+          </div>
+        </>
       )}
     </section>
   );
@@ -139,11 +201,13 @@ function PatternCard({
   chipLabel,
   saved,
   onSave,
+  onSkip,
 }: {
   phrase: Phrase;
   chipLabel: string;
   saved: boolean;
   onSave: () => void;
+  onSkip: () => void;
 }) {
   const why = getWhyThisMatters(phrase);
   return (
@@ -157,25 +221,41 @@ function PatternCard({
             {chipLabel}
           </span>
         )}
-        <button
-          type="button"
-          data-testid={`pattern-save-${phrase.id}`}
-          onClick={onSave}
-          aria-pressed={saved}
-          aria-label={saved ? "Added to practice" : "Add to practice"}
-          title={
-            saved
-              ? "Added — this phrase will show up in your practice"
-              : "Add — this phrase will show up in future practice"
-          }
-          className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors active:scale-95 ${
-            saved
-              ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
-              : "border-white/20 bg-white/[0.06] text-white/80"
-          }`}
-        >
-          {saved ? "✓ Added" : "Add"}
-        </button>
+        <div className="flex shrink-0 items-center gap-1.5">
+          {/* Skip = "not for now": hides the suggestion only. It never adds the
+              phrase, never schedules it, never counts as a learning attempt. */}
+          {!saved && (
+            <button
+              type="button"
+              data-testid={`pattern-skip-${phrase.id}`}
+              onClick={onSkip}
+              aria-label="Skip this phrase for now"
+              title="Not for now — hide this suggestion (doesn't add or schedule it)"
+              className="rounded-full px-2 py-1 text-xs font-medium text-white/45 active:scale-95"
+            >
+              Skip
+            </button>
+          )}
+          <button
+            type="button"
+            data-testid={`pattern-save-${phrase.id}`}
+            onClick={onSave}
+            aria-pressed={saved}
+            aria-label={saved ? "Added to practice" : "Add to practice"}
+            title={
+              saved
+                ? "Added — this phrase will show up in your practice"
+                : "Add — this phrase will show up in future practice"
+            }
+            className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors active:scale-95 ${
+              saved
+                ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
+                : "border-white/20 bg-white/[0.06] text-white/80"
+            }`}
+          >
+            {saved ? "✓ Added" : "Add"}
+          </button>
+        </div>
       </div>
       <p className="mt-1.5 text-lg font-bold text-amber-300">{phrase.text}</p>
       <p className="text-sm text-white/70">{phrase.meaningEs}</p>
