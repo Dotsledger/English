@@ -112,7 +112,7 @@ export function TopicGrid() {
   const previewsByTopic = dedupePreviews(shown);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-lg flex-col px-4 pb-10 pt-[max(1.5rem,env(safe-area-inset-top))]">
+    <main className="mx-auto flex min-h-dvh max-w-xl flex-col px-4 pb-10 pt-[max(1.5rem,env(safe-area-inset-top))]">
       <header className="mb-4 px-1">
         <div className="flex items-center justify-between">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/35">
@@ -138,7 +138,7 @@ export function TopicGrid() {
           </div>
         </div>
         <p className="mt-1 text-sm text-white/60">A little English, whenever you like.</p>
-        <p className="mt-2 text-xs text-white/45">
+        <p className="mt-2 text-xs text-white/60">
           Recommended: practice first, then add 1–2 patterns.
         </p>
       </header>
@@ -195,7 +195,7 @@ export function TopicGrid() {
       <div className="mb-3 mt-2 flex items-start justify-between px-1">
         <div>
           <h2 className="text-lg font-bold text-white">Explore topics</h2>
-          <p className="mt-0.5 text-xs text-white/55">
+          <p className="mt-0.5 text-xs text-white/65">
             Optional: discover phrases through short topic cards.
           </p>
         </div>

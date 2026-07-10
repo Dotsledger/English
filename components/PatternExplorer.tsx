@@ -118,7 +118,7 @@ export function PatternExplorer() {
         <p className="mt-1 text-sm text-white/65">
           Pick 1–2 phrases to add. Skip the ones you don&rsquo;t want.
         </p>
-        <p data-testid="add-state-line" className="mt-0.5 text-xs text-white/45">
+        <p data-testid="add-state-line" className="mt-0.5 text-xs text-white/55">
           {stateLine}
         </p>
       </div>
@@ -203,7 +203,7 @@ export function PatternExplorer() {
                 type="button"
                 data-testid="reset-skipped"
                 onClick={resetSkipped}
-                className="text-xs text-white/45 underline-offset-4 active:underline"
+                className="text-xs text-white/55 underline-offset-4 active:underline"
               >
                 Reset skipped ({skippedCount})
               </button>
@@ -296,7 +296,7 @@ function PatternCard({
       </div>
       <p className="relative mt-2.5 text-xl font-bold text-amber-300">{phrase.text}</p>
       <p className="relative text-sm text-white/80">{phrase.meaningEs}</p>
-      {why && <p className="relative mt-1.5 text-xs text-white/55">{why}</p>}
+      {why && <p className="relative mt-1.5 text-xs text-white/65">{why}</p>}
     </div>
   );
 }

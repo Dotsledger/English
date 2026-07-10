@@ -26,7 +26,7 @@ export function Notebook() {
   const total = groups.reduce((n, g) => n + g.items.length, 0);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-lg flex-col gap-4 px-4 pb-10 pt-[max(1.5rem,env(safe-area-inset-top))]">
+    <main className="mx-auto flex min-h-dvh max-w-xl flex-col gap-4 px-4 pb-10 pt-[max(1.5rem,env(safe-area-inset-top))]">
       <header className="flex items-center gap-2">
         <Link
           href="/"
@@ -38,7 +38,7 @@ export function Notebook() {
         <h1 className="text-2xl font-bold text-white">My phrases</h1>
       </header>
 
-      <p className="px-1 text-xs text-white/50">
+      <p className="px-1 text-xs text-white/60">
         Today&rsquo;s Practice decides when to review these. This list is just your notebook.
       </p>
 
@@ -47,7 +47,7 @@ export function Notebook() {
       ) : total === 0 ? (
         <div data-testid="notebook-empty" className="soft-card px-4 py-8 text-center">
           <p className="text-sm text-white/70">No phrases yet.</p>
-          <p className="mt-1 text-xs text-white/45">
+          <p className="mt-1 text-xs text-white/55">
             Add a few from &ldquo;Add patterns to learn&rdquo;, then practise them here in Today&rsquo;s
             Practice.
           </p>
@@ -119,7 +119,7 @@ function NotebookRow({ item, onRemove }: { item: NotebookItem; onRemove: () => v
             onClick={onRemove}
             aria-label={`Remove ${phrase.text} from practice`}
             title="Remove from practice (keeps your progress; you can add it again)"
-            className="shrink-0 text-xs text-white/40 underline-offset-4 active:underline"
+            className="shrink-0 text-xs text-white/55 underline-offset-4 active:underline"
           >
             Remove
           </button>

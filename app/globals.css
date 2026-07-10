@@ -42,14 +42,16 @@ body {
 body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* A visible coloured atmosphere: lavender top-left, blue top-right, a warm
-     amber glow low-right, over a plum→indigo vertical base. Fixed so it never
-     scrolls. Kept readable — the darkest region sits behind the content column. */
-  background:
-    radial-gradient(115% 80% at 6% -8%, rgba(176, 138, 255, 0.28), transparent 52%),
-    radial-gradient(100% 70% at 102% 2%, rgba(96, 156, 255, 0.2), transparent 46%),
-    radial-gradient(120% 90% at 92% 108%, rgba(255, 178, 92, 0.16), transparent 56%),
-    linear-gradient(178deg, #16102a 0%, #120d20 44%, #0d0a16 100%);
+  /* A soft, continuous coloured atmosphere — big overlapping radial glows that
+     fade out late (no dead mid-zone, so no horizontal band) over a flat plum
+     base. Large px radii + no linear-gradient stops keep it seamless. Fixed so
+     it reads as ambient light rather than scrolling texture. */
+  background-color: #120d20;
+  background-image:
+    radial-gradient(1300px 1150px at 6% -12%, rgba(176, 138, 255, 0.24), transparent 78%),
+    radial-gradient(1150px 1000px at 104% 4%, rgba(96, 156, 255, 0.16), transparent 80%),
+    radial-gradient(1250px 1150px at 92% 116%, rgba(255, 178, 92, 0.14), transparent 82%);
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
