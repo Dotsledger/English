@@ -36,37 +36,61 @@ export function SnackHero() {
   }
 
   return (
-    <div className="mb-3">
+    <div className="mb-5">
       <Link
         href="/snack"
         data-testid="daily-snack"
-        className="relative flex items-center justify-between gap-4 overflow-hidden rounded-[1.85rem] px-6 py-7 transition-transform active:scale-[0.99]"
+        className="relative block overflow-hidden rounded-[2rem] px-6 pb-6 pt-7 transition-transform active:scale-[0.99]"
         style={{
-          background: "linear-gradient(135deg, #fbf7ff 0%, #f1eaff 55%, #e7edff 100%)",
+          background:
+            "linear-gradient(150deg, #fdfaff 0%, #efe7ff 46%, #e4ecff 78%, #ffe9d6 130%)",
           boxShadow:
-            "0 22px 50px -20px rgba(120, 90, 220, 0.55), inset 0 1px 0 rgba(255,255,255,0.7)",
+            "0 30px 60px -22px rgba(120, 90, 220, 0.7), 0 6px 16px -8px rgba(120,90,220,0.35), inset 0 1px 0 rgba(255,255,255,0.85)",
         }}
       >
-        {/* Soft glow accent — decorative, behind the text, never over it. */}
+        {/* Layered soft glows — decorative depth, always behind the text. */}
         <span
           aria-hidden
-          className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(150,120,255,0.4), transparent 70%)" }}
+          className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(160,120,255,0.5), transparent 68%)" }}
         />
-        <div className="relative flex flex-col gap-1">
-          <span className="flex items-center gap-2 text-2xl font-extrabold leading-none text-[#1c1526]">
-            <span aria-hidden>✦</span> Today&rsquo;s Practice
-          </span>
-          <span className="text-sm font-medium text-[#4a3f63]">{subtitle}</span>
-        </div>
         <span
-          className="relative shrink-0 rounded-full bg-[#1c1526] px-6 py-3 text-sm font-bold text-white"
-          style={{ boxShadow: "0 8px 18px -8px rgba(28,21,38,0.8)" }}
+          aria-hidden
+          className="pointer-events-none absolute -bottom-16 -left-8 h-40 w-40 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(255,180,120,0.32), transparent 70%)" }}
+        />
+
+        <div className="relative flex items-center gap-3">
+          <span
+            aria-hidden
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl text-white"
+            style={{
+              background: "linear-gradient(140deg, #8b6cf0, #6d8bff)",
+              boxShadow: "0 10px 20px -8px rgba(120,90,220,0.75)",
+            }}
+          >
+            ✦
+          </span>
+          <div className="flex flex-col">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a6a9e]">
+              Daily ritual
+            </span>
+            <span className="text-[1.7rem] font-extrabold leading-tight text-[#1c1526]">
+              Today&rsquo;s Practice
+            </span>
+          </div>
+        </div>
+
+        <p className="relative mt-2 text-sm font-medium text-[#4a3f63]">{subtitle}</p>
+
+        <span
+          className="relative mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1c1526] px-6 py-4 text-base font-bold text-white"
+          style={{ boxShadow: "0 12px 24px -10px rgba(28,21,38,0.85), inset 0 1px 0 rgba(255,255,255,0.12)" }}
         >
-          Start
+          Start practice <span aria-hidden>→</span>
         </span>
       </Link>
-      <p className="mt-2 px-1.5 text-xs text-white/60">
+      <p className="mt-2.5 px-1.5 text-xs text-white/65">
         Start here — this reviews what&rsquo;s due today.
       </p>
     </div>

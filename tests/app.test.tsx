@@ -124,7 +124,7 @@ describe("home / topic grid", () => {
     expect(screen.getByText("Add patterns to learn")).toBeDefined(); // was "Useful patterns"
     expect(screen.getByText("Explore topics")).toBeDefined(); // was "Explore"
     // Today's Practice is the primary action with a clear CTA.
-    expect(screen.getByText("Start")).toBeDefined();
+    expect(screen.getByText(/Start practice/)).toBeDefined();
     // Short filter labels render with accessible long names.
     expect(screen.getByText("Phrasals")).toBeDefined();
     expect(screen.getByText("Frames")).toBeDefined();
@@ -132,7 +132,7 @@ describe("home / topic grid", () => {
     // Pattern cards use clear Add labeling.
     const add = document.querySelector('[data-testid^="pattern-save-"]');
     expect(add?.getAttribute("aria-label")).toBe("Add to practice");
-    expect(add?.textContent).toBe("Add");
+    expect(add?.textContent).toBe("+ Add");
   });
 
   it("explains what Add patterns and Explore are for (product clarity)", () => {

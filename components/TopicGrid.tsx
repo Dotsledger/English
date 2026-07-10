@@ -155,24 +155,37 @@ export function TopicGrid() {
       <Link
         href="/notebook"
         data-testid="notebook-link"
-        className="soft-card mb-4 flex items-center justify-between gap-3 px-4 py-3.5 transition-transform active:scale-[0.99]"
+        className="relative mb-5 flex items-center justify-between gap-3 overflow-hidden rounded-[1.5rem] px-4 py-4 transition-transform active:scale-[0.99]"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(176,138,255,0.22), rgba(127,194,255,0.12) 70%, rgba(255,178,92,0.12))",
+          border: "1px solid rgba(176,138,255,0.28)",
+          boxShadow: "var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.08)",
+        }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3.5">
           <span
             aria-hidden
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base"
-            style={{ background: "rgba(182,168,255,0.16)", color: "var(--accent-lavender)" }}
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
+            style={{
+              background: "linear-gradient(140deg, rgba(176,138,255,0.85), rgba(127,194,255,0.7))",
+              boxShadow: "0 8px 18px -8px rgba(120,90,220,0.7)",
+            }}
           >
             📓
           </span>
           <div>
-            <p className="text-sm font-semibold text-white">My phrases</p>
-            <p className="mt-0.5 text-xs text-white/60">
-              See what you&rsquo;ve saved and what&rsquo;s coming back.
+            <p className="text-base font-bold text-white">My phrases</p>
+            <p className="mt-0.5 text-xs text-white/70">
+              Your notebook — everything you&rsquo;ve learned &amp; what&rsquo;s coming back.
             </p>
           </div>
         </div>
-        <span aria-hidden className="shrink-0 text-white/40">
+        <span
+          aria-hidden
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base text-white"
+          style={{ background: "rgba(255,255,255,0.14)" }}
+        >
           →
         </span>
       </Link>

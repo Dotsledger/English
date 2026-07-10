@@ -50,7 +50,9 @@ const FILTERS: { id: ExploreFilter; label: string; long: string }[] = [
   { id: "spanish_speaker_traps", label: "Traps", long: "Spanish-speaker traps" },
 ];
 
-const SHOWN = 8;
+// Curated batch — a short, digestible set (with "Show more") reads as
+// suggestions, not a database list.
+const SHOWN = 4;
 
 /**
  * Explore = discovery. A ranked, filterable strip of high-value reusable
@@ -111,9 +113,9 @@ export function PatternExplorer() {
 
   return (
     <section data-testid="pattern-explorer" className="mb-6">
-      <div className="mb-2 px-1">
-        <h2 className="text-lg font-bold text-white">Add patterns to learn</h2>
-        <p className="mt-0.5 text-xs text-white/60">
+      <div className="mb-3 px-1">
+        <h2 className="text-xl font-extrabold text-white">Add patterns to learn</h2>
+        <p className="mt-1 text-sm text-white/65">
           Pick 1–2 phrases to add. Skip the ones you don&rsquo;t want.
         </p>
         <p data-testid="add-state-line" className="mt-0.5 text-xs text-white/45">
@@ -137,11 +139,12 @@ export function PatternExplorer() {
               aria-label={f.long}
               title={f.long}
               data-testid={`explore-filter-${f.id}`}
-              className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                 active
-                  ? "border-sky-400/60 bg-sky-500/20 text-sky-200"
-                  : "border-white/12 bg-white/[0.04] text-white/55"
+                  ? "border-transparent text-[#1c1526]"
+                  : "border-white/15 bg-white/[0.06] text-white/70"
               }`}
+              style={active ? { background: "var(--accent-lavender)" } : undefined}
             >
               {f.label}
             </button>
@@ -169,7 +172,7 @@ export function PatternExplorer() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-3.5">
             {shown.map((phrase) => (
               <PatternCard
                 key={phrase.id}
@@ -188,7 +191,7 @@ export function PatternExplorer() {
                 type="button"
                 data-testid="show-more-patterns"
                 onClick={() => setBatchIndex((i) => i + 1)}
-                className="btn-soft px-4 py-2 text-xs"
+                className="btn-soft px-5 py-2.5 text-sm"
               >
                 Show more ↓
               </button>
@@ -230,21 +233,29 @@ function PatternCard({
   return (
     <div
       data-testid={`pattern-card-${phrase.id}`}
-      className="soft-card relative overflow-hidden px-4 py-3.5"
+      className="soft-card relative overflow-hidden py-4 pl-5 pr-4"
+      style={{ boxShadow: "var(--shadow-lift), inset 0 1px 0 rgba(255,255,255,0.06)" }}
     >
-      {/* Thin category accent bar on the left edge — subtle identity, not a fill. */}
-      <span aria-hidden className="absolute inset-y-0 left-0 w-[3px]" style={{ background: accent }} />
-      <div className="flex items-start justify-between gap-2">
+      {/* Category accent: a soft tinted glow bleeding in from the left edge —
+          noticeable identity without tinting the whole card or hurting text. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 w-24"
+        style={{ background: `linear-gradient(90deg, ${accent}2e, transparent)` }}
+      />
+      <span aria-hidden className="absolute inset-y-3 left-0 w-1 rounded-full" style={{ background: accent }} />
+
+      <div className="relative flex items-center justify-between gap-2">
         {chipLabel && (
           <span
-            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-            style={{ background: "var(--surface-2)", color: "rgba(255,255,255,0.72)" }}
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide"
+            style={{ background: `${accent}22`, color: accent }}
           >
             <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
             {chipLabel}
           </span>
         )}
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-2">
           {/* Skip = "not for now": hides the suggestion only. It never adds the
               phrase, never schedules it, never counts as a learning attempt. */}
           {!saved && (
@@ -254,7 +265,7 @@ function PatternCard({
               onClick={onSkip}
               aria-label="Skip this phrase for now"
               title="Not for now — hide this suggestion (doesn't add or schedule it)"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-white/50 active:scale-95"
+              className="rounded-full border border-white/12 px-4 py-2 text-xs font-semibold text-white/55 active:scale-95"
             >
               Skip
             </button>
@@ -270,19 +281,22 @@ function PatternCard({
                 ? "Added — this phrase will show up in your practice"
                 : "Add — this phrase will show up in future practice"
             }
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-bold transition-colors active:scale-95 ${
-              saved
-                ? "border-emerald-400/40 bg-emerald-400/15 text-emerald-200"
-                : "border-transparent bg-[#faf7ff] text-[#1c1526]"
+            className={`rounded-full px-5 py-2 text-sm font-bold transition-colors active:scale-95 ${
+              saved ? "text-emerald-200" : "text-[#1c1526]"
             }`}
+            style={
+              saved
+                ? { background: "rgba(127,227,196,0.18)", border: "1px solid rgba(127,227,196,0.4)" }
+                : { background: "#faf7ff", boxShadow: "0 6px 14px -8px rgba(0,0,0,0.7)" }
+            }
           >
-            {saved ? "✓ Added" : "Add"}
+            {saved ? "✓ Added" : "+ Add"}
           </button>
         </div>
       </div>
-      <p className="mt-2 text-lg font-bold text-amber-300">{phrase.text}</p>
-      <p className="text-sm text-white/75">{phrase.meaningEs}</p>
-      {why && <p className="mt-1 text-xs text-white/55">{why}</p>}
+      <p className="relative mt-2.5 text-xl font-bold text-amber-300">{phrase.text}</p>
+      <p className="relative text-sm text-white/80">{phrase.meaningEs}</p>
+      {why && <p className="relative mt-1.5 text-xs text-white/55">{why}</p>}
     </div>
   );
 }

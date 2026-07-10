@@ -6,16 +6,17 @@
 }
 
 :root {
-  /* Warm near-black plum-navy — friendlier than pure black, still calm. */
-  --background: #0e0b15;
+  /* Deep plum-indigo base — a coloured atmosphere, not flat black. */
+  --background: #120d20;
   --foreground: #f5f3f7;
 
-  /* Elevated surfaces (translucent, warm). */
-  --surface-1: rgba(255, 255, 255, 0.055);
-  --surface-2: rgba(255, 255, 255, 0.09);
-  --surface-glass: rgba(255, 255, 255, 0.06);
-  --border-soft: rgba(255, 255, 255, 0.09);
-  --border-hair: rgba(255, 255, 255, 0.06);
+  /* Elevated surfaces (translucent, warm) — a touch lighter so cards read as
+     real cards against the coloured background, not flat rows. */
+  --surface-1: rgba(255, 255, 255, 0.07);
+  --surface-2: rgba(255, 255, 255, 0.12);
+  --surface-glass: rgba(255, 255, 255, 0.07);
+  --border-soft: rgba(255, 255, 255, 0.12);
+  --border-hair: rgba(255, 255, 255, 0.07);
 
   /* Supportive accents — used sparingly (chips, dots, feedback). */
   --accent-amber: #fbbf24;
@@ -41,11 +42,14 @@ body {
 body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* Warm depth: two low-alpha glows over the base, fixed so it never scrolls. */
+  /* A visible coloured atmosphere: lavender top-left, blue top-right, a warm
+     amber glow low-right, over a plum→indigo vertical base. Fixed so it never
+     scrolls. Kept readable — the darkest region sits behind the content column. */
   background:
-    radial-gradient(120% 90% at 12% -5%, rgba(150, 120, 255, 0.14), transparent 55%),
-    radial-gradient(110% 80% at 95% 8%, rgba(90, 160, 255, 0.1), transparent 50%),
-    var(--background);
+    radial-gradient(115% 80% at 6% -8%, rgba(176, 138, 255, 0.28), transparent 52%),
+    radial-gradient(100% 70% at 102% 2%, rgba(96, 156, 255, 0.2), transparent 46%),
+    radial-gradient(120% 90% at 92% 108%, rgba(255, 178, 92, 0.16), transparent 56%),
+    linear-gradient(178deg, #16102a 0%, #120d20 44%, #0d0a16 100%);
   background-attachment: fixed;
 }
 
