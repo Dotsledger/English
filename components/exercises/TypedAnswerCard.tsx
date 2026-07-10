@@ -77,12 +77,12 @@ export function TypedAnswerCard({
             autoCapitalize="none"
             spellCheck={false}
             data-testid="typed-input"
-            className="min-h-14 rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-4 text-lg text-white placeholder:text-white/30 focus:border-sky-400/60 focus:outline-none"
+            className="min-h-14 rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-4 text-lg text-white placeholder:text-white/35 focus:border-[color:var(--accent-blue)] focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-[rgba(127,194,255,0.25)]"
           />
           <button
             type="submit"
             data-testid="typed-submit"
-            className="min-h-12 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98] disabled:opacity-40"
+            className="btn-primary min-h-12 px-5 py-3 text-base disabled:opacity-40"
             disabled={input.trim().length === 0}
           >
             Check
@@ -91,7 +91,7 @@ export function TypedAnswerCard({
       )}
 
       {answered && (
-        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop soft-panel relative flex flex-col gap-1 px-4 py-3">
           {(result?.verdict === "correct" ||
             result?.verdict === "near" ||
             (result === null && previousCorrect === true)) && <SparkBurst />}

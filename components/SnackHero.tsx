@@ -36,21 +36,37 @@ export function SnackHero() {
   }
 
   return (
-    <div className="mb-2">
+    <div className="mb-3">
       <Link
         href="/snack"
         data-testid="daily-snack"
-        className="flex items-center justify-between gap-4 rounded-3xl bg-white px-6 py-6 active:scale-[0.99]"
+        className="relative flex items-center justify-between gap-4 overflow-hidden rounded-[1.85rem] px-6 py-7 transition-transform active:scale-[0.99]"
+        style={{
+          background: "linear-gradient(135deg, #fbf7ff 0%, #f1eaff 55%, #e7edff 100%)",
+          boxShadow:
+            "0 22px 50px -20px rgba(120, 90, 220, 0.55), inset 0 1px 0 rgba(255,255,255,0.7)",
+        }}
       >
-        <div className="flex flex-col gap-1">
-          <span className="text-2xl font-extrabold leading-none text-black">Today&rsquo;s Practice</span>
-          <span className="text-sm text-black/70">{subtitle}</span>
+        {/* Soft glow accent — decorative, behind the text, never over it. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(150,120,255,0.4), transparent 70%)" }}
+        />
+        <div className="relative flex flex-col gap-1">
+          <span className="flex items-center gap-2 text-2xl font-extrabold leading-none text-[#1c1526]">
+            <span aria-hidden>✦</span> Today&rsquo;s Practice
+          </span>
+          <span className="text-sm font-medium text-[#4a3f63]">{subtitle}</span>
         </div>
-        <span className="shrink-0 rounded-full bg-black px-5 py-2.5 text-sm font-bold text-white">
+        <span
+          className="relative shrink-0 rounded-full bg-[#1c1526] px-6 py-3 text-sm font-bold text-white"
+          style={{ boxShadow: "0 8px 18px -8px rgba(28,21,38,0.8)" }}
+        >
           Start
         </span>
       </Link>
-      <p className="mt-1.5 px-1 text-xs text-white/55">
+      <p className="mt-2 px-1.5 text-xs text-white/60">
         Start here — this reviews what&rsquo;s due today.
       </p>
     </div>

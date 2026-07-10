@@ -6,14 +6,34 @@
 }
 
 :root {
-  --background: #09090f;
-  --foreground: #f4f4f6;
+  /* Warm near-black plum-navy — friendlier than pure black, still calm. */
+  --background: #0e0b15;
+  --foreground: #f5f3f7;
+
+  /* Elevated surfaces (translucent, warm). */
+  --surface-1: rgba(255, 255, 255, 0.055);
+  --surface-2: rgba(255, 255, 255, 0.09);
+  --surface-glass: rgba(255, 255, 255, 0.06);
+  --border-soft: rgba(255, 255, 255, 0.09);
+  --border-hair: rgba(255, 255, 255, 0.06);
+
+  /* Supportive accents — used sparingly (chips, dots, feedback). */
+  --accent-amber: #fbbf24;
+  --accent-lavender: #b6a8ff;
+  --accent-blue: #7fc2ff;
+  --accent-mint: #7fe3c4;
+  --accent-coral: #ff9e8d;
+
+  /* Depth: a soft drop shadow plus a faint top highlight (clay/tactile). */
+  --shadow-soft: 0 10px 30px -14px rgba(0, 0, 0, 0.7);
+  --shadow-lift: 0 18px 44px -18px rgba(0, 0, 0, 0.75);
+  --radius-card: 1.5rem;
+  --radius-hero: 1.85rem;
 }
 
 html,
 body {
   height: 100%;
-  background: var(--background);
   color: var(--foreground);
   overscroll-behavior-y: none;
 }
@@ -21,6 +41,74 @@ body {
 body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Warm depth: two low-alpha glows over the base, fixed so it never scrolls. */
+  background:
+    radial-gradient(120% 90% at 12% -5%, rgba(150, 120, 255, 0.14), transparent 55%),
+    radial-gradient(110% 80% at 95% 8%, rgba(90, 160, 255, 0.1), transparent 50%),
+    var(--background);
+  background-attachment: fixed;
+}
+
+/* ── Reusable surface & control utilities ───────────────────────── */
+@layer components {
+  /* Tactile elevated card: soft shadow + faint top highlight. */
+  .soft-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  /* Nested/secondary panel — same warmth, no lift. */
+  .soft-panel {
+    background: var(--surface-1);
+    border: 1px solid var(--border-hair);
+    border-radius: 1.15rem;
+  }
+  /* Translucent chrome for NON-text-heavy controls only. */
+  .glass {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-soft);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  /* Small friendly chip. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 9999px;
+    background: var(--surface-2);
+    padding: 0.15rem 0.6rem;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.66);
+  }
+  /* Primary action pill — warm, tactile, high-contrast. */
+  .btn-primary {
+    border-radius: 9999px;
+    background: #faf7ff;
+    color: #171320;
+    font-weight: 700;
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: transform 120ms ease;
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  /* Secondary pill on a soft surface. */
+  .btn-soft {
+    border-radius: 9999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    transition: transform 120ms ease;
+  }
+  .btn-soft:active {
+    transform: scale(0.96);
+  }
 }
 
 /* ── Cinematic scene backgrounds (local, no image APIs) ─────────── */

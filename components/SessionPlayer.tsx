@@ -266,7 +266,7 @@ export function SessionPlayer({
   return (
     <div
       data-testid="feed"
-      className={`relative flex h-dvh flex-col overflow-hidden ${backgroundClass || "bg-[#0b0b12]"}`}
+      className={`relative flex h-dvh flex-col overflow-hidden ${backgroundClass || "bg-[#0e0b15]"}`}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >

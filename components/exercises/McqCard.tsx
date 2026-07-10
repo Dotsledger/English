@@ -66,7 +66,7 @@ export function McqCard({
               type="button"
               disabled={answered}
               onClick={() => onSelect(i, i === exercise.correctIndex)}
-              className={`min-h-14 rounded-2xl border px-5 py-4 text-left text-lg leading-snug transition-all ${style}`}
+              className={`min-h-14 rounded-2xl border px-5 py-4 text-left text-lg leading-snug shadow-[0_6px_18px_-14px_rgba(0,0,0,0.8)] transition-all ${style}`}
             >
               {option}
             </button>
@@ -75,9 +75,9 @@ export function McqCard({
       </div>
 
       {answered ? (
-        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop soft-panel relative flex flex-col gap-1 px-4 py-3">
           {wasCorrect && <SparkBurst />}
-          <p className={`text-base font-medium ${wasCorrect ? "text-emerald-300" : "text-white/80"}`}>
+          <p className={`text-base font-medium ${wasCorrect ? "text-emerald-300" : "text-white/85"}`}>
             {wasCorrect ? "That's it." : "All good — it'll be back soon."}
           </p>
           {phrase && (

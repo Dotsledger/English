@@ -155,13 +155,22 @@ export function TopicGrid() {
       <Link
         href="/notebook"
         data-testid="notebook-link"
-        className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 active:scale-[0.99]"
+        className="soft-card mb-4 flex items-center justify-between gap-3 px-4 py-3.5 transition-transform active:scale-[0.99]"
       >
-        <div>
-          <p className="text-sm font-semibold text-white">My phrases</p>
-          <p className="mt-0.5 text-xs text-white/55">
-            See what you&rsquo;ve saved and what&rsquo;s coming back.
-          </p>
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base"
+            style={{ background: "rgba(182,168,255,0.16)", color: "var(--accent-lavender)" }}
+          >
+            📓
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-white">My phrases</p>
+            <p className="mt-0.5 text-xs text-white/60">
+              See what you&rsquo;ve saved and what&rsquo;s coming back.
+            </p>
+          </div>
         </div>
         <span aria-hidden className="shrink-0 text-white/40">
           →

@@ -45,7 +45,7 @@ export function Notebook() {
       {!deck.ready || now === null ? (
         <p className="px-1 text-sm text-white/50">Loading…</p>
       ) : total === 0 ? (
-        <div data-testid="notebook-empty" className="rounded-2xl bg-white/[0.05] px-4 py-6 text-center">
+        <div data-testid="notebook-empty" className="soft-card px-4 py-8 text-center">
           <p className="text-sm text-white/70">No phrases yet.</p>
           <p className="mt-1 text-xs text-white/45">
             Add a few from &ldquo;Add patterns to learn&rdquo;, then practise them here in Today&rsquo;s
@@ -83,18 +83,19 @@ function NotebookRow({ item, onRemove }: { item: NotebookItem; onRemove: () => v
   return (
     <div
       data-testid={`notebook-phrase-${item.phraseId}`}
-      className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3"
+      className="soft-card px-4 py-3.5"
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-base font-semibold text-amber-300">{phrase.text}</p>
         {item.reviewLabel && (
           <span
             data-testid={`notebook-review-${item.phraseId}`}
-            className={`shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium ${
+            className="shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+            style={
               item.reviewState === "due"
-                ? "bg-emerald-400/15 text-emerald-300"
-                : "bg-white/10 text-white/55"
-            }`}
+                ? { background: "rgba(127,227,196,0.16)", color: "var(--accent-mint)" }
+                : { background: "var(--surface-2)", color: "rgba(255,255,255,0.6)" }
+            }
           >
             {item.reviewLabel}
           </span>

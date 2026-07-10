@@ -38,7 +38,7 @@ export function SituationCard({
           type="button"
           data-testid="situation-reveal"
           onClick={() => setRevealed(true)}
-          className="min-h-12 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98]"
+          className="btn-primary min-h-12 px-5 py-3 text-base"
         >
           Show a natural answer
         </button>

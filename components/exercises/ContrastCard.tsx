@@ -74,11 +74,11 @@ export function ContrastCard({
       </div>
 
       {answered ? (
-        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop soft-panel relative flex flex-col gap-1 px-4 py-3">
           {selectedText === phrase.text && <SparkBurst />}
           <p
             className={`text-base font-medium ${
-              selectedText === phrase.text ? "text-emerald-300" : "text-white/80"
+              selectedText === phrase.text ? "text-emerald-300" : "text-white/85"
             }`}
           >
             {selectedText === phrase.text ? "That's it." : `It's “${phrase.text}”.`}

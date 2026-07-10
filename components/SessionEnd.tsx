@@ -47,17 +47,30 @@ export function SessionEnd({
       data-testid="session-end"
       className="scene-enter flex h-full flex-col justify-center gap-6 px-6 pb-10"
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/40">{title}</p>
-      <h2 className="text-3xl font-bold leading-tight text-white">{headline}</h2>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">{title}</p>
+      <div className="flex items-center gap-3">
+        {/* Soft celebration — a calm glowing check, no confetti. */}
+        <span
+          aria-hidden
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl font-bold text-[#0e0b15]"
+          style={{
+            background: "linear-gradient(135deg, #a8f0d6, #7fe3c4)",
+            boxShadow: "0 0 26px -4px rgba(127,227,196,0.6)",
+          }}
+        >
+          ✓
+        </span>
+        <h2 className="text-3xl font-bold leading-tight text-white">{headline}</h2>
+      </div>
 
       {lines.length > 0 ? (
         <ul data-testid="recap-lines" className="flex flex-col gap-2">
           {lines.map((line) => (
             <li
               key={line}
-              className="flex items-center gap-2.5 rounded-2xl bg-white/[0.06] px-4 py-3 text-base text-white/85"
+              className="soft-panel flex items-center gap-2.5 px-4 py-3 text-base text-white/90"
             >
-              <span aria-hidden className="text-emerald-400">
+              <span aria-hidden style={{ color: "var(--accent-mint)" }}>
                 ↑
               </span>
               {line}
@@ -65,7 +78,7 @@ export function SessionEnd({
           ))}
         </ul>
       ) : (
-        <p className="text-base text-white/60">Every rep counts — see you in the next one.</p>
+        <p className="text-base text-white/65">Every rep counts — see you in the next one.</p>
       )}
 
       {recap.dueTomorrow > 0 && (
@@ -85,10 +98,10 @@ export function SessionEnd({
             {practicedShown.map((p, i) => (
               <li
                 key={`${p.text}-${i}`}
-                className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.04] px-3.5 py-2 text-sm"
+                className="soft-panel flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm"
               >
-                <span className="text-white/85">{p.text}</span>
-                <span className="shrink-0 text-xs text-white/45">{p.label}</span>
+                <span className="text-white/90">{p.text}</span>
+                <span className="shrink-0 text-xs text-white/50">{p.label}</span>
               </li>
             ))}
           </ul>
@@ -104,7 +117,7 @@ export function SessionEnd({
       <Link
         href="/notebook"
         data-testid="session-end-notebook"
-        className="text-center text-sm text-sky-300 underline-offset-4 active:underline"
+        className="text-center text-sm font-medium text-[color:var(--accent-blue)] underline-offset-4 active:underline"
       >
         See all my phrases →
       </Link>
@@ -113,7 +126,7 @@ export function SessionEnd({
         type="button"
         data-testid="another-round"
         onClick={onAnotherRound}
-        className="rounded-2xl bg-white px-6 py-4 text-center text-base font-semibold text-black active:scale-[0.98]"
+        className="btn-primary px-6 py-4 text-center text-base"
       >
         Another round
       </button>

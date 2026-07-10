@@ -56,9 +56,9 @@ export function CheckpointCard({
       </div>
 
       {answered && (
-        <div className="badge-pop flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div className="badge-pop soft-panel flex flex-col gap-1 px-4 py-3">
           <p
-            className={`text-base font-medium ${wasCorrect ? "text-emerald-300" : "text-white/80"}`}
+            className={`text-base font-medium ${wasCorrect ? "text-emerald-300" : "text-white/85"}`}
           >
             {wasCorrect ? scene.feedbackCorrect : scene.feedbackWrong}
           </p>

@@ -71,7 +71,7 @@ export function ContextCard({
           data-testid="context-save"
           onClick={onSave}
           disabled={saved}
-          className="min-h-12 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98] disabled:opacity-50"
+          className="btn-primary min-h-12 px-5 py-3 text-base disabled:opacity-50"
         >
           {saved ? "✓ Saved to practise" : "Practise it"}
         </button>

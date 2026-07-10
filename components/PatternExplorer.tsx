@@ -17,8 +17,24 @@ import { useDeck, useDismissedPatterns } from "@/components/AppStateProvider";
 import { saveToDeck } from "@/lib/deckOps";
 import { addedOnCount } from "@/lib/notebook";
 import { localIsoDate } from "@/lib/dates";
+import type { VocabularyCategory } from "@/lib/types";
 
 const ADD_PER_DAY = 2;
+
+/** Subtle per-category accent (a small dot + tinted chip). Kept restrained —
+ * never a full card background. Falls back to lavender. */
+const CATEGORY_ACCENT: Partial<Record<VocabularyCategory, string>> = {
+  phrasal_verb: "var(--accent-blue)",
+  collocation: "var(--accent-amber)",
+  sentence_frame: "var(--accent-mint)",
+  spanish_speaker_trap: "var(--accent-coral)",
+  false_friend: "var(--accent-coral)",
+  work_communication: "var(--accent-blue)",
+  daily_life: "var(--accent-lavender)",
+  core_chunk: "var(--accent-lavender)",
+};
+const accentFor = (c: VocabularyCategory | undefined): string =>
+  (c && CATEGORY_ACCENT[c]) || "var(--accent-lavender)";
 
 /** Only phrases carrying strategy metadata are eligible for pattern discovery. */
 const STRATEGY_PHRASES: Phrase[] = phrases.filter((p) => p.category !== undefined);
@@ -134,8 +150,8 @@ export function PatternExplorer() {
       </div>
 
       {shown.length === 0 ? (
-        <div data-testid="pattern-empty" className="rounded-2xl bg-white/[0.05] px-4 py-5 text-center">
-          <p className="text-sm text-white/70">
+        <div data-testid="pattern-empty" className="soft-card px-4 py-6 text-center">
+          <p className="text-sm text-white/75">
             {skippedCount > 0
               ? "You've gone through the suggestions here."
               : "No phrases in this category yet."}
@@ -145,7 +161,7 @@ export function PatternExplorer() {
               type="button"
               data-testid="reset-skipped"
               onClick={resetSkipped}
-              className="mt-2 text-xs font-medium text-sky-300 underline-offset-4 active:underline"
+              className="mt-2 text-xs font-medium text-[color:var(--accent-blue)] underline-offset-4 active:underline"
             >
               Show skipped again ({skippedCount})
             </button>
@@ -153,7 +169,7 @@ export function PatternExplorer() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             {shown.map((phrase) => (
               <PatternCard
                 key={phrase.id}
@@ -172,9 +188,9 @@ export function PatternExplorer() {
                 type="button"
                 data-testid="show-more-patterns"
                 onClick={() => setBatchIndex((i) => i + 1)}
-                className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-xs font-medium text-white/80 active:scale-95"
+                className="btn-soft px-4 py-2 text-xs"
               >
-                Show more
+                Show more ↓
               </button>
             ) : (
               <span />
@@ -184,7 +200,7 @@ export function PatternExplorer() {
                 type="button"
                 data-testid="reset-skipped"
                 onClick={resetSkipped}
-                className="text-xs text-white/40 underline-offset-4 active:underline"
+                className="text-xs text-white/45 underline-offset-4 active:underline"
               >
                 Reset skipped ({skippedCount})
               </button>
@@ -210,14 +226,21 @@ function PatternCard({
   onSkip: () => void;
 }) {
   const why = getWhyThisMatters(phrase);
+  const accent = accentFor(phrase.category);
   return (
     <div
       data-testid={`pattern-card-${phrase.id}`}
-      className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3"
+      className="soft-card relative overflow-hidden px-4 py-3.5"
     >
+      {/* Thin category accent bar on the left edge — subtle identity, not a fill. */}
+      <span aria-hidden className="absolute inset-y-0 left-0 w-[3px]" style={{ background: accent }} />
       <div className="flex items-start justify-between gap-2">
         {chipLabel && (
-          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white/60">
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+            style={{ background: "var(--surface-2)", color: "rgba(255,255,255,0.72)" }}
+          >
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
             {chipLabel}
           </span>
         )}
@@ -231,7 +254,7 @@ function PatternCard({
               onClick={onSkip}
               aria-label="Skip this phrase for now"
               title="Not for now — hide this suggestion (doesn't add or schedule it)"
-              className="rounded-full px-2 py-1 text-xs font-medium text-white/45 active:scale-95"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-white/50 active:scale-95"
             >
               Skip
             </button>
@@ -247,18 +270,18 @@ function PatternCard({
                 ? "Added — this phrase will show up in your practice"
                 : "Add — this phrase will show up in future practice"
             }
-            className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors active:scale-95 ${
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-bold transition-colors active:scale-95 ${
               saved
-                ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
-                : "border-white/20 bg-white/[0.06] text-white/80"
+                ? "border-emerald-400/40 bg-emerald-400/15 text-emerald-200"
+                : "border-transparent bg-[#faf7ff] text-[#1c1526]"
             }`}
           >
             {saved ? "✓ Added" : "Add"}
           </button>
         </div>
       </div>
-      <p className="mt-1.5 text-lg font-bold text-amber-300">{phrase.text}</p>
-      <p className="text-sm text-white/70">{phrase.meaningEs}</p>
+      <p className="mt-2 text-lg font-bold text-amber-300">{phrase.text}</p>
+      <p className="text-sm text-white/75">{phrase.meaningEs}</p>
       {why && <p className="mt-1 text-xs text-white/55">{why}</p>}
     </div>
   );

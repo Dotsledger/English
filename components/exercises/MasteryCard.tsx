@@ -90,7 +90,7 @@ export function MasteryCard({
               data-testid="mastery-reveal"
               onClick={() => setRevealed(true)}
               disabled={text.trim().length === 0}
-              className="min-h-12 flex-1 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98] disabled:opacity-40"
+              className="btn-primary min-h-12 flex-1 px-5 py-3 text-base disabled:opacity-40"
             >
               See a model
             </button>

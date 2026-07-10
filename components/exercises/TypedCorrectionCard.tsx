@@ -47,11 +47,18 @@ export function TypedCorrectionCard({
       <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300">
         Correct the English
       </span>
+      {/* The wrong form sits in a soft "mistake" pill so it reads as the thing
+          to fix, not as body copy. */}
       <div>
-        <p className="text-sm text-white/50">This is wrong — write it correctly:</p>
-        <p className="mt-1 text-[1.7rem] font-bold leading-tight text-rose-300 line-through decoration-rose-400/50">
-          {wrongForm}
-        </p>
+        <p className="text-sm text-white/55">This is wrong — write it correctly:</p>
+        <div
+          className="mt-1.5 inline-flex rounded-2xl px-4 py-3"
+          style={{ background: "rgba(255,158,141,0.1)", border: "1px solid rgba(255,158,141,0.28)" }}
+        >
+          <p className="text-[1.55rem] font-bold leading-tight text-[color:var(--accent-coral)] line-through decoration-[rgba(255,158,141,0.5)]">
+            {wrongForm}
+          </p>
+        </div>
       </div>
 
       {!answered && (
@@ -71,12 +78,12 @@ export function TypedCorrectionCard({
             autoCapitalize="none"
             spellCheck={false}
             data-testid="typed-correction-input"
-            className="min-h-14 rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-4 text-lg text-white placeholder:text-white/30 focus:border-sky-400/60 focus:outline-none"
+            className="min-h-14 rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-4 text-lg text-white placeholder:text-white/35 focus:border-[color:var(--accent-blue)] focus:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-[rgba(127,194,255,0.25)]"
           />
           <button
             type="submit"
             data-testid="typed-correction-submit"
-            className="min-h-12 rounded-2xl bg-white px-5 py-3 text-base font-semibold text-black active:scale-[0.98] disabled:opacity-40"
+            className="btn-primary min-h-12 px-5 py-3 text-base disabled:opacity-40"
             disabled={input.trim().length === 0}
           >
             Check
@@ -85,15 +92,22 @@ export function TypedCorrectionCard({
       )}
 
       {answered && (
-        <div className="badge-pop relative flex flex-col gap-1 rounded-2xl bg-white/[0.06] px-4 py-3">
+        <div
+          className="badge-pop relative flex flex-col gap-1 rounded-2xl px-4 py-3"
+          style={
+            correct
+              ? { background: "rgba(127,227,196,0.1)", border: "1px solid rgba(127,227,196,0.28)" }
+              : { background: "var(--surface-1)", border: "1px solid var(--border-hair)" }
+          }
+        >
           {correct && <SparkBurst />}
-          <p className={`text-base font-medium ${correct ? "text-emerald-300" : "text-white/80"}`}>
+          <p className={`text-base font-medium ${correct ? "text-emerald-200" : "text-white/85"}`}>
             {correct ? "That's it." : `It's “${canonical}”.`}
           </p>
-          <p className="text-sm text-white/55">
+          <p className="text-sm text-white/60">
             {phrase.text} · {phrase.meaningEs}
           </p>
-          {explanation && <p className="text-sm text-white/45">{explanation}</p>}
+          {explanation && <p className="text-sm text-white/50">{explanation}</p>}
         </div>
       )}
     </div>
