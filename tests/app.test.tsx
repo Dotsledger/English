@@ -24,7 +24,7 @@ import { initialLevel } from "@/lib/level";
 import { resetBackendForTests } from "@/lib/storage/backend";
 import { flushWrites } from "@/lib/storage/writeQueue";
 import { parseActivity, parseDeck, parseLevel, parseTopics } from "@/lib/storage/docs";
-import { KEY_ACTIVITY, KEY_DECK, KEY_LEVEL, KEY_META, KEY_TOPICS } from "@/lib/storage/keys";
+import { KEY_ACTIVITY, KEY_CAPTURES, KEY_DECK, KEY_LEVEL, KEY_META, KEY_TOPICS } from "@/lib/storage/keys";
 
 beforeEach(() => {
   cleanup();
@@ -570,6 +570,37 @@ describe("My phrases (notebook)", () => {
     await waitFor(() => {
       expect(screen.getByTestId("notebook-empty")).toBeDefined();
     });
+  });
+
+  it("renders a captured (custom) phrase without crashing, and skips stale ids", async () => {
+    // Regression: getPhrase() throws on unknown ids. A captured phrase and a
+    // stale/orphan deck id must not blow up the whole page.
+    window.localStorage.setItem(KEY_META, JSON.stringify({ schemaVersion: 2 }));
+    window.localStorage.setItem(
+      KEY_CAPTURES,
+      JSON.stringify({
+        cap1: { id: "cap1", text: "circle back", note: "", meaningEs: "retomar", createdAt: 1 },
+      })
+    );
+    window.localStorage.setItem(
+      KEY_DECK,
+      JSON.stringify({
+        cap1: { ...freshEntry("cap1", "custom"), inDeck: true, stage: "seen", timesSeen: 2, nextReviewAt: Date.now() + DAY },
+        "ghost-removed-phrase": { ...freshEntry("ghost-removed-phrase", "catalog"), inDeck: true, stage: "seen", timesSeen: 1, nextReviewAt: Date.now() + DAY },
+      })
+    );
+    render(
+      <AppStateProvider>
+        <Notebook />
+      </AppStateProvider>
+    );
+    // The captured phrase renders (resolved from the capture store)…
+    await waitFor(() => {
+      expect(screen.getByTestId("notebook-phrase-cap1")).toBeDefined();
+    });
+    expect(screen.getByText("circle back")).toBeDefined();
+    // …and the unresolvable id is skipped rather than crashing the page.
+    expect(screen.queryByTestId("notebook-phrase-ghost-removed-phrase")).toBeNull();
   });
 
   it("shows a phrase seen in Today's Practice (not manually added)", async () => {
